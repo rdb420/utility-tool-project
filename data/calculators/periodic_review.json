@@ -1,0 +1,50 @@
+{
+  "id": "calculator.periodic_review",
+  "slug": "periodic-review-calculator",
+  "title": "Periodic Review (Order-Up-To Level) Calculator",
+  "meta_description": "Calculate the order-up-to target inventory level for a periodic review system. Enter demand, lead time, review period, and service level to get the target level and safety stock.",
+  "primary_keyword": "periodic review calculator",
+  "secondary_keywords": [
+    "order up to level formula",
+    "target inventory level calculator",
+    "periodic review inventory system",
+    "fixed order interval formula"
+  ],
+  "formula_ids": ["inventory.periodic_review.order_up_to"],
+  "input_groups": [
+    {
+      "label": "Demand and timing",
+      "inputs": [
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Days from placing a replenishment order to receiving it." },
+        { "symbol": "T", "label": "Review period", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Fixed interval between inventory reviews, e.g. 7 for a weekly review." }
+      ]
+    },
+    {
+      "label": "Service level and variability",
+      "inputs": [
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "TI", "label": "Order-up-to level", "unit": "units", "primary": true, "description": "Target inventory level: at each review, order the gap between this level and your current inventory position." },
+    { "symbol": "SS", "label": "Safety stock", "unit": "units", "description": "Buffer covering demand variability over the lead time plus the review period." }
+  ],
+  "copy_blocks": {
+    "intro": "In a periodic review system you check inventory on a fixed schedule — weekly, fortnightly, monthly — and top each item up to a target level. It suits items that are hard to track continuously, ordered together in families, or bought in consolidated orders. This calculator computes that order-up-to target and the safety stock inside it.",
+    "how_it_works": "Enter average daily demand, the replenishment lead time, your review interval, a service-level factor, and demand variability. The tool sizes safety stock over the full exposure window (lead time plus review period), then adds expected demand over that window to get the order-up-to level. At each review, order the difference between this level and what you have on hand plus on order.",
+    "formula_explanation": "Safety stock = z x sigma_d x sqrt(LT + T). Order-up-to level TI = D x (LT + T) + SS. The exposure window is lead time plus review period because an order placed today must cover you until the next review's order arrives.",
+    "worked_example": "At 20 units/day with a 5-day lead time, a 10-day review cycle, a 95% service level (z = 1.64), and sigma_d = 4: safety stock = 1.64 x 4 x sqrt(15) = about 25.4 units, and the order-up-to level = 20 x 15 + 25.4 = about 325.4 units.",
+    "faq": [
+      { "q": "What is the difference between periodic and continuous review?", "a": "Continuous review watches inventory constantly and orders a fixed quantity whenever stock hits the reorder point. Periodic review checks on a fixed schedule and orders a variable quantity up to the target level. Periodic review is simpler to run and lets you combine items into one order, but needs more safety stock for the same service level." },
+      { "q": "Why is the exposure window LT + T and not just the lead time?", "a": "Because you cannot react between reviews. The order you place today has to cover demand until the order you place at the next review (T days away) actually arrives (LT days after that). Any demand surprise in that whole LT + T window must be absorbed by safety stock." },
+      { "q": "What review period should I use?", "a": "Often it is set by operations: weekly supplier order cycles, monthly consolidated POs. It can also be derived from economics — roughly the year divided by the number of orders per year an EOQ-style calculation suggests. Shorter reviews mean less safety stock but more ordering work." },
+      { "q": "How much do I actually order at each review?", "a": "Order the gap: order-up-to level minus your current inventory position (on hand plus on order, minus backorders). If the position is above the target, order nothing this cycle." }
+    ]
+  },
+  "related_tools": ["calculator.reorder_point", "calculator.safety_stock_ltv", "calculator.eoq"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

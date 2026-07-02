@@ -1,0 +1,41 @@
+{
+  "id": "inventory.stockout_cost.basic",
+  "name": "Stockout Cost (basic)",
+  "category": "inventory",
+  "description": "A first-order estimate of what a stockout event costs: the gross margin lost on units you could not supply, plus any direct penalty costs the shortage triggered (expediting fees, service-level fines).",
+  "inputs": [
+    { "name": "Units short", "symbol": "units_short", "type": "number", "unit": "units", "required": true, "min": 0, "description": "Demand that could not be filled from stock during the stockout." },
+    { "name": "Lost gross margin per unit", "symbol": "GM_unit", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Gross margin foregone on each unit of unfilled demand." },
+    { "name": "Penalty costs", "symbol": "penalty", "type": "number", "unit": "currency", "required": false, "min": 0, "description": "Direct extra costs triggered by the shortage: expediting, SLA fines, substitution costs. Defaults to 0." }
+  ],
+  "outputs": [
+    { "name": "Lost gross margin", "symbol": "lost_margin", "unit": "currency" },
+    { "name": "Estimated stockout cost", "symbol": "stockout_cost", "unit": "currency" }
+  ],
+  "expression": "lost_margin = units_short * GM_unit; stockout_cost = lost_margin + penalty",
+  "assumptions": [
+    "All unfilled demand is treated as lost sales at full gross margin.",
+    "Penalty costs are known, direct, and attributable to this stockout event.",
+    "One-off event view; it does not annualise or amortise costs."
+  ],
+  "limitations": [
+    "Ignores long-term effects: customer loss, brand-switching, and eroded goodwill can far exceed the immediate lost margin.",
+    "Backordered demand differs from lost sales: a backorder recovers the margin but adds handling and expediting costs instead.",
+    "The exact cost of a stockout is difficult to determine; treat the result as a planning estimate, not an accounting figure."
+  ],
+  "examples": [
+    {
+      "inputs": { "units_short": 120, "GM_unit": 18, "penalty": 500 },
+      "expected": { "lost_margin": 2160, "stockout_cost": 2660 },
+      "note": "120 units of unfilled demand at $18 gross margin each = $2,160 lost margin; a $500 expediting/penalty charge brings the estimated stockout cost to $2,660."
+    }
+  ],
+  "sources": ["Standard lost-sales stockout-cost decomposition (lost margin + direct penalties)"],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 425, "quote": "An important cost associated with inventory is the cost of a stock out. Although the exact cost of a stock out is difficult to determine, the cumulative effects of stock outs on the business are significant. A stock out occurs when demand for a product exceeds the available inventory. ... A stock out will generate a variety of different costs. Among the most important are: Lost sales." },
+    { "source_file": "312523353-The-Definitive-Guide-to-Inventory-Management.md", "chunk_index": 62, "quote": "the expected cost of lost sales per unit of out of stock" },
+    { "source_file": "312523353-The-Definitive-Guide-to-Inventory-Management.md", "chunk_index": 32, "quote": "At this point the cost of the stockout depends on my behavior. ... the worst case for the cereal X manufacturer is for me to buy the private label after the brand X stockout and decide that I like the private label better." }
+  ],
+  "disclaimer_level": "estimate"
+}

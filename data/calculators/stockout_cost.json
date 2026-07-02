@@ -1,0 +1,43 @@
+{
+  "id": "calculator.stockout_cost",
+  "slug": "stockout-cost-calculator",
+  "title": "Stockout Cost Calculator",
+  "meta_description": "Estimate what a stockout costs. Enter units short, lost gross margin per unit, and any penalty costs to get the lost margin and total stockout cost, with the formula explained.",
+  "primary_keyword": "stockout cost calculator",
+  "secondary_keywords": [
+    "cost of stockout formula",
+    "stockout cost formula",
+    "lost sales cost",
+    "out of stock cost"
+  ],
+  "formula_ids": ["inventory.stockout_cost.basic"],
+  "input_groups": [
+    {
+      "label": "Shortage, margin, and penalties",
+      "inputs": [
+        { "symbol": "units_short", "label": "Units short", "unit": "units", "type": "number", "min": 0, "required": true, "help": "Demand you could not fill from stock during the stockout." },
+        { "symbol": "GM_unit", "label": "Lost gross margin per unit", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "help": "Gross margin you would have earned on each unfilled unit." },
+        { "symbol": "penalty", "label": "Penalty costs", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 0, "help": "Direct extra costs the shortage triggered: expediting fees, SLA fines, substitution costs. Leave 0 if none." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "stockout_cost", "label": "Estimated stockout cost", "unit": "currency", "primary": true, "description": "Lost gross margin plus direct penalty costs for this stockout event." },
+    { "symbol": "lost_margin", "label": "Lost gross margin", "unit": "currency", "description": "Margin foregone on the units you could not supply." }
+  ],
+  "copy_blocks": {
+    "intro": "A stockout costs more than the sales you visibly miss. The immediate hit is the gross margin on every unit of demand you could not fill, and shortages often trigger direct extra costs on top: expedited freight, service-level fines, or paying more for a substitute. This tool adds those up into a first-order estimate of what one stockout event really cost.",
+    "how_it_works": "Multiply the units of unfilled demand by the gross margin you lose on each, then add any direct penalty costs the shortage caused. The result is the immediate, measurable cost of the event; long-term customer damage comes on top of it.",
+    "formula_explanation": "Lost margin = units short x lost gross margin per unit. Stockout cost = lost margin + penalty costs. Use gross margin, not revenue: the cost of goods you did not ship is not a loss.",
+    "worked_example": "Short 120 units at $18 gross margin each: lost margin = 120 x 18 = $2,160. Add a $500 expediting charge and the estimated stockout cost is $2,160 + $500 = $2,660.",
+    "faq": [
+      { "q": "What should I include in penalty costs?", "a": "Direct costs triggered by the shortage: expedited or air freight to recover, contractual SLA fines, costs of sourcing a substitute, and extra handling for emergency orders. If a cost only happened because you stocked out, it belongs here." },
+      { "q": "What if customers backorder instead of walking away?", "a": "A backorder recovers the margin, so do not count those units as lost sales. Backorders still cost you, though: expediting, double handling, and goodwill. Count only truly lost demand in units short and put backorder-recovery costs in penalties." },
+      { "q": "Does this capture the full cost of stocking out?", "a": "No. Repeated stockouts push customers to competitors, and that long-term margin loss can dwarf the immediate hit. Treat this as a floor on the true cost, which is one reason it is usually worth buying insurance against stockouts with safety stock." },
+      { "q": "How do I prevent stockouts?", "a": "Safety stock is the main lever: size a buffer to a target service level with the safety stock calculator, then set your reorder point so replenishment starts before the buffer is needed." }
+    ]
+  },
+  "related_tools": ["calculator.safety_stock", "calculator.reorder_point", "calculator.carrying_cost"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

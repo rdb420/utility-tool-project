@@ -1,0 +1,44 @@
+{
+  "id": "inventory.safety_stock.lead_time_variability",
+  "name": "Safety Stock (lead-time variability method)",
+  "category": "inventory",
+  "description": "Buffer stock when both demand and lead time vary: a service-level factor times the combined standard deviation of demand over the lead time, which pools demand variance across the lead time with lead-time variance scaled by the demand rate.",
+  "inputs": [
+    { "name": "Service-level factor", "symbol": "z", "type": "number", "unit": "sigma", "required": true, "min": 0, "description": "Safety factor for the target service level (see reference.service_level_z_factors)." },
+    { "name": "Average daily demand", "symbol": "D", "type": "number", "unit": "units/day", "required": true, "min": 0 },
+    { "name": "Standard deviation of daily demand", "symbol": "sigma_d", "type": "number", "unit": "units/day", "required": true, "min": 0 },
+    { "name": "Average lead time", "symbol": "LT", "type": "number", "unit": "days", "required": true, "min": 0 },
+    { "name": "Standard deviation of lead time", "symbol": "sigma_LT", "type": "number", "unit": "days", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Combined standard deviation of lead-time demand", "symbol": "sigma_L", "unit": "units", "description": "Standard deviation of demand during the lead time when both demand and lead time vary." },
+    { "name": "Safety stock", "symbol": "SS", "unit": "units" }
+  ],
+  "expression": "sigma_L = sqrt(LT * sigma_d^2 + D^2 * sigma_LT^2); SS = z * sigma_L",
+  "assumptions": [
+    "Demand variability and lead-time variability are independent of each other.",
+    "Lead-time demand is approximately normally distributed.",
+    "Demand and lead time use the same time unit (e.g. per-day demand with lead time in days)."
+  ],
+  "limitations": [
+    "If lead time is constant (sigma_LT = 0), this reduces to the basic service-level form SS = z * sigma_d * sqrt(LT).",
+    "The service-level factor assumes a cycle-service-level target, not a fill-rate target.",
+    "Correlated demand and lead time (e.g. shortages that lengthen lead times during demand spikes) understate the required buffer."
+  ],
+  "examples": [
+    {
+      "inputs": { "z": 1.65, "D": 250, "sigma_d": 85, "LT": 9, "sigma_LT": 5 },
+      "expected": { "sigma_L": 1275.74, "SS": 2105 },
+      "tolerance": 1,
+      "note": "Distribution Planning Exercise 8.5 (ABC Electronics): 95% service level (z = 1.65), D = 250 units/day, sigma_d = 85, LT = 9 days, sigma_LT = 5 days. sigma_L = sqrt(9 x 85^2 + 250^2 x 5^2) = 1,275.74; SS = 1.65 x 1,275.74 = 2,105 (rounded).",
+      "citation": { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 483, "quote": "sigma_L = sqrt([9 x (85^2)] + [(250^2) x (5^2)]) = 1,275.74 ... To achieve a CSL of 95%, 1.65 is chosen. To arrive at the new safety stock, the standard deviation of demand during the lead time is then multiplied by the safety factor, or 1.65 x 1,275 = 2,105 (rounded)." }
+    }
+  ],
+  "sources": ["Chopra-Meindl combined demand/lead-time variability safety-stock model"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 483, "quote": "The first step is to calculate the standard deviation of demand during the lead time (sigma_L) using the formula: sigma_L = sqrt(LT x sigma_D^2 + D^2 x sigma_LT^2)" },
+    { "source_file": "470379145-LEAN-Supply-Chain-Planning-The-New-Supply-Chain-Management-Paradigm-for-Process-Industries-to-Master-Today-s-VUCA-World-pdf.md", "chunk_index": 197, "quote": "The required supply safety stocks for an service level of 99% are then calculated as Safety factor x sqrt((standard deviation_quantity)^2 + (standard deviation_lead time x demand rate)^2)" }
+  ],
+  "disclaimer_level": "estimate"
+}

@@ -1,0 +1,39 @@
+{
+  "id": "inventory.abc.share",
+  "name": "ABC Analysis (usage-value share)",
+  "category": "inventory",
+  "description": "An item's share of total annual usage value, the ranking measure behind Pareto/ABC inventory classification: a small share of items typically accounts for most of the value, and classes are drawn from these shares.",
+  "inputs": [
+    { "name": "Item annual usage value", "symbol": "V_i", "type": "number", "unit": "currency", "required": true, "min": 0, "description": "Annual usage (or sales) value of the item: annual units x unit value." },
+    { "name": "Total annual usage value", "symbol": "V_total", "type": "number", "unit": "currency", "required": true, "min": 0, "description": "Sum of annual usage value across all items being classified. Must be greater than 0." }
+  ],
+  "outputs": [
+    { "name": "Share of total usage value", "symbol": "share_pct", "unit": "%" }
+  ],
+  "expression": "share_pct = 100 * V_i / V_total",
+  "assumptions": [
+    "Annual usage value (not unit price or volume alone) is the classification measure.",
+    "ABC class thresholds (e.g. A = top ~80% of cumulative value) are conventions, not standards; corpus examples use 54/41/5 and roughly 65/25/10 value splits.",
+    "Items are ranked by descending share before drawing cumulative-percentage class boundaries."
+  ],
+  "limitations": [
+    "A single item's share does not classify it by itself; classes are assigned from the cumulative ranked distribution.",
+    "Value-based classes ignore criticality: a low-value item can still be operationally critical and deserve A-class control.",
+    "The 80/20 split is an empirical tendency, not a law; the actual distribution should set the boundaries."
+  ],
+  "examples": [
+    {
+      "inputs": { "V_i": 54000, "V_total": 100000 },
+      "expected": { "share_pct": 54 },
+      "note": "Mirrors the corpus ABC table's A-class share: 'A' class items are 11% of items held but 54% of value, so an A-class group worth 54,000 out of a 100,000 total carries a 54% share.",
+      "citation": { "source_file": "479665818-Total-SupplyChain-Man-pdf.md", "chunk_index": 105, "quote": "Table 7.1 ABC analysis of inventory: 'A' class items - Number held 11%, Value 54%; 'B' class items - Number held 29%, Value 41%; 'C' class items - Number held 60%, Value 5%." }
+    }
+  ],
+  "sources": ["Pareto principle applied to inventory (ABC classification)"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "479665818-Total-SupplyChain-Man-pdf.md", "chunk_index": 105, "quote": "In inventory management using the Pareto approach, the assumption is that 20 per cent of the items held will account for 80 per cent of the value of materials on hand. A further refinement is ABC analysis. Using the ABC approach inventory will be categorised as high value, medium value and low value. The high value \"A\" items will require the greatest control." },
+    { "source_file": "402402904-Best-Practice-in-Inventory-Management-Oliver-Wight-Manufacturing-pdf.md", "chunk_index": 34, "quote": "Classification A: 10.0% of items, 66.8% of value; B: 20.0% of items, 23.2% of value; C: 70.0% of items, 10.0% of value. ABC analysis is carried out only for items with usage." }
+  ],
+  "disclaimer_level": "estimate"
+}

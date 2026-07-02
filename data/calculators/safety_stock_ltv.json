@@ -1,0 +1,50 @@
+{
+  "id": "calculator.safety_stock_ltv",
+  "slug": "safety-stock-lead-time-variability-calculator",
+  "title": "Safety Stock Calculator (Lead Time Variability)",
+  "meta_description": "Calculate safety stock when both demand and lead time vary. Uses the combined standard deviation formula sigma_L = sqrt(LT x sigma_d^2 + D^2 x sigma_LT^2), with a worked example.",
+  "primary_keyword": "safety stock formula with lead time variability",
+  "secondary_keywords": [
+    "safety stock with variable lead time",
+    "combined standard deviation safety stock",
+    "lead time variability safety stock",
+    "safety stock calculator lead time"
+  ],
+  "formula_ids": ["inventory.safety_stock.lead_time_variability"],
+  "input_groups": [
+    {
+      "label": "Service level and demand",
+      "inputs": [
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level from the z-factor table, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand." }
+      ]
+    },
+    {
+      "label": "Lead time and its variability",
+      "inputs": [
+        { "symbol": "LT", "label": "Average lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Average days from placing a replenishment order to receiving it." },
+        { "symbol": "sigma_LT", "label": "Std deviation of lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Variability of the lead time in days. Set 0 for a perfectly reliable supplier." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "SS", "label": "Safety stock", "unit": "units", "primary": true, "description": "Buffer covering both demand and lead-time variability at your service level." },
+    { "symbol": "sigma_L", "label": "Combined std deviation", "unit": "units", "description": "Standard deviation of demand over the lead time with both sources of variability pooled." }
+  ],
+  "copy_blocks": {
+    "intro": "The basic safety stock formula assumes your lead time never moves. When suppliers quote 9 days but sometimes deliver in 14, that assumption breaks, and lead-time variability is often the bigger driver of stockouts. This calculator uses the combined form that pools demand variability and lead-time variability into one standard deviation, then sizes the buffer to your service level.",
+    "how_it_works": "Enter your service-level factor, average daily demand and its standard deviation, and average lead time and its standard deviation. The tool first computes the combined standard deviation of demand over the lead time, then multiplies it by the z-factor to get safety stock.",
+    "formula_explanation": "sigma_L = sqrt(LT x sigma_d^2 + D^2 x sigma_LT^2), then SS = z x sigma_L. The first term is demand variance accumulated across the lead time; the second scales lead-time variance by the demand rate, because a one-day slip costs you a full day of demand. With sigma_LT = 0 it collapses to the basic form z x sigma_d x sqrt(LT).",
+    "worked_example": "For a 95% service level (z = 1.65), demand of 250 units/day with sigma_d = 85, a 9-day lead time with sigma_LT = 5: sigma_L = sqrt(9 x 85^2 + 250^2 x 5^2) = 1,275.74, and safety stock = 1.65 x 1,275.74 = about 2,105 units.",
+    "faq": [
+      { "q": "When should I use this instead of the basic safety stock calculator?", "a": "Use this version whenever lead times meaningfully vary — irregular supplier performance, long import lanes, congested ports. If your lead time is effectively constant, the basic service-level safety stock calculator needs fewer inputs and gives the same answer." },
+      { "q": "How do I estimate the standard deviation of lead time?", "a": "Pull the actual lead times of your last 20-30 receipts for the item (PO date to receipt date) and compute their standard deviation in a spreadsheet with STDEV. If you lack history, a rough start is (worst case - typical case) / 3, refined as data accumulates." },
+      { "q": "Where does the z value come from?", "a": "From the standard service-level table: 1.28 for 90%, 1.65 for 95%, 2.05 for 98%, 2.33 for 99%. It converts your target cycle service level into a number of standard deviations of buffer." },
+      { "q": "Why does demand appear squared in the formula?", "a": "The lead-time term is sigma_LT scaled by the demand rate D — each extra day of delay exposes you to a full day of demand — and variances add as squares, so D^2 x sigma_LT^2 appears under the square root." }
+    ]
+  },
+  "related_tools": ["calculator.safety_stock", "calculator.periodic_review", "calculator.reorder_point"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

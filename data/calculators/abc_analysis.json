@@ -1,0 +1,41 @@
+{
+  "id": "calculator.abc_analysis",
+  "slug": "abc-analysis-calculator",
+  "title": "ABC Analysis Calculator",
+  "meta_description": "Classify inventory with ABC (Pareto) analysis. Work out each item's share of total usage value and see how A, B, and C classes are drawn, with thresholds and cycle-count guidance.",
+  "primary_keyword": "abc analysis calculator",
+  "secondary_keywords": [
+    "abc inventory analysis",
+    "abc classification calculator",
+    "pareto analysis inventory",
+    "80 20 rule inventory"
+  ],
+  "formula_ids": ["inventory.abc.share"],
+  "input_groups": [
+    {
+      "label": "Usage value",
+      "inputs": [
+        { "symbol": "V_i", "label": "Item annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Annual usage or sales value of the item: annual units x unit value." },
+        { "symbol": "V_total", "label": "Total annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Sum of annual usage value across all items you are classifying. Must be greater than 0." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "share_pct", "label": "Share of total usage value", "unit": "%", "primary": true, "description": "This item's percentage of total annual usage value — the measure ABC classes are ranked and drawn from." }
+  ],
+  "copy_blocks": {
+    "intro": "ABC analysis applies the Pareto principle to inventory: a small share of items accounts for most of the usage value, so control effort should follow the money. A-items — few in number but carrying most of the value — get the tightest control, B-items moderate attention, and the long tail of C-items minimal effort. It starts with one number per item: its share of total annual usage value.",
+    "how_it_works": "For a single item, divide its annual usage value by the total across all items and multiply by 100. To run a full classification: compute this share for every SKU, rank items by descending share, accumulate the percentages, and draw class boundaries on the cumulative curve — enter your SKUs and the tool returns the ranked, classified list.",
+    "formula_explanation": "Share % = 100 x item annual usage value / total annual usage value. Classes come from the cumulative ranked shares: a common convention takes A-items up to ~80% of cumulative value and B-items up to ~95%, with the remainder as C. These cut-offs are conventions, not standards — corpus textbook examples show A/B/C value splits of 54/41/5 and roughly 65/25/10 — so fit the boundaries to your own Pareto curve.",
+    "worked_example": "If the A-class group of items is worth 54,000 of a 100,000 total annual usage value, its share is 100 x 54,000 / 100,000 = 54% — matching the textbook table where 11% of items held carry 54% of the value.",
+    "faq": [
+      { "q": "How many classes should I use?", "a": "Three (A, B, C) works for most inventories. Very large item files sometimes add a D class to dump the lowest-value half of the lines, which may hold only 2-3% of the value. More than four classes rarely changes any decision." },
+      { "q": "Where should I draw the class boundaries?", "a": "Common convention: A = items up to about 80% of cumulative value, B = up to about 95%, C = the rest. But published examples vary widely (54/41/5 and 65/25/10 value splits appear in standard texts), so plot your cumulative curve and place boundaries where the slope visibly flattens." },
+      { "q": "How does ABC classification drive cycle counting?", "a": "Count frequency follows value: A-items might be counted weekly or monthly, B-items quarterly, and C-items once or twice a year. This concentrates counting effort where record errors cost the most and enables rolling counts instead of a full annual stock-take." },
+      { "q": "Should classification only consider value?", "a": "Value is the standard measure, but it misses criticality: a cheap part that stops a production line deserves A-class treatment. Many teams overlay a criticality flag or run a second dimension (XYZ for demand variability) on top of the value classes." }
+    ]
+  },
+  "related_tools": ["calculator.inventory_turnover", "calculator.carrying_cost", "calculator.eoq"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

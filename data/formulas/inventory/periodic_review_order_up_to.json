@@ -1,0 +1,44 @@
+{
+  "id": "inventory.periodic_review.order_up_to",
+  "name": "Periodic Review (order-up-to level)",
+  "category": "inventory",
+  "description": "Target inventory level for a periodic review system: expected demand over the lead time plus the review period, plus safety stock sized to demand variability over that whole exposure window. At each review, order up to this level.",
+  "inputs": [
+    { "name": "Average daily demand", "symbol": "D", "type": "number", "unit": "units/day", "required": true, "min": 0 },
+    { "name": "Lead time", "symbol": "LT", "type": "number", "unit": "days", "required": true, "min": 0 },
+    { "name": "Review period", "symbol": "T", "type": "number", "unit": "days", "required": true, "min": 0, "description": "Fixed interval between inventory reviews." },
+    { "name": "Service-level factor", "symbol": "z", "type": "number", "unit": "sigma", "required": true, "min": 0, "description": "Safety factor for the target service level (see reference.service_level_z_factors)." },
+    { "name": "Standard deviation of daily demand", "symbol": "sigma_d", "type": "number", "unit": "units/day", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Safety stock", "symbol": "SS", "unit": "units", "description": "Buffer covering demand variability over the lead time plus the review period." },
+    { "name": "Order-up-to (target inventory) level", "symbol": "TI", "unit": "units", "description": "At each review, order the difference between this level and the current inventory position." }
+  ],
+  "expression": "SS = z * sigma_d * sqrt(LT + T); TI = D * (LT + T) + SS",
+  "assumptions": [
+    "Reviews happen at a fixed interval T; between reviews no order is placed.",
+    "Lead time is constant; only demand varies.",
+    "Demand, lead time, and review period use the same time unit.",
+    "Lead-time-plus-review demand is approximately normally distributed."
+  ],
+  "limitations": [
+    "The exposure window is LT + T (not just LT), so periodic review carries more safety stock than continuous review at the same service level.",
+    "If lead time also varies, the combined-variability form should size the buffer instead (see inventory.safety_stock.lead_time_variability).",
+    "The order quantity at review is TI minus the current inventory position (on hand + on order), which this record does not compute."
+  ],
+  "examples": [
+    {
+      "inputs": { "D": 20, "LT": 5, "T": 10, "z": 1.64, "sigma_d": 4 },
+      "expected": { "SS": 25.4, "TI": 325.4 },
+      "tolerance": 0.1,
+      "note": "95% service level (z = 1.64), 20 units/day, 5-day lead time, 10-day review cycle, sigma_d = 4. SS = 1.64 x 4 x sqrt(15) = 25.41; TI = 20 x 15 + 25.41 = 325.41."
+    }
+  ],
+  "sources": ["Fixed-order-interval (periodic review, order-up-to) replenishment model"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 486, "quote": "The formula for calculating the inventory target level is expressed as TI = (D(L + T)) + (SS x sigma_D x sqrt(L + T)) where TI is the target inventory level, D is the demand rate, L is the item lead time, T is the review period, and SS is the safety stock [factor]." },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 463, "quote": "There are two critical factors that need to be established on an item-byitem basis: (1) a fixed review interval and (2) an order-up-to target inventory level." }
+  ],
+  "disclaimer_level": "estimate"
+}
