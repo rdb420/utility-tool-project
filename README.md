@@ -106,12 +106,13 @@ npm run validate   # validate data/ records against schemas/
 npm run build      # static production build (prebuild runs the validator)
 ```
 
-Live pages: seven calculators (`/reorder-point-calculator/`,
-`/safety-stock-calculator/`, `/eoq-calculator/`,
-`/inventory-turnover-calculator/`, `/days-of-inventory-calculator/`,
-`/inventory-carrying-cost-calculator/`, `/cbm-calculator/`), the home page, two
-cluster hubs (`/inventory-calculators/`, `/freight-calculators/`), and legal
-pages (privacy, cookies, terms, contact, about), plus sitemap/robots/ads.txt.
+Live pages: 24 calculators across three clusters — inventory (reorder point,
+safety stock ×2, EOQ, turnover, days of cover, carrying cost, stockout cost,
+periodic review, ABC analysis), freight (CBM, freight class, dimensional
+weight, volumetric weight, chargeable weight, freight density, pallet, carton
+volume, length+girth), and pricing (margin, markup, break-even, discount,
+landed cost) — plus the home page, three cluster hubs, and legal pages
+(privacy, cookies, terms, contact, about), plus sitemap/robots/ads.txt.
 
 ### Knowledge-base tooling (Python)
 
@@ -147,23 +148,26 @@ The split of responsibilities:
 
 ## Current Status
 
-Phase 4 (website MVP) is built. The site at `web/` serves seven calculator pages
-(six inventory + the CBM/freight calculator, whose carrier divisors are labelled
-unverified estimates), record-driven from validated calculator records in
+Phase 4 (website MVP) and the Phase 6 cluster expansion are built. The site at
+`web/` serves 24 calculator pages across inventory, freight, and pricing
+clusters, record-driven from validated calculator records in
 `data/calculators/`. Formula execution and corpus validation are TypeScript
 (`web/src/lib/calc/`, `web/src/lib/corpus/`); the former Python calc library and
-validator were deleted after a parity gate.
+validator were deleted after a parity gate. Four tools use custom islands
+(CBM, freight class, dimensional/volumetric weight, ABC analysis); the rest
+use the generic record-driven tool.
 
 The knowledge base is built and searchable, and grounded formula records exist
-for the six inventory formulas (cited to source passages) plus three freight
-formulas (`grounding: external`, with named carrier/IATA/ISO sources).
+for all 24 formulas — inventory and pricing cited to source passages, freight
+grounded via the ingested sourced-reference pack or named carrier/IATA/NMFTA
+sources.
 
-Corpus coverage remains asymmetric: inventory and pricing formulas are strongly
-grounded in the source books, while carrier DIM divisors, NMFC freight classes,
-and parcel girth limits are not in the corpus — the freight reference tables
-under `data/reference_tables/freight/` are still `needs_sourcing` stubs pending
-verification.
+Reference-table status: carrier DIM divisors (verified 2026-07-02; USPS row
+re-check due 2026-07-12) and NMFC freight classes (13-subprovision FCDC scale,
+effective 2025-07-19) are verified; parcel girth limits are partially verified
+(UPS and Australia Post rows); container volumes remain `needs_sourcing`.
 
-Next milestones (Phase 5): production domain, Search Console, GA4 wiring, and
-AdSense application, plus verifying the freight reference tables. See
-[Development Plan](docs/DEVELOPMENT_PLAN.md).
+Next milestones (Phase 5): deploy to the registered domain (opscrunch.com via
+Cloudflare/Vercel), Search Console, GA4 wiring, and AdSense application. See
+[Development Plan](docs/DEVELOPMENT_PLAN.md). Packaging cost and cycle count
+planner were deliberately skipped — no defined method yet.

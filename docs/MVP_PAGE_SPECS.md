@@ -8,10 +8,11 @@ they are meant to be enough to build the pages without reopening the research
 reports.
 
 The CBM / chargeable-weight page (`/cbm-calculator/`) shipped alongside this
-cluster with its carrier divisors labelled as unverified estimates — see the
-addendum at the end of this document. The remaining freight reference tables
-stay blocked on external sourcing (`data/reference_tables/freight/`). See
-`docs/DEVELOPMENT_PLAN.md` Phase 1b/2.
+cluster — see the addendum at the end of this document. The full freight and
+pricing clusters shipped later (2026-07-03) with carrier DIM divisors and the
+NMFC 13-subprovision class table verified against dated sources; parcel girth
+limits are partially verified and container volumes remain `needs_sourcing`
+(`data/reference_tables/freight/`). See `docs/DEVELOPMENT_PLAN.md` Phase 6.
 
 ## The six pages
 

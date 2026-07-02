@@ -41,15 +41,20 @@ hand-authored JSON under `data/formulas/`, `data/reference_tables/`, and
 (`web/scripts/validate-corpus.ts`; `cd web && npm run validate`) and by the
 record-driven Vitest suites.
 
-Freight formula records (CBM, volumetric weight, chargeable weight) now exist
-under `data/formulas/freight/` with `grounding: external` and named sources
-(carrier service guides, IATA, ISO 668). Among the freight **reference tables**
-(`data/reference_tables/freight/`), `dimensional_weight_divisors.json` is
-`status: verified` (effective 2026-07-02, sourced from the dated pack
-`corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md`; the USPS
-row needs re-verification on 2026-07-12). The other three tables (NMFC classes,
-girth limits, container volumes) remain `status: needs_sourcing` pending
-verification sign-off — their values are labelled estimates on the site.
+Freight formula records now cover the full cluster (CBM, dimensional and
+volumetric weight, chargeable weight, density/PCF, pallet fit and cube ratio,
+carton volume, length+girth) under `data/formulas/freight/`, grounded either to
+the ingested sourcing pack
+(`corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md`) or to
+named external sources. Pricing (`data/formulas/pricing/`) and the extra
+inventory formulas are corpus/concept-grounded with citations. Among the
+freight **reference tables** (`data/reference_tables/freight/`),
+`dimensional_weight_divisors.json` is `status: verified` (effective 2026-07-02;
+the USPS row needs re-verification on 2026-07-12) and
+`nmfc_freight_classes.json` is `status: verified` on the 13-subprovision FCDC
+scale (effective 2025-07-19, NMFTA sources). Girth limits are partially
+verified (UPS + AusPost rows); container volumes remain `status:
+needs_sourcing` — those values are labelled estimates on the site.
 
 The relationship is one-directional: **Layer 1 grounds Layer 2.** The website
 never queries Qdrant at request time; it consumes validated Layer 2 artifacts.

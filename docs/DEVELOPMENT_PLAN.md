@@ -79,14 +79,14 @@ Exit criteria:
 Status: complete. Originally implemented in Python (`src/calc/`), then ported to
 TypeScript during Phase 4 and the Python version deleted after a parity gate.
 
-Implemented in `web/src/lib/calc/`: pure functions for the six inventory
-formulas (`inventory.ts`) and the CBM/volumetric/chargeable-weight freight
-formulas (`freight.ts`), input validation (`errors.ts`), unit conversion
-(`units.ts`), result formatting (`formatting.ts`), and a `registry.ts` that
-binds each formula record id to its function. The record-driven test runs every
-corpus worked example through the real library, so results trace to a cited
-corpus example. Freight results are labelled estimates until the reference
-tables are verified (Phase 1b task 4).
+Implemented in `web/src/lib/calc/`: pure functions per formula (`inventory.ts`,
+`freight.ts`, `pricing.ts` — 24 formulas after the Phase 6 expansion), input
+validation (`errors.ts`), unit conversion (`units.ts`), result formatting
+(`formatting.ts`), and a `registry.ts` that binds each formula record id to its
+function. The record-driven test runs every corpus worked example through the
+real library, so results trace to a cited corpus example. Freight results were
+labelled estimates until the reference tables were verified (now done — see the
+Phase 6 status note).
 
 Goal:
 
@@ -115,8 +115,8 @@ Tasks:
 3. [done] Write example-based tests from the corpus records.
 4. [done] Add validation errors for missing, negative, or incompatible inputs.
 5. [done] Add formatting helpers for units, rounding, and result summaries.
-6. [pending] Implement the freight calculation functions once their reference
-   tables are sourced and verified.
+6. [done] Freight calculation functions implemented; their reference tables
+   have been sourced and verified (see the Phase 6 status note).
 
 Exit criteria:
 
@@ -218,6 +218,28 @@ Exit criteria:
 
 ## Phase 6: Cluster Expansion
 
+Status: delivered (2026-07-03). The cluster expansion shipped 17 new calculators
+(24 pages total):
+
+- **8 freight tools** — freight class (estimated on the current
+  13-subprovision FCDC density scale, effective 2025-07-19), dimensional
+  weight, volumetric weight, chargeable weight, freight density, pallet,
+  carton volume, and length-and-girth.
+- **5 pricing tools (new cluster)** — margin, markup, break-even, discount
+  impact, and landed cost.
+- **4 inventory extras** — stockout cost, safety stock with lead-time
+  variability, periodic review, and ABC analysis (built as a custom
+  multi-row tool).
+
+**Packaging cost and cycle count planner were skipped — no formula/method is
+defined in the docs or corpus; they need definition before building.**
+
+The freight cluster is no longer blocked on external sourcing: carrier DIM
+divisors and the NMFC freight-class table are verified (divisors 2026-07-02;
+NMFC 13-sub scale effective 2025-07-19), and parcel girth limits are partially
+verified (UPS and Australia Post rows only — the remaining rows and container
+volumes still need sourcing).
+
 Goal:
 
 Expand where early data shows traction.
@@ -279,7 +301,9 @@ Phase 5 launch tasks: connect the production domain, submit the sitemap to
 Search Console, wire GA4 into the analytics scaffold, and apply for AdSense
 once the trust pages are live.
 
-In parallel, close the freight sourcing task (`data/reference_tables/freight/`):
-verify carrier DIM divisors, NMFC classes, parcel girth limits, and container
-volumes against carrier/NMFTA publications so the freight values can drop their
-`needs_sourcing` status and estimate labelling can be tightened.
+The freight sourcing task (`data/reference_tables/freight/`) is largely closed:
+carrier DIM divisors and NMFC classes are verified (divisors 2026-07-02, NMFC
+13-sub scale effective 2025-07-19), and parcel girth limits are partially
+verified (UPS and Australia Post rows only). Still open: container volumes and
+the remaining girth rows need sourcing, and the USPS divisor row needs
+re-verification on 2026-07-12.

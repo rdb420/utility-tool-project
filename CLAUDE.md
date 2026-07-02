@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-An SEO-driven B2B operations utility website (OpsCrunch: logistics, inventory, freight, dimensional-weight calculators). The public site **exists** as a Next.js (App Router) + TypeScript app at `web/` — seven calculator pages (six inventory + CBM/freight), a home page, two cluster hubs, legal pages, and full SEO plumbing (sitemap/robots/ads.txt, JSON-LD). All formula execution and corpus validation happen in TypeScript inside `web/`.
+An SEO-driven B2B operations utility website (OpsCrunch: logistics, inventory, freight, dimensional-weight calculators). The public site **exists** as a Next.js (App Router) + TypeScript app at `web/` — 24 calculator pages across three clusters (10 inventory, 9 freight, 5 pricing), a home page, three cluster hubs, legal pages, and full SEO plumbing (sitemap/robots/ads.txt, JSON-LD). Four tools use custom islands (CBM, freight class, dimensional/volumetric weight, ABC analysis); the rest render through the generic record-driven tool. All formula execution and corpus validation happen in TypeScript inside `web/`.
 
 Python remains **only** for the knowledge-base tooling:
 
