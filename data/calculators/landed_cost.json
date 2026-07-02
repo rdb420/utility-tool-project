@@ -1,0 +1,64 @@
+{
+  "id": "calculator.landed_cost",
+  "slug": "landed-cost-calculator",
+  "title": "Landed Cost Calculator",
+  "meta_description": "Landed cost calculator: add goods value, freight, insurance, estimated duty, and other fees to estimate total landed cost and cost per unit. A planning estimate — confirm duty rates with your customs broker.",
+  "primary_keyword": "landed cost calculator",
+  "secondary_keywords": [
+    "landed cost formula",
+    "landed cost per unit",
+    "import cost calculator",
+    "total landed cost"
+  ],
+  "formula_ids": ["pricing.landed_cost.per_unit"],
+  "input_groups": [
+    {
+      "label": "Shipment costs",
+      "inputs": [
+        { "symbol": "goods", "label": "Goods value", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 10000, "help": "What you paid the supplier for the goods (the commercial invoice value)." },
+        { "symbol": "freight", "label": "Freight cost", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 1200, "help": "Transport to your door, including origin and destination handling." },
+        { "symbol": "insurance", "label": "Insurance cost", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 100, "help": "Cargo insurance premium for the shipment." },
+        { "symbol": "duty_pct", "label": "Duty rate", "unit": "%", "type": "number", "min": 0, "required": false, "default": 5, "help": "Estimated duty as a flat % of goods value. Real duty depends on HS classification, valuation rules, and trade agreements — confirm the rate with your customs broker." },
+        { "symbol": "other", "label": "Other fees", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 200, "help": "Brokerage, documentation, port and terminal fees, compliance costs." }
+      ]
+    },
+    {
+      "label": "Units",
+      "inputs": [
+        { "symbol": "units", "label": "Units in shipment", "unit": "units", "type": "integer", "min": 0, "required": true, "default": 500, "help": "Number of sellable units the shipment contains." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "LC_unit", "label": "Landed cost per unit", "unit": "currency/unit", "primary": true, "description": "Total landed cost spread across the units — the cost figure your margin and pricing decisions should use." },
+    { "symbol": "LC", "label": "Total landed cost", "unit": "currency", "description": "Goods + freight + insurance + estimated duty + other fees." },
+    { "symbol": "duty", "label": "Estimated duty", "unit": "currency", "description": "Goods value times the duty rate you entered — a flat-rate estimate, not a customs calculation." }
+  ],
+  "copy_blocks": {
+    "intro": "Landed cost is what a unit really costs by the time it reaches your warehouse: the supplier invoice plus freight, insurance, duty, and the string of fees in between. Pricing from the invoice value alone quietly overstates your margin on every imported item. This calculator adds the components up and spreads them across the shipment to give a landed cost per unit. It is a planning estimate — duty in particular is simplified to a flat percentage, so confirm rates with your customs broker or accountant before committing to prices.",
+    "how_it_works": "Enter the goods value, then whichever cost components apply — freight, insurance, an estimated duty rate, and other fees such as brokerage and port charges. Leave anything that does not apply at zero. The tool estimates duty as a flat percentage of the goods value, totals everything into a landed cost, and divides by the number of units so you can feed a true per-unit cost into your margin and pricing work.",
+    "formula_explanation": "Estimated duty = goods value x duty rate / 100. Total landed cost = goods + freight + insurance + duty + other fees. Landed cost per unit = total landed cost / units. The flat duty percentage is the simplification to know about: real duty depends on the HS code, the customs valuation basis (which in many countries includes freight and insurance), and any trade agreements — and import taxes like GST or VAT sit on top.",
+    "worked_example": "A shipment of 500 units: 10,000 of goods, 1,200 freight, 100 insurance, an estimated 5% duty (500), and 200 in brokerage and port fees. Total landed cost = 10,000 + 1,200 + 100 + 500 + 200 = 12,000, so landed cost per unit = 12,000 / 500 = 24 — a fifth more than the 20 per unit the invoice alone suggests.",
+    "faq": [
+      {
+        "q": "What should I include in landed cost?",
+        "a": "Everything it takes to get the goods sellable at your door: the supplier invoice, inbound freight and handling, cargo insurance, customs duty, and fees for brokerage, documentation, port and terminal charges. Some businesses also allocate inbound compliance and inspection costs. The test is simple: if the cost only exists because you bought and moved these goods, it belongs in the landed cost."
+      },
+      {
+        "q": "How accurate is the duty estimate?",
+        "a": "It is a deliberate simplification — a flat percentage of the goods value. Real duty is set by the HS classification of each product, the customs valuation method (many countries calculate duty on goods plus freight plus insurance, not goods alone), and any free-trade agreements that apply. Import taxes such as GST or VAT are separate again. Use the flat rate for planning, and confirm the real rates with your customs broker or accountant before pricing against them."
+      },
+      {
+        "q": "Is this tax or customs advice?",
+        "a": "No. The calculator produces a planning estimate so you can compare products and sanity-check margins. Duty rates, valuation rules, and import taxes vary by country and product and change over time, so verify the actual figures for your goods with a licensed customs broker or your accountant."
+      },
+      {
+        "q": "Why does landed cost per unit matter?",
+        "a": "Because it is the honest cost base for every downstream decision. Margins, markups, reorder decisions, and discount limits all mislead if they are built on the invoice price alone — in the worked example the real unit cost is 24, not 20, which turns an apparent 40% margin at a 33 price into 27%. Feed the landed figure into the margin calculator, not the invoice one."
+      }
+    ]
+  },
+  "related_tools": ["calculator.margin", "calculator.markup", "calculator.freight_class"],
+  "disclaimer_level": "professional_review",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

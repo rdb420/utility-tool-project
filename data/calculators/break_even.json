@@ -1,0 +1,56 @@
+{
+  "id": "calculator.break_even",
+  "slug": "break-even-calculator",
+  "title": "Break-Even Calculator",
+  "meta_description": "Break-even calculator: enter fixed costs, price per unit, and variable cost per unit to get your break-even point in units and revenue, plus the contribution margin each sale makes.",
+  "primary_keyword": "break even calculator",
+  "secondary_keywords": [
+    "break even point calculator",
+    "break even formula",
+    "break even analysis",
+    "contribution margin calculator"
+  ],
+  "formula_ids": ["pricing.break_even.units"],
+  "input_groups": [
+    {
+      "label": "Costs and price",
+      "inputs": [
+        { "symbol": "FC", "label": "Fixed costs", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 50000, "help": "Costs that stay the same regardless of volume over the period: rent, salaries, insurance, software." },
+        { "symbol": "P", "label": "Price per unit", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 25, "help": "Net selling price per unit." },
+        { "symbol": "VC", "label": "Variable cost per unit", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 15, "help": "Costs incurred per unit sold: materials, direct labour, freight, commissions. Must be below the price." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "BE_units", "label": "Break-even volume", "unit": "units", "primary": true, "description": "Units you must sell for revenue to equal total cost. Below this you lose money; above it, each unit's contribution margin is profit." },
+    { "symbol": "BE_revenue", "label": "Break-even revenue", "unit": "currency", "description": "Sales revenue at the break-even volume." },
+    { "symbol": "CM", "label": "Contribution margin", "unit": "currency/unit", "description": "What each unit contributes towards fixed costs: price minus variable cost." }
+  ],
+  "copy_blocks": {
+    "intro": "The break-even point is the sales volume where revenue equals total cost and profit is exactly zero. Every unit after that point earns its contribution margin as profit; every unit before it is funded by fixed costs you have not yet covered. This calculator takes fixed costs, price, and variable cost per unit and returns the break-even volume, the revenue it represents, and the contribution margin doing the work.",
+    "how_it_works": "Enter your fixed costs for the period, your selling price per unit, and your variable cost per unit. The tool computes the contribution margin (price minus variable cost) and divides fixed costs by it to find how many units cover everything. Price must be above variable cost — with zero or negative contribution margin there is no volume at which you break even.",
+    "formula_explanation": "Contribution margin = price - variable cost per unit. Break-even units = fixed costs / contribution margin. Break-even revenue = break-even units x price. The model is deliberately linear: constant price, constant variable cost, genuinely fixed fixed costs.",
+    "worked_example": "Fixed costs are 50,000 for the year, the product sells at 25 with a variable cost of 15. Contribution margin = 25 - 15 = 10 per unit, so break-even = 50,000 / 10 = 5,000 units, or 125,000 of revenue. Unit 5,001 is the first one that earns profit.",
+    "faq": [
+      {
+        "q": "What counts as a fixed cost vs a variable cost?",
+        "a": "Fixed costs stay the same whether you sell one unit or thousands over the period: rent, salaries, insurance, software subscriptions, equipment leases. Variable costs are incurred per unit sold: materials, direct labour, packaging, outbound freight, payment fees, sales commissions. The honest test is 'does this cost change if I sell one more unit?' — if yes, it is variable. Some costs are step-fixed (a second warehouse, another shift) and only behave as fixed within a volume range."
+      },
+      {
+        "q": "What is contribution margin?",
+        "a": "The slice of each sale left after variable costs — price minus variable cost per unit. It is what each unit contributes towards paying off fixed costs, and once those are covered, it is the profit per unit. A higher contribution margin means a lower break-even point."
+      },
+      {
+        "q": "What if my price is below my variable cost?",
+        "a": "Then there is no break-even point: every unit sold loses money, and selling more only makes it worse. The calculator flags this rather than returning a misleading number. You need a higher price, a lower variable cost, or a different product."
+      },
+      {
+        "q": "How accurate is a linear break-even model?",
+        "a": "It is a planning tool, not a forecast. Real businesses see volume discounts, step-fixed costs, seasonal pricing, and product mixes — all of which bend the straight lines this model assumes. It is most reliable close to your current volume range and for single products; treat the answer as a landmark, not a guarantee."
+      }
+    ]
+  },
+  "related_tools": ["calculator.margin", "calculator.markup", "calculator.carrying_cost"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

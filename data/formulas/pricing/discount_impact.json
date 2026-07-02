@@ -1,0 +1,39 @@
+{
+  "id": "pricing.discount.impact",
+  "name": "Discount Impact on Margin",
+  "category": "pricing",
+  "description": "What a percentage discount does to price and margin, and the extra volume needed to compensate: the discounted price, the new gross margin, and the percentage uplift in units required to keep the same gross profit as before the discount.",
+  "inputs": [
+    { "name": "Selling price", "symbol": "P", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Regular net selling price per unit, before the discount." },
+    { "name": "Unit cost", "symbol": "C", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Cost of goods per unit; assumed unchanged by the discount." },
+    { "name": "Discount", "symbol": "disc_pct", "type": "number", "unit": "%", "required": true, "min": 0, "max": 100, "description": "Discount as a percentage of the selling price, e.g. 10 for 10% off." }
+  ],
+  "outputs": [
+    { "name": "Discounted price", "symbol": "P_d", "unit": "currency/unit", "description": "Selling price after the discount." },
+    { "name": "New gross margin", "symbol": "new_margin_pct", "unit": "%", "description": "Gross margin at the discounted price." },
+    { "name": "Required volume uplift", "symbol": "uplift_pct", "unit": "%", "description": "Percentage more units you must sell at the discounted price to earn the same gross profit as before." }
+  ],
+  "expression": "P_d = P x (1 - disc/100); new_margin_pct = 100 x (P_d - C) / P_d; uplift_pct = 100 x ((P - C) / (P_d - C) - 1)",
+  "assumptions": [
+    "Unit cost is constant — the discount changes price only, not cost of goods.",
+    "The uplift compares gross profit per unit before and after; it says nothing about whether the discount will actually generate that extra volume.",
+    "The discount applies to every unit sold, not just incremental units."
+  ],
+  "limitations": [
+    "Requires P_d > C — a discount deeper than the margin makes every sale loss-making, and no volume uplift can recover the gross profit.",
+    "Ignores second-order effects: cannibalisation, customers trained to wait for discounts, and fulfilment costs that scale with the extra volume.",
+    "A gross-profit view; contribution after variable selling costs may need a larger uplift still."
+  ],
+  "examples": [
+    {
+      "inputs": { "P": 100, "C": 60, "disc_pct": 10 },
+      "expected": { "P_d": 90, "new_margin_pct": 33.33, "uplift_pct": 33.33 },
+      "tolerance": 0.01,
+      "note": "A 10% discount on a 40%-margin item drops the price to 90 and the margin to 33.3% — and requires 33.3% more units sold (40/30 per-unit profit ratio) just to hold the same gross profit."
+    }
+  ],
+  "sources": ["Standard gross-margin arithmetic; discount break-even (iso-profit volume) analysis"],
+  "grounding": "concept",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}

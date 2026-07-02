@@ -1,0 +1,54 @@
+{
+  "id": "calculator.margin",
+  "slug": "margin-calculator",
+  "title": "Margin Calculator",
+  "meta_description": "Free margin calculator: enter selling price and unit cost to get gross profit and gross margin percentage — with the margin vs markup difference explained, so you don't mix the two up.",
+  "primary_keyword": "margin calculator",
+  "secondary_keywords": [
+    "gross margin calculator",
+    "profit margin calculator",
+    "margin formula",
+    "margin vs markup"
+  ],
+  "formula_ids": ["pricing.margin.basic"],
+  "input_groups": [
+    {
+      "label": "Price and cost",
+      "inputs": [
+        { "symbol": "P", "label": "Selling price", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 27.78, "help": "Net selling price per unit, after any discounts." },
+        { "symbol": "C", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 25, "help": "Cost of goods per unit — ideally the landed cost, not just the purchase price." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "margin_pct", "label": "Gross margin", "unit": "%", "primary": true, "description": "Profit as a percentage of the selling price. This is margin — profit as a percentage of cost is markup, a larger number." },
+    { "symbol": "profit", "label": "Gross profit", "unit": "currency/unit", "description": "Selling price minus unit cost." }
+  ],
+  "copy_blocks": {
+    "intro": "Gross margin is your profit as a percentage of the selling price. It is the number most pricing, buying, and finance conversations run on — and the one most often confused with markup, which measures the same profit against cost instead of price. This calculator takes a selling price and a unit cost and returns both the profit per unit and the margin. If you want to work the other way — from cost and a markup percentage to a price — use the markup calculator.",
+    "how_it_works": "Enter your selling price and your unit cost. The tool subtracts cost from price to get gross profit, then divides that profit by the selling price to express it as a margin percentage. Use your landed cost per unit as the cost where you can — purchase price alone understates what the goods really cost you and overstates your margin.",
+    "formula_explanation": "Gross profit = selling price - unit cost. Gross margin % = 100 x (selling price - unit cost) / selling price. The denominator is the price, which is what makes margin different from markup: the same profit divided by cost gives the markup percentage, always a larger number.",
+    "worked_example": "An item costs 25 and sells for 27.78. Gross profit = 27.78 - 25 = 2.78. Gross margin = 100 x 2.78 / 27.78 = about 10%. That is the margin-pricing rule in reverse: pricing a 25 cost for a 10% margin means charging 25 / (1 - 0.10) = 27.78.",
+    "faq": [
+      {
+        "q": "What is the difference between margin and markup?",
+        "a": "Both measure the same profit, against different bases. Margin divides profit by the selling price; markup divides it by the cost. A 25% markup on cost is only a 20% margin on price. Mixing them up — applying a 30% markup and expecting a 30% margin — quietly overstates profitability, so check which one a rate card or target actually means."
+      },
+      {
+        "q": "What is a good gross margin?",
+        "a": "There is no universal number — it depends on your industry, volume, and cost structure. Distribution and wholesale businesses often run on thin single-digit to low-teens margins; branded retail and software run far higher. Compare against your own category, and remember gross margin still has to cover overheads before anything is profit."
+      },
+      {
+        "q": "Should I use purchase price or landed cost as the unit cost?",
+        "a": "Landed cost, wherever you can. Freight, duty, insurance, and handling are real costs of getting the unit ready to sell, and leaving them out overstates the margin — sometimes by enough to make a losing item look profitable. The landed cost calculator builds that per-unit figure."
+      },
+      {
+        "q": "Can margin be negative?",
+        "a": "Yes. If the unit cost is higher than the selling price the profit and margin both come out negative — you are selling below cost. That can be deliberate (a loss leader or clearance), but it should never be a surprise."
+      }
+    ]
+  },
+  "related_tools": ["calculator.markup", "calculator.discount", "calculator.break_even"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

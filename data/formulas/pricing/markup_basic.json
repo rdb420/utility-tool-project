@@ -1,0 +1,39 @@
+{
+  "id": "pricing.markup.basic",
+  "name": "Cost-Plus Markup",
+  "category": "pricing",
+  "description": "Cost-plus (markup) pricing: add a markup percentage to unit cost to get the selling price, the profit per unit, and the gross margin that markup is equivalent to.",
+  "inputs": [
+    { "name": "Unit cost", "symbol": "C", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Cost of goods per unit — ideally the landed cost, not just the purchase price." },
+    { "name": "Markup", "symbol": "markup_pct", "type": "number", "unit": "%", "required": true, "min": 0, "description": "Markup as a percentage of cost, e.g. 25 for a 25% markup." }
+  ],
+  "outputs": [
+    { "name": "Selling price", "symbol": "price", "unit": "currency/unit", "description": "Unit cost plus the markup." },
+    { "name": "Gross profit", "symbol": "profit", "unit": "currency/unit", "description": "The markup amount: cost times the markup percentage." },
+    { "name": "Equivalent gross margin", "symbol": "margin_pct", "unit": "%", "description": "The margin (profit as a percentage of price) that this markup produces." }
+  ],
+  "expression": "price = C x (1 + markup/100); profit = C x markup/100; margin_pct = 100 x markup / (100 + markup)",
+  "assumptions": [
+    "Markup is expressed on cost; margin is expressed on price. They are different numbers for the same profit — a 25% markup equals a 20% margin.",
+    "Unit cost includes everything counted as cost of goods for the item.",
+    "The market will bear the resulting price — cost-plus pricing ignores demand and competition."
+  ],
+  "limitations": [
+    "Cost-plus pricing takes no account of what customers will pay or what competitors charge.",
+    "A per-unit gross view: it ignores overheads, payment fees, returns, and volume effects.",
+    "Confusing markup with margin overstates profitability — apply a 30% markup expecting a 30% margin and you get only 23%."
+  ],
+  "examples": [
+    {
+      "inputs": { "C": 100, "markup_pct": 25 },
+      "expected": { "price": 125, "profit": 25, "margin_pct": 20 },
+      "note": "A 25% markup on a 100 cost gives a 125 price and 25 profit — which is a 20% margin on the selling price, not 25%."
+    }
+  ],
+  "sources": ["Standard cost-plus pricing identity; markup-to-margin conversion"],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 722, "quote": "Methods include cost markup pricing. In this model the cost plus a markup percent to attain a desired profit is calculated." }
+  ],
+  "disclaimer_level": "estimate"
+}

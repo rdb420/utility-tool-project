@@ -1,0 +1,44 @@
+{
+  "id": "pricing.landed_cost.per_unit",
+  "name": "Landed Cost per Unit",
+  "category": "pricing",
+  "description": "A planning estimate of what imported goods really cost once they arrive: goods value plus freight, insurance, estimated duty, and other fees, in total and per unit.",
+  "inputs": [
+    { "name": "Goods value", "symbol": "goods", "type": "number", "unit": "currency", "required": true, "min": 0, "description": "What you paid the supplier for the goods (the commercial invoice value)." },
+    { "name": "Freight cost", "symbol": "freight", "type": "number", "unit": "currency", "required": false, "min": 0, "description": "Transport cost to your door, including origin/destination handling. Defaults to 0." },
+    { "name": "Insurance cost", "symbol": "insurance", "type": "number", "unit": "currency", "required": false, "min": 0, "description": "Cargo insurance premium for the shipment. Defaults to 0." },
+    { "name": "Duty rate", "symbol": "duty_pct", "type": "number", "unit": "%", "required": false, "min": 0, "description": "Estimated customs duty as a flat percentage of goods value. Defaults to 0." },
+    { "name": "Other fees", "symbol": "other", "type": "number", "unit": "currency", "required": false, "min": 0, "description": "Brokerage, documentation, port and terminal fees, compliance costs. Defaults to 0." },
+    { "name": "Units in shipment", "symbol": "units", "type": "integer", "unit": "units", "required": true, "min": 0, "description": "Number of sellable units in the shipment." }
+  ],
+  "outputs": [
+    { "name": "Estimated duty", "symbol": "duty", "unit": "currency", "description": "Goods value times the duty rate." },
+    { "name": "Total landed cost", "symbol": "LC", "unit": "currency", "description": "Goods + freight + insurance + duty + other fees." },
+    { "name": "Landed cost per unit", "symbol": "LC_unit", "unit": "currency/unit", "description": "Total landed cost divided by units — the cost figure margin and pricing decisions should use." }
+  ],
+  "expression": "duty = goods x duty_pct/100; LC = goods + freight + insurance + duty + other; LC_unit = LC / units",
+  "assumptions": [
+    "All cost components are known and expressed in the same currency.",
+    "Duty is approximated as a flat percentage of the goods value.",
+    "Costs are spread evenly across all units in the shipment."
+  ],
+  "limitations": [
+    "Duty as a flat percentage of goods value is a simplification: real duty depends on HS classification, customs valuation rules (which may include freight and insurance in the dutiable base), and trade agreements.",
+    "Import taxes such as GST/VAT, excise, and anti-dumping duties are not modelled — add them under other fees only if you know them.",
+    "A planning estimate, not tax or customs advice; confirm rates and valuation with your customs broker or accountant."
+  ],
+  "examples": [
+    {
+      "inputs": { "goods": 10000, "freight": 1200, "insurance": 100, "duty_pct": 5, "other": 200, "units": 500 },
+      "expected": { "duty": 500, "LC": 12000, "LC_unit": 24 },
+      "note": "10,000 of goods with 1,200 freight, 100 insurance, 5% duty (500), and 200 other fees lands at 12,000 total — 24 per unit for 500 units."
+    }
+  ],
+  "sources": ["Standard landed-cost / total-acquisition-cost build-up"],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 724, "quote": "landed cost, which is the product cost plus the costs associated with carrying inventory, warehousing, transportation, product handling, customs, duties, environmental sustainability, and others" },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 1031, "quote": "Among the cost elements to be considered are transportation, customs duties, tariffs, licenses, transfer fees, taxes, insurance and broker costs, inventory carrying costs, risk of damage or spoilage, fees for documentation, terminal and port costs, and letters of credit." }
+  ],
+  "disclaimer_level": "professional_review"
+}

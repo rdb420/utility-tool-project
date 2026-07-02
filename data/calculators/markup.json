@@ -1,0 +1,55 @@
+{
+  "id": "calculator.markup",
+  "slug": "markup-calculator",
+  "title": "Markup Calculator",
+  "meta_description": "Markup calculator: enter unit cost and markup percentage to get the selling price, profit per unit, and the gross margin your markup is equivalent to. Includes the markup-to-margin conversion.",
+  "primary_keyword": "markup calculator",
+  "secondary_keywords": [
+    "markup formula",
+    "cost plus pricing calculator",
+    "markup to margin",
+    "selling price calculator"
+  ],
+  "formula_ids": ["pricing.markup.basic"],
+  "input_groups": [
+    {
+      "label": "Cost and markup",
+      "inputs": [
+        { "symbol": "C", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 100, "help": "Cost of goods per unit — ideally the landed cost, not just the purchase price." },
+        { "symbol": "markup_pct", "label": "Markup", "unit": "%", "type": "number", "min": 0, "required": true, "default": 25, "help": "Markup as a percentage of cost, e.g. 25 for a 25% markup." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "price", "label": "Selling price", "unit": "currency/unit", "primary": true, "description": "Unit cost plus the markup." },
+    { "symbol": "profit", "label": "Gross profit", "unit": "currency/unit", "description": "The markup amount per unit." },
+    { "symbol": "margin_pct", "label": "Equivalent gross margin", "unit": "%", "description": "The margin this markup produces — always lower than the markup percentage itself." }
+  ],
+  "copy_blocks": {
+    "intro": "Markup is the simplest way to set a price: take your cost and add a percentage on top. This calculator turns a unit cost and a markup percentage into a selling price and profit per unit — and, because markup and margin are so often confused, it also shows the gross margin your markup actually works out to. A 25% markup is a 20% margin, not 25%.",
+    "how_it_works": "Enter your unit cost and the markup percentage you want to apply. The tool adds the markup to the cost to get the selling price, shows the profit per unit, and converts the markup into its equivalent margin so you can compare it against margin-based targets. Cost-plus pricing is a starting point, not a market answer — it says nothing about what customers will pay.",
+    "formula_explanation": "Selling price = cost x (1 + markup / 100). Profit = cost x markup / 100. Equivalent margin % = 100 x markup / (100 + markup) — profit divided by price instead of cost, which is why it is always the smaller number.",
+    "worked_example": "A unit costs 100 and you apply a 25% markup. Selling price = 100 x 1.25 = 125, profit = 25 per unit. Expressed against the 125 price, that 25 of profit is a 20% gross margin — not 25%.",
+    "faq": [
+      {
+        "q": "Is a 25% markup the same as a 25% margin?",
+        "a": "No. A 25% markup on a 100 cost gives a 125 price and 25 profit. Against the price, that profit is a 20% margin. Markup uses cost as the base, margin uses price, so markup is always the larger number for the same profit. To hit a 25% margin you would need a 33.3% markup."
+      },
+      {
+        "q": "How do I convert a markup to a margin (and back)?",
+        "a": "Margin % = 100 x markup / (100 + markup), and markup % = 100 x margin / (100 - margin). So a 50% markup is a 33.3% margin, and a 50% margin requires a 100% markup. The calculator does the first conversion for you automatically."
+      },
+      {
+        "q": "What markup should I use?",
+        "a": "Whatever the market bears, minus a check that it covers your costs. Cost-plus markup guarantees a per-unit profit on paper but ignores demand and competitors, so treat the result as a floor to test against market prices rather than a final answer. And base it on landed cost, not just purchase price, or the real markup is smaller than you think."
+      },
+      {
+        "q": "Does the markup need to cover overheads?",
+        "a": "Yes — this is a gross calculation. The profit shown is before rent, salaries, marketing, and other fixed costs. The break-even calculator shows how many units that gross profit per unit must fund before the business is actually in the black."
+      }
+    ]
+  },
+  "related_tools": ["calculator.margin", "calculator.break_even", "calculator.landed_cost"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

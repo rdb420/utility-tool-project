@@ -1,0 +1,41 @@
+{
+  "id": "pricing.break_even.units",
+  "name": "Break-Even Point (units)",
+  "category": "pricing",
+  "description": "The sales volume at which total revenue equals total cost and profit is zero: fixed costs divided by the contribution margin (price minus variable cost per unit).",
+  "inputs": [
+    { "name": "Fixed costs", "symbol": "FC", "type": "number", "unit": "currency", "required": true, "min": 0, "description": "Costs that do not change with volume over the period: rent, salaries, insurance, equipment." },
+    { "name": "Price per unit", "symbol": "P", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Net selling price per unit." },
+    { "name": "Variable cost per unit", "symbol": "VC", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Costs incurred per unit sold: materials, direct labour, freight, commissions." }
+  ],
+  "outputs": [
+    { "name": "Contribution margin", "symbol": "CM", "unit": "currency/unit", "description": "What each unit contributes towards fixed costs: price minus variable cost." },
+    { "name": "Break-even volume", "symbol": "BE_units", "unit": "units", "description": "Units that must be sold for revenue to equal total cost." },
+    { "name": "Break-even revenue", "symbol": "BE_revenue", "unit": "currency", "description": "Revenue at the break-even volume." }
+  ],
+  "expression": "CM = P - VC; BE_units = FC / CM; BE_revenue = BE_units x P",
+  "assumptions": [
+    "Price and variable cost per unit are constant across the volume range considered.",
+    "Fixed costs really are fixed over the period and volume range.",
+    "Everything produced is sold (no inventory build-up between periods)."
+  ],
+  "limitations": [
+    "Requires P > VC — with zero or negative contribution margin there is no break-even point.",
+    "A linear cost model: step-fixed costs, volume discounts, and capacity limits break the straight-line assumption.",
+    "Single-product view; for a product mix, use a weighted-average contribution margin."
+  ],
+  "examples": [
+    {
+      "inputs": { "FC": 50000, "P": 25, "VC": 15 },
+      "expected": { "CM": 10, "BE_units": 5000, "BE_revenue": 125000 },
+      "note": "Each unit contributes 25 - 15 = 10 towards 50,000 of fixed costs, so break-even is 5,000 units, or 125,000 of revenue."
+    }
+  ],
+  "sources": ["Standard cost-volume-profit (break-even) analysis"],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 722, "quote": "A \"break even\" analysis can be used to indicate the point at which the volume produced and associated revenues equals total cost, and the profit is zero." },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 723, "quote": "The goal is to determine the breakeven point where total revenues and total costs intersect." }
+  ],
+  "disclaimer_level": "estimate"
+}

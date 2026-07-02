@@ -1,0 +1,40 @@
+{
+  "id": "pricing.margin.basic",
+  "name": "Gross Margin",
+  "category": "pricing",
+  "description": "Gross profit and gross margin for a unit or order line: profit is selling price minus unit cost, and margin expresses that profit as a percentage of the selling price (not of cost — that is markup).",
+  "inputs": [
+    { "name": "Selling price", "symbol": "P", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Net selling price per unit, after any discounts." },
+    { "name": "Unit cost", "symbol": "C", "type": "number", "unit": "currency/unit", "required": true, "min": 0, "description": "Cost of goods per unit — ideally the landed cost, not just the purchase price." }
+  ],
+  "outputs": [
+    { "name": "Gross profit", "symbol": "profit", "unit": "currency/unit", "description": "Selling price minus unit cost." },
+    { "name": "Gross margin", "symbol": "margin_pct", "unit": "%", "description": "Profit as a percentage of the selling price." }
+  ],
+  "expression": "profit = P - C; margin_pct = 100 x (P - C) / P",
+  "assumptions": [
+    "Price and cost refer to the same unit and the same currency.",
+    "Unit cost includes everything counted as cost of goods for the item (ideally landed cost).",
+    "Margin is expressed on price; markup on cost is a different, larger percentage for the same profit."
+  ],
+  "limitations": [
+    "Requires a selling price greater than zero — margin is undefined at P = 0.",
+    "A per-unit gross view: it ignores overheads, payment fees, returns, and volume effects.",
+    "A negative result simply means the item sells below cost."
+  ],
+  "examples": [
+    {
+      "inputs": { "P": 27.78, "C": 25 },
+      "expected": { "profit": 2.78, "margin_pct": 10.01 },
+      "tolerance": 0.05,
+      "note": "Inverts the corpus's own margin-pricing example: a US$25 cost priced for a 10% margin via cost/(1 - margin rate) = 25/0.9 = US$27.78. Checking that price back through this formula returns profit 2.78 and a margin of about 10%.",
+      "citation": { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 722, "quote": "if the current cost is US$25 and a 10 % margin is desired, the price is calculated by using the formula: cost/(1 - margin rate), or US$25/.9 = US$27.78" }
+    }
+  ],
+  "sources": ["Standard gross-margin accounting identity"],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 722, "quote": "In margin pricing the buyer establishes a price that includes a predetermined profit margin. For example, if the current cost is US$25 and a 10 % margin is desired, the price is calculated by using the formula: cost/(1 - margin rate), or US$25/.9 = US$27.78." }
+  ],
+  "disclaimer_level": "estimate"
+}

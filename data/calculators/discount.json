@@ -1,0 +1,56 @@
+{
+  "id": "calculator.discount",
+  "slug": "discount-calculator",
+  "title": "Discount Impact Calculator",
+  "meta_description": "Discount calculator for sellers: see the discounted price, your new gross margin after the discount, and how many extra units you must sell just to keep the same gross profit as before.",
+  "primary_keyword": "discount calculator",
+  "secondary_keywords": [
+    "discount margin calculator",
+    "discount impact on profit",
+    "sales volume uplift calculator",
+    "price discount analysis"
+  ],
+  "formula_ids": ["pricing.discount.impact"],
+  "input_groups": [
+    {
+      "label": "Price, cost, and discount",
+      "inputs": [
+        { "symbol": "P", "label": "Selling price", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 100, "help": "Regular net selling price per unit, before the discount." },
+        { "symbol": "C", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 60, "help": "Cost of goods per unit; assumed unchanged by the discount." },
+        { "symbol": "disc_pct", "label": "Discount", "unit": "%", "type": "number", "min": 0, "max": 100, "required": true, "default": 10, "help": "Discount as a percentage of the selling price. Must leave the price above cost, or every sale loses money." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "P_d", "label": "Discounted price", "unit": "currency/unit", "primary": true, "description": "The selling price after the discount." },
+    { "symbol": "new_margin_pct", "label": "New gross margin", "unit": "%", "description": "Your margin at the discounted price — the discount comes straight out of the profit, not the cost." },
+    { "symbol": "uplift_pct", "label": "Required volume uplift", "unit": "%", "description": "The extra units you must sell at the discounted price just to keep the same gross profit as before." }
+  ],
+  "copy_blocks": {
+    "intro": "A discount looks small on the price tag and large on the profit line: the entire discount comes out of your margin, because the cost of the unit does not change. This calculator shows what a percentage discount does to your price and margin — and the number most discount decisions skip: how many extra units you must sell at the lower price just to keep the same gross profit you were making before.",
+    "how_it_works": "Enter your regular price, your unit cost, and the discount percentage. The tool computes the discounted price, your new gross margin, and the required volume uplift — the percentage more units the promotion has to move for gross profit to merely stand still. If your expected sales lift is below that uplift figure, the discount loses money even when it 'works'.",
+    "formula_explanation": "Discounted price = price x (1 - discount / 100). New margin % = 100 x (discounted price - cost) / discounted price. Required uplift % = 100 x ((price - cost) / (discounted price - cost) - 1) — the ratio of your old per-unit profit to the new one, minus one. The thinner the post-discount profit, the more units each lost point of margin costs you.",
+    "worked_example": "An item sells at 100 with a 60 cost — a 40% margin. A 10% discount drops the price to 90 and the per-unit profit from 40 to 30, so the margin falls to 33.3%. To earn the same total gross profit you now need 40/30 = 1.333x the volume: a 33.3% uplift in units sold, from a discount of just 10%.",
+    "faq": [
+      {
+        "q": "Why does a small discount require such a big volume uplift?",
+        "a": "Because the discount comes entirely out of your profit, not proportionally out of the price. In the example, a 10% price cut removed 25% of the per-unit profit (40 down to 30), so volume has to rise 33% to compensate. The thinner your margin, the more brutal this gets — at a 20% margin, a 10% discount doubles the volume you need."
+      },
+      {
+        "q": "What does the required volume uplift actually mean?",
+        "a": "It is the percentage more units you must sell at the discounted price to keep the same gross profit you were making without the discount. It is a break-even line for the promotion: if you expect the discount to lift sales by less than this figure, the promotion reduces your gross profit even if revenue goes up."
+      },
+      {
+        "q": "What if the discount is bigger than my margin?",
+        "a": "Then the discounted price is below your cost and every sale loses money — no volume uplift can recover the gross profit, which is why the calculator refuses to compute an uplift in that case. Discounting below cost is occasionally deliberate (clearance, loss leaders), but it is a stock-clearing decision, not a profit play."
+      },
+      {
+        "q": "Does this tell me whether the discount will increase sales?",
+        "a": "No — it tells you how much extra volume the discount needs, not how much it will get. Compare the required uplift against your own promotion history or category benchmarks. The tool also assumes your unit cost stays constant and ignores second-order effects like customers learning to wait for the next sale."
+      }
+    ]
+  },
+  "related_tools": ["calculator.margin", "calculator.markup", "calculator.break_even"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}
