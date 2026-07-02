@@ -107,6 +107,12 @@ Do not hard-code Drive file IDs in public code until access and ownership are st
 
 ## Search Console
 
+Status (2026-07-03): **next action** — the domain (`opscrunch.com`) and website
+build now exist. Follow `docs/LAUNCH_RUNBOOK.md` section 5 (property creation,
+sitemap submission, indexing requests). The site emits an env-driven
+verification meta tag (`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`) for the
+URL-prefix/HTML-tag method.
+
 Set up Search Console when the domain is chosen.
 
 Recommended configuration:
@@ -129,6 +135,12 @@ Track:
 Official reference: <https://support.google.com/webmasters/answer/34592>
 
 ## Google Analytics 4
+
+Status (2026-07-03): **created**. The GA4 property and web data stream exist;
+measurement ID `G-7XG10CD70E` is on file in `docs/google-analytics/` and wired
+into the site via `NEXT_PUBLIC_GA4_ID` (consent-gated transport in
+`web/src/lib/analytics/`). Remaining: the post-deploy Realtime sanity check —
+`docs/LAUNCH_RUNBOOK.md` section 6.
 
 Set up GA4 during website implementation, not during corpus work.
 
@@ -168,6 +180,12 @@ For each keyword batch, record:
 Official reference: <https://support.google.com/google-ads/answer/7337243>
 
 ## AdSense
+
+Status (2026-07-03): **next action, deliberately last** — apply only after the
+site is live on `opscrunch.com` and Search Console shows pages indexed with
+real traffic. Follow `docs/LAUNCH_RUNBOOK.md` section 7 (verification code is
+on file at `docs/google-adsense/verication-code.txt`, gitignored; ads stay
+disabled until a certified IAB TCF v2.2 CMP replaces the consent banner).
 
 Do not apply for AdSense until the MVP site has useful public content and trust pages.
 
@@ -219,4 +237,4 @@ way: never put real IDs or secrets in `.env.example`.
 7. Record non-secret IDs in a private setup note.
 8. Add local secrets to ignored files only.
 9. Build a small local script later to prove Drive/Sheets read access.
-10. Defer Search Console, GA4, Tag Manager, and AdSense until a domain and website build exist.
+10. ~~Defer Search Console, GA4, Tag Manager, and AdSense until a domain and website build exist.~~ Done deferring: the domain and website build now exist. GA4 is created and wired; Search Console and AdSense are sequenced in `docs/LAUNCH_RUNBOOK.md` (sections 5 and 7). Tag Manager remains optional/deferred.

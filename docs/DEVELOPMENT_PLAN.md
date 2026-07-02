@@ -198,6 +198,29 @@ Exit criteria:
 
 ## Phase 5: Launch and Measurement
 
+Status: in progress (2026-07-03). The ordered launch checklist is
+`docs/LAUNCH_RUNBOOK.md`.
+
+Done (in code):
+
+- GA4 wiring: consent-aware GA4 transport in `web/src/lib/analytics/` reading
+  `NEXT_PUBLIC_GA4_ID` (measurement ID `G-7XG10CD70E` on file in
+  `docs/google-analytics/`), events gated on consent.
+- Search Console verification meta tag, env-driven via
+  `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
+- Domain registered (`opscrunch.com`, DNS on Cloudflare) and Vercel project
+  created from the GitHub repo (`docs/vercel/project.txt`).
+- Launch runbook written (`docs/LAUNCH_RUNBOOK.md`).
+
+Pending (user actions, in runbook order):
+
+- Set Vercel Root Directory to `web` + production env vars (runbook §1).
+- Push/deploy and attach `opscrunch.com` via Cloudflare DNS (runbook §2–4).
+- Search Console property, sitemap submission, indexing requests (runbook §5).
+- GA4 Realtime sanity check (runbook §6).
+- AdSense application — last, only after indexing and traffic, and ads stay off
+  until a certified IAB TCF v2.2 CMP replaces the consent banner (runbook §7).
+
 Goal:
 
 Publish the MVP and start collecting real search and usage feedback.
