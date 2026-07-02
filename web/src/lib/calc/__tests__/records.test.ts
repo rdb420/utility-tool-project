@@ -25,6 +25,7 @@ interface FormulaRecord {
 interface ReferenceTable {
   status?: string;
   grounding?: string;
+  effective_date?: string | null;
   source?: unknown;
   sourcing_notes?: unknown;
 }
@@ -115,11 +116,34 @@ describe("freight reference tables", () => {
     expect(files.length).toBeGreaterThan(0);
   });
 
-  it("every freight table is flagged needs_sourcing", () => {
+  // dimensional_weight_divisors was verified against carrier sources on
+  // 2026-07-02 (see corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md);
+  // the other freight tables remain needs_sourcing placeholders.
+  const VERIFIED_FREIGHT_TABLES = new Set(["dimensional_weight_divisors.json"]);
+
+  it("dimensional_weight_divisors is verified with an effective date", () => {
+    const file = files.find(
+      (candidate) => path.basename(candidate) === "dimensional_weight_divisors.json",
+    );
+    expect(file, "dimensional_weight_divisors.json should exist").toBeDefined();
+    const table = JSON.parse(fs.readFileSync(file!, "utf8")) as ReferenceTable;
+    expect(table.status).toBe("verified");
+    expect(table.effective_date, "verified table needs a non-null effective_date").toBeTruthy();
+  });
+
+  it("every other freight table is still flagged needs_sourcing", () => {
+    for (const file of files) {
+      const name = path.basename(file);
+      if (VERIFIED_FREIGHT_TABLES.has(name)) continue;
+      const table = JSON.parse(fs.readFileSync(file, "utf8")) as ReferenceTable;
+      expect(table.status, `${name} should be needs_sourcing`).toBe("needs_sourcing");
+    }
+  });
+
+  it("every freight table is externally grounded with a named source", () => {
     for (const file of files) {
       const table = JSON.parse(fs.readFileSync(file, "utf8")) as ReferenceTable;
       const name = path.basename(file);
-      expect(table.status, `${name} should be needs_sourcing`).toBe("needs_sourcing");
       expect(table.grounding, `${name} should be externally grounded`).toBe("external");
       expect(table.source, `${name} should name a source`).toBeTruthy();
       expect(table.sourcing_notes, `${name} should carry sourcing notes`).toBeTruthy();

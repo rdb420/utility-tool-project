@@ -2,11 +2,12 @@
  * Transport-mode and container presets for the CBM calculator island.
  *
  * The divisor and volume values mirror the reference-table records under
- * data/reference_tables/freight/ (dimensional_weight_divisors.json and
- * container_volumes.json — both `status: "needs_sourcing"`), so every preset
- * shown in the UI is labelled an unverified estimate to confirm against the
- * carrier's current service guide. A Vitest suite asserts this file and the
- * records stay in lockstep.
+ * data/reference_tables/freight/. dimensional_weight_divisors.json is
+ * `status: "verified"` against carrier sources (effective 2026-07-02), so the
+ * divisor presets are labelled carrier-published figures with a confirm-with-
+ * your-carrier caveat; container_volumes.json remains `needs_sourcing`, so
+ * container presets stay nominal estimates. A Vitest suite asserts this file
+ * and the records stay in lockstep.
  */
 
 import { convert } from "@/lib/calc/units";

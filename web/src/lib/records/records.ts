@@ -73,8 +73,10 @@ export const Z_FACTORS: ReferenceTableRecord = asRecord<ReferenceTableRecord>(
 );
 
 /**
- * Freight reference tables. All are `status: "needs_sourcing"` stubs — do not
- * treat their row values as verified.
+ * Freight reference tables. dimensional_weight_divisors is
+ * `status: "verified"` against carrier sources (effective 2026-07-02); the
+ * rest are `status: "needs_sourcing"` stubs — do not treat their row values
+ * as verified.
  */
 export const FREIGHT_REFERENCE_TABLES: readonly ReferenceTableRecord[] =
   Object.freeze([

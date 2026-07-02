@@ -176,9 +176,9 @@ export default function CbmCalculator({ calculator }: CalculatorToolProps) {
       "vary by forwarder, so confirm before booking."
     : `Volumetric weight uses the ${computed.modeName} divisor` +
       (computed.valid ? ` of ${formatGrouped(computed.divisor, 0)}` : "") +
-      ". Divisor presets here are unverified estimates — confirm the value " +
-      "against your carrier's current service guide. Chargeable weight is " +
-      "the greater of actual and volumetric.";
+      ". Divisor presets are carrier-published figures, checked July 2026. " +
+      "Your rate card may differ — confirm with your carrier. Chargeable " +
+      "weight is the greater of actual and volumetric.";
 
   return (
     <form onSubmit={crunch} noValidate>
@@ -264,8 +264,8 @@ export default function CbmCalculator({ calculator }: CalculatorToolProps) {
                     aria-describedby={`${calculator.slug}-divisor-help`}
                   />
                   <p id={`${calculator.slug}-divisor-help`} className={styles.help}>
-                    Unverified estimate — confirm with your carrier. Editing
-                    switches to a custom divisor.
+                    Carrier-published preset, checked July 2026 — your rate
+                    card may differ. Editing switches to a custom divisor.
                   </p>
                 </div>
                 <InputField

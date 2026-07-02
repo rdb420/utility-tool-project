@@ -29,7 +29,7 @@
     {
       "label": "Carrier & mode",
       "inputs": [
-        { "symbol": "divisor", "label": "Divisor", "unit": "cm3/kg", "type": "number", "min": 0, "required": true, "default": 6000, "help": "Carrier DIM divisor. Presets (6000 air, 5000 express) are estimates — confirm against your carrier's current service guide." },
+        { "symbol": "divisor", "label": "Divisor", "unit": "cm3/kg", "type": "number", "min": 0, "required": true, "default": 6000, "help": "Carrier DIM divisor. Presets (6000 air, 5000 express) are carrier-published figures, checked July 2026 — your rate card may differ, so confirm with your carrier." },
         { "symbol": "AW", "label": "Actual gross weight", "unit": "kg", "type": "number", "min": 0, "required": false, "help": "Optional. Scale weight of the whole shipment; chargeable weight is the greater of actual and volumetric." }
       ]
     }
@@ -47,7 +47,7 @@
     "faq": [
       {
         "q": "What divisor should I use?",
-        "a": "It depends on carrier and service. As of mid-2026, published figures are: 6000 cm3/kg for general air cargo (the IATA convention), 5000 cm3/kg for DHL Express and most express couriers, 139 in3/lb for FedEx and UPS Daily Rates in the US, 166 in3/lb for UPS Retail Rates, and 166 in3/lb for USPS (moving to 139 on 2026-07-12). Divisors change and can differ by rate card, country, and account agreement, so always confirm the value in your carrier's current service guide or contract before rating freight."
+        "a": "It depends on carrier and service. Carrier-published figures, checked July 2026, are: 6000 cm3/kg for general air cargo (the IATA convention), 5000 cm3/kg for DHL Express and most express couriers, 139 in3/lb for FedEx and UPS Daily Rates in the US, 166 in3/lb for UPS Retail Rates, and 166 in3/lb for USPS (moving to 139 on 2026-07-12). Divisors change and can differ by rate card, country, and account agreement, so always confirm the value in your carrier's current service guide or contract before rating freight."
       },
       {
         "q": "How is CBM used for sea and LCL freight?",

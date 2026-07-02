@@ -92,8 +92,11 @@ layer; hand-authored records under `data/` are the product layer.
   schemas enforce the grounding contract: `grounding: corpus` requires a
   `citation` (source_file + chunk_index); `grounding: external` requires named
   `sources` (the freight formula records are `external`, cited to carrier/IATA/ISO
-  sources). Freight reference tables are `status: needs_sourcing` stubs — do not
-  treat their values as verified. The validator also cross-checks calculators:
+  sources). Freight reference tables: `dimensional_weight_divisors.json` is
+  `status: verified` against carrier sources (effective 2026-07-02; USPS row
+  needs re-verification 2026-07-12); the other three are `status: needs_sourcing`
+  stubs — do not treat their values as verified. The validator also cross-checks
+  calculators:
   `formula_ids` must exist, inputs must cover the formula's inputs (an input also
   counts as covered if another referenced formula outputs it — chained inputs),
   result cards must be formula outputs, and `related_tools` must resolve.

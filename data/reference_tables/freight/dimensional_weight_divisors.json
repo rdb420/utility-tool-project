@@ -1,20 +1,48 @@
 {
   "id": "reference.freight.dim_divisors",
   "name": "Dimensional Weight Divisors by Carrier",
-  "description": "Volumetric (DIM) divisors used to convert shipment volume to billable weight. NOT in the knowledge base; the corpus only defines the concept (volume / minimum density requirement). Candidate values below are common industry figures and MUST be confirmed against current carrier rate cards before use.",
+  "description": "Volumetric (DIM) divisors used to convert shipment volume to billable weight. NOT in the knowledge base; the corpus only defines the concept (volume / minimum density requirement). Values below were verified against carrier-published pages captured in the dated sourcing pack (corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md). Divisors vary by carrier, service, rate card, country, account agreement, and date — always confirm against the carrier's current service guide before rating freight.",
   "region": "carrier-specific",
-  "effective_date": null,
-  "review_frequency": "quarterly (carriers revise divisors, often at annual GRI)",
+  "effective_date": "2026-07-02",
+  "review_frequency": "quarterly (carriers revise divisors, often at annual GRI); USPS row needs re-verification on 2026-07-12",
   "grounding": "external",
-  "status": "needs_sourcing",
+  "status": "verified",
   "source_type": "carrier_published",
-  "source": "TO CONFIRM against a dated capture: FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html); UPS 'Shipping Dimensions and Weight' page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight); DHL Express volumetric weight calculator page (dhlexpress.ee); USPS Postal Explorer QSG 150; IATA TACT for air.",
-  "sourcing_notes": "Confirm each divisor and its unit against the carrier's current service guide. Divisors change (e.g. US domestic parcel moved 194 -> 166 -> 139 in^3/lb historically). Record effective_date per carrier and set status to verified once confirmed. Note whether the divisor applies to all packages or only above a size threshold. Sourcing pack findings (checked 2026-07-02, pending formal verification): FedEx official page states 139 in^3/lb for US/Puerto Rico/international packages; UPS official page states 139 for Daily Rates and 166 for Retail Rates (so the 'international parcel 166' row label here is imprecise — 166 is a UPS Retail/US-retail figure, and DHL Express publishes 139 in^3/lb internationally); DHL Express publishes 5000 cm^3/kg metric; USPS currently uses 166 in^3/lb (Postal Explorer QSG 150) with a Federal Register final rule moving it to 139 effective 2026-07-12; the 6000 cm^3/kg air figure is the IATA TACT convention.",
-  "columns": ["carrier", "service", "divisor", "unit", "verified"],
+  "source": "Checked 2026-07-02 (sourcing pack corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md): FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html); UPS 'Shipping Dimensions and Weight' page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight); DHL Express volumetric weight calculator page (dhlexpress.ee/en/terms-and-conditions-2/volumetric-weight-calculator/); USPS Postal Explorer QSG 150 (pe.usps.com/text/qsg300/q150.htm); USPS Federal Register final rule 2026-09785 (federalregister.gov, effective 2026-07-12); IATA TACT convention for the general air-cargo figure.",
+  "sourcing_notes": "Verified 2026-07-02 against the dated sourcing pack. Confirmed: FedEx official page states 139 in^3/lb for US/Puerto Rico/international packages; UPS official page states 139 in^3/lb for Daily Rates (166 for Retail Rates); DHL Express publishes 5000 cm^3/kg metric (and 139 in^3/lb imperial); USPS Postal Explorer QSG 150 currently shows 166 in^3/lb for qualifying parcels over 1728 in^3. FUTURE CHANGE: a Federal Register final rule moves USPS to 139 in^3/lb with round-up dimension rounding effective 2026-07-12 — re-verify the USPS row on that date. The 6000 cm^3/kg general air-cargo figure is the IATA TACT convention; the pack did not include a dated IATA capture, so that row stays verified: false. Caveat from the pack: carrier DIM divisors are subject to change and may differ by country, service, rate card, tariff, account agreement, and date.",
+  "columns": ["carrier", "service", "divisor", "unit", "verified", "notes"],
   "rows": [
-    { "carrier": "UPS/FedEx", "service": "US domestic parcel", "divisor": 139, "unit": "in^3/lb", "verified": false },
-    { "carrier": "UPS/FedEx", "service": "international parcel", "divisor": 166, "unit": "in^3/lb", "verified": false },
-    { "carrier": "IATA", "service": "air cargo (general)", "divisor": 6000, "unit": "cm^3/kg", "verified": false },
-    { "carrier": "Courier", "service": "express air", "divisor": 5000, "unit": "cm^3/kg", "verified": false }
+    {
+      "carrier": "UPS/FedEx",
+      "service": "US domestic parcel",
+      "divisor": 139,
+      "unit": "in^3/lb",
+      "verified": true,
+      "notes": "FedEx official page (US/Puerto Rico/international packages) and UPS official page (Daily Rates) both state 139, checked 2026-07-02. UPS Retail Rates use 166 instead. DHL Express also publishes 139 in^3/lb imperial."
+    },
+    {
+      "carrier": "USPS/UPS",
+      "service": "USPS retail; UPS Retail Rates",
+      "divisor": 166,
+      "unit": "in^3/lb",
+      "verified": true,
+      "notes": "USPS Postal Explorer QSG 150 (parcels over 1728 in^3) and UPS Retail Rates both state 166, checked 2026-07-02. USPS CHANGES TO 139 EFFECTIVE 2026-07-12 per Federal Register final rule (future-effective as of the pack date) — re-verify this row then."
+    },
+    {
+      "carrier": "IATA",
+      "service": "air cargo (general)",
+      "divisor": 6000,
+      "unit": "cm^3/kg",
+      "verified": false,
+      "notes": "IATA TACT convention (equivalent to 167 kg/m^3). The 2026-07-02 sourcing pack did not include a dated IATA capture, so this row is the industry convention, not a carrier-verified value."
+    },
+    {
+      "carrier": "DHL Express",
+      "service": "express air",
+      "divisor": 5000,
+      "unit": "cm^3/kg",
+      "verified": true,
+      "notes": "DHL Express publishes 5000 cm^3/kg (volumetric weight calculator page, checked 2026-07-02; DHL Discover pages agree). FedEx China's metric DIM page also states 5000. Confirm the local country tariff before rating."
+    }
   ]
 }

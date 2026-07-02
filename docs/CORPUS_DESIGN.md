@@ -43,8 +43,12 @@ record-driven Vitest suites.
 
 Freight formula records (CBM, volumetric weight, chargeable weight) now exist
 under `data/formulas/freight/` with `grounding: external` and named sources
-(carrier service guides, IATA, ISO 668). The freight **reference tables**
-(`data/reference_tables/freight/`) remain `status: needs_sourcing` pending
+(carrier service guides, IATA, ISO 668). Among the freight **reference tables**
+(`data/reference_tables/freight/`), `dimensional_weight_divisors.json` is
+`status: verified` (effective 2026-07-02, sourced from the dated pack
+`corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md`; the USPS
+row needs re-verification on 2026-07-12). The other three tables (NMFC classes,
+girth limits, container volumes) remain `status: needs_sourcing` pending
 verification sign-off — their values are labelled estimates on the site.
 
 The relationship is one-directional: **Layer 1 grounds Layer 2.** The website

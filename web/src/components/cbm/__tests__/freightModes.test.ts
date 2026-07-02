@@ -1,7 +1,8 @@
 /**
  * The mode/container presets baked into the island must stay in lockstep
  * with the reference-table records under data/reference_tables/freight/
- * (both `needs_sourcing` stubs — the UI labels them estimates accordingly).
+ * (dimensional_weight_divisors is verified as of 2026-07-02; container
+ * volumes remain a `needs_sourcing` stub labelled nominal estimates).
  */
 
 import { readFileSync } from "node:fs";

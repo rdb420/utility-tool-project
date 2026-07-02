@@ -42,8 +42,9 @@ export default function AboutPage() {
       </p>
       <p>
         Honesty about limits is part of the method. Where a value is an
-        unverified industry figure — freight divisors are the current example
-        — the page says so instead of dressing it up as fact. Results are
+        unverified industry figure — nominal container capacities are the
+        current example — the page says so instead of dressing it up as fact.
+        Results are
         planning estimates, not professional advice; the{" "}
         <Link href="/terms/">terms</Link> spell that out.
       </p>
