@@ -100,7 +100,14 @@ export const FORMULAS_BY_ID: Readonly<Record<string, FormulaRecord>> =
 export const CALCULATORS_BY_ID: Readonly<Record<string, CalculatorRecord>> =
   byId(CALCULATORS);
 
-export type Cluster = "inventory" | "freight";
+export type Cluster = "inventory" | "freight" | "pricing";
+
+/** Formula-id prefix → cluster. Unknown prefixes fall back to inventory. */
+const CLUSTER_BY_PREFIX: Readonly<Record<string, Cluster>> = Object.freeze({
+  inventory: "inventory",
+  freight: "freight",
+  pricing: "pricing",
+});
 
 /** Look a calculator up by its public URL slug. */
 export function calculatorBySlug(slug: string): CalculatorRecord | undefined {
@@ -113,7 +120,7 @@ export function calculatorBySlug(slug: string): CalculatorRecord | undefined {
  */
 export function clusterOf(calculator: CalculatorRecord): Cluster {
   const prefix = calculator.formula_ids[0].split(".")[0];
-  return prefix === "freight" ? "freight" : "inventory";
+  return CLUSTER_BY_PREFIX[prefix] ?? "inventory";
 }
 
 /**

@@ -3,8 +3,8 @@ import Wordmark from "./Wordmark";
 import styles from "./AppBar.module.css";
 
 /**
- * Sticky ink app bar with the wordmark and the two cluster links, so every
- * tool is one click from either cluster. Nav collapses away below 820px.
+ * Sticky ink app bar with the wordmark and the three cluster links, so every
+ * tool is one click from any cluster. Nav collapses away below 820px.
  * The right-hand slot stays empty until the account tier ships.
  */
 export default function AppBar() {
@@ -17,6 +17,7 @@ export default function AppBar() {
         <nav className={styles.nav} aria-label="Calculator clusters">
           <Link href="/inventory-calculators/">Inventory</Link>
           <Link href="/freight-calculators/">Freight</Link>
+          <Link href="/pricing-calculators/">Pricing</Link>
         </nav>
         <div className={styles.right}>
           {/* Reserved: Sign in (accounts ship in a later phase). */}

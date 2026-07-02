@@ -17,10 +17,20 @@ describe("listByCluster", () => {
     );
   });
 
-  it("partitions the full registry between the two clusters", () => {
+  it("partitions the full registry between the three clusters", () => {
     const inventory = listByCluster("inventory");
     const freight = listByCluster("freight");
-    expect(inventory.length + freight.length).toBe(CALCULATORS.length);
+    const pricing = listByCluster("pricing");
+    expect(inventory.length + freight.length + pricing.length).toBe(
+      CALCULATORS.length,
+    );
+  });
+
+  it("returns only pricing-prefixed calculators for the pricing cluster", () => {
+    // Empty until the pricing records land; must auto-populate when they do.
+    for (const calculator of listByCluster("pricing")) {
+      expect(calculator.formula_ids[0].startsWith("pricing.")).toBe(true);
+    }
   });
 
   it("returns only freight-prefixed calculators for the freight cluster", () => {

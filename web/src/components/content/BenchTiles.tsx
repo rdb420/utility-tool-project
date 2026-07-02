@@ -6,6 +6,7 @@ import TrackedLink from "./TrackedLink";
 const CLUSTER_LABEL = {
   inventory: "Inventory",
   freight: "Freight",
+  pricing: "Pricing",
 } as const;
 
 /**

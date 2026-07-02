@@ -48,6 +48,7 @@ type Params = Promise<{ slug: string }>;
 const HUBS = {
   inventory: { label: "Inventory calculators", href: "/inventory-calculators/" },
   freight: { label: "Freight calculators", href: "/freight-calculators/" },
+  pricing: { label: "Pricing calculators", href: "/pricing-calculators/" },
 } as const;
 
 export async function generateMetadata({

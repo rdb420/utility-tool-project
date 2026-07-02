@@ -6,11 +6,12 @@ import { CALCULATORS } from "@/lib/records/records";
 describe("sitemap", () => {
   const urls = sitemap().map((entry) => entry.url);
 
-  it("lists home, both hubs, and the five trust pages", () => {
+  it("lists home, the three hubs, and the five trust pages", () => {
     const expected = [
       "/",
       "/inventory-calculators/",
       "/freight-calculators/",
+      "/pricing-calculators/",
       "/privacy-policy/",
       "/cookie-policy/",
       "/terms/",
@@ -27,8 +28,8 @@ describe("sitemap", () => {
     for (const calculator of CALCULATORS) {
       expect(urls).toContain(`${BASE_URL}/${calculator.slug}/`);
     }
-    // Nothing beyond home + hubs + calculators + five trust pages.
-    expect(urls).toHaveLength(3 + CALCULATORS.length + 5);
+    // Nothing beyond home + three hubs + calculators + five trust pages.
+    expect(urls).toHaveLength(4 + CALCULATORS.length + 5);
   });
 
   it("uses absolute URLs with trailing slashes, no duplicates", () => {

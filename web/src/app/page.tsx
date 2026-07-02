@@ -4,12 +4,16 @@ import { listByCluster } from "@/components/hub/listByCluster";
 import ToolTileGrid from "@/components/hub/ToolTileGrid";
 import Wordmark from "@/components/layout/Wordmark";
 import { BASE_URL, SITE_NAME } from "@/config/site";
+import type { Cluster } from "@/lib/records/records";
 
 export const metadata: Metadata = {
   // Absolute: home doesn't take the "%s | OpsCrunch" template.
-  title: { absolute: "OpsCrunch — free calculators for inventory and freight" },
+  title: {
+    absolute:
+      "OpsCrunch — free calculators for inventory, freight, and pricing",
+  },
   description:
-    "Free, fast calculators for inventory and freight. Reorder point, safety stock, EOQ, turnover, days of cover, carrying cost — each with the formula, a worked example, and honest assumptions.",
+    "Free, fast calculators for inventory, freight, and pricing. Reorder point, safety stock, EOQ, turnover, days of cover, carrying cost — each with the formula, a worked example, and honest assumptions.",
   alternates: { canonical: "/" },
 };
 
@@ -40,7 +44,7 @@ function ClusterSection({
   heading: string;
   hubHref: string;
   hubLabel: string;
-  cluster: "inventory" | "freight";
+  cluster: Cluster;
   emptyNote?: string;
 }) {
   return (
@@ -64,7 +68,7 @@ export default function Home() {
     <div className="py-s6">
       <Wordmark size="hero" />
       <h1 className="mt-s5 text-[2.1rem] font-extrabold leading-[1.08] tracking-[-0.02em]">
-        Free, fast calculators for inventory and freight.
+        Free, fast calculators for inventory, freight, and pricing.
       </h1>
       <p className="mt-s3 max-w-[62ch] text-[1.05rem] text-slate">
         One connected workbench for the people who move and count stock. Every
@@ -88,6 +92,15 @@ export default function Home() {
         hubHref="/freight-calculators/"
         hubLabel="The freight bench"
         emptyNote="Freight tools are on the bench — first up: CBM calculator."
+      />
+
+      <ClusterSection
+        eyebrow="Cluster 03"
+        heading="Pricing calculators"
+        cluster="pricing"
+        hubHref="/pricing-calculators/"
+        hubLabel="The pricing bench"
+        emptyNote="Pricing tools are on the bench — first up: margin and break-even."
       />
 
       <script
