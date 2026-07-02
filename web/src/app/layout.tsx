@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ConsentBanner from "@/components/ads/ConsentBanner";
 import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import { BASE_URL, SITE_NAME } from "@/config/site";
@@ -27,8 +28,9 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        {/* CONSENT BANNER MOUNT POINT — <ConsentBanner /> lands here in Chunk F
-            (first-visit accept/decline, consumed by AdSlot + analytics). */}
+        {/* First-visit consent banner (accept/decline in localStorage),
+            consumed by AdSlot + the analytics transport. */}
+        <ConsentBanner />
       </body>
     </html>
   );

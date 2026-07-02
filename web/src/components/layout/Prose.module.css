@@ -1,0 +1,51 @@
+/*
+ * Prose — long-form text for legal/about pages. Type scale follows the
+ * mockup kits (h1 2.3rem/800/-.025em, h2 1.4rem/800, body 1.6 line-height).
+ */
+.prose {
+  max-width: 72ch;
+  padding: var(--s6) 0 var(--s6);
+  line-height: 1.6;
+}
+
+.prose h1 {
+  margin: 0 0 var(--s2);
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.prose h2 {
+  margin: var(--s6) 0 var(--s2);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.prose p,
+.prose li {
+  color: var(--slate);
+  font-size: 0.95rem;
+}
+
+.prose p {
+  margin: 0 0 var(--s3);
+}
+
+.prose ul {
+  margin: 0 0 var(--s3);
+  padding-left: 22px;
+}
+
+.prose li {
+  margin-bottom: var(--s1);
+}
+
+.prose a {
+  color: var(--signal);
+}
+
+.prose strong {
+  color: var(--ink);
+}

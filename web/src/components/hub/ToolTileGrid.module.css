@@ -1,0 +1,57 @@
+/*
+ * Bench tiles — lifted from docs/mockups/opscrunch_calculator_kit.html
+ * (.oc-bench / .oc-tile): 4-col grid collapsing to 2-col ≤760px, link cards
+ * with the mono cluster eyebrow, hover signals with the brand border.
+ */
+.bench {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s3);
+}
+
+@media (max-width: 760px) {
+  .bench {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tile {
+  display: block;
+  padding: 14px 15px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.tile:hover {
+  border-color: var(--signal);
+  box-shadow: 0 10px 24px -18px rgba(238, 90, 28, 0.5);
+}
+
+.lbl {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nm {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--s4) var(--s4);
+  border: 1.5px dashed var(--line-2);
+  border-radius: var(--r);
+  color: var(--slate);
+  font-size: 0.92rem;
+}

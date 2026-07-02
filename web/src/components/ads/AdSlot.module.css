@@ -1,0 +1,48 @@
+/*
+ * Ad slot — deliberately plain (docs/mockups/opscrunch_adsense_kit.html §04):
+ * hatched grey placeholder, dashed border, mono micro-label. No signal, no
+ * amber, no readout styling; an ad must never look like a result. Heights are
+ * the kit's reserved minimums so the layout cannot shift when an ad loads.
+ */
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: var(--s5) 0;
+  border: 1.5px dashed #b9bdb2;
+  border-radius: 8px;
+  background: repeating-linear-gradient(
+    45deg,
+    #f4f5f1,
+    #f4f5f1 8px,
+    #eef0ea 8px,
+    #eef0ea 16px
+  );
+  text-align: center;
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9a9f92;
+}
+
+/* Slot A · in-content top: 280px mobile, 250px from 760px up. */
+.slotA {
+  min-height: 280px;
+}
+
+@media (min-width: 760px) {
+  .slotA {
+    min-height: 250px;
+  }
+}
+
+/* Below-the-fold slots (D footer; B/C when earned): 250px reserve. */
+.slotBelow {
+  min-height: 250px;
+}

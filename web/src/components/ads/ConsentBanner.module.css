@@ -1,0 +1,74 @@
+/*
+ * Consent banner — the one permitted overlay (adsense kit §04). Fixed bottom
+ * ink strip; never covers the tool; real buttons with 44px touch targets.
+ */
+.banner {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3) var(--s5);
+  padding: var(--s4) var(--s5);
+  background: var(--ink);
+  color: #fff;
+  border-top: 2px solid var(--signal);
+}
+
+.copy {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.9rem;
+  color: #c7ccd2;
+}
+
+.copy a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  gap: var(--s2);
+}
+
+.accept,
+.decline {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.accept {
+  background: var(--signal);
+  border: 1px solid var(--signal);
+  color: #fff;
+}
+
+.accept:hover {
+  background: var(--signal-press);
+  border-color: var(--signal-press);
+}
+
+.decline {
+  background: transparent;
+  border: 1px solid #38424d;
+  color: #fff;
+}
+
+.decline:hover {
+  border-color: #c7ccd2;
+}
+
+.accept:focus-visible,
+.decline:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
