@@ -12,23 +12,55 @@ import type {
   ReferenceTableRecord,
 } from "./types.gen";
 
+import calculatorAbcAnalysis from "@data/calculators/abc_analysis.json";
+import calculatorBreakEven from "@data/calculators/break_even.json";
 import calculatorCarryingCost from "@data/calculators/carrying_cost.json";
+import calculatorCartonVolume from "@data/calculators/carton_volume.json";
 import calculatorCbm from "@data/calculators/cbm.json";
+import calculatorChargeableWeight from "@data/calculators/chargeable_weight.json";
 import calculatorDaysOfCover from "@data/calculators/days_of_cover.json";
+import calculatorDimensionalWeight from "@data/calculators/dimensional_weight.json";
+import calculatorDiscount from "@data/calculators/discount.json";
 import calculatorEoq from "@data/calculators/eoq.json";
+import calculatorFreightClass from "@data/calculators/freight_class.json";
+import calculatorFreightDensity from "@data/calculators/freight_density.json";
 import calculatorInventoryTurnover from "@data/calculators/inventory_turnover.json";
+import calculatorLandedCost from "@data/calculators/landed_cost.json";
+import calculatorLengthGirth from "@data/calculators/length_girth.json";
+import calculatorMargin from "@data/calculators/margin.json";
+import calculatorMarkup from "@data/calculators/markup.json";
+import calculatorPallet from "@data/calculators/pallet.json";
+import calculatorPeriodicReview from "@data/calculators/periodic_review.json";
 import calculatorReorderPoint from "@data/calculators/reorder_point.json";
 import calculatorSafetyStock from "@data/calculators/safety_stock.json";
+import calculatorSafetyStockLtv from "@data/calculators/safety_stock_ltv.json";
+import calculatorStockoutCost from "@data/calculators/stockout_cost.json";
+import calculatorVolumetricWeight from "@data/calculators/volumetric_weight.json";
 
+import formulaCartonVolumeBasic from "@data/formulas/freight/carton_volume_basic.json";
 import formulaCbmBasic from "@data/formulas/freight/cbm_basic.json";
 import formulaChargeableWeightBasic from "@data/formulas/freight/chargeable_weight_basic.json";
+import formulaDensityPcf from "@data/formulas/freight/density_pcf.json";
+import formulaDimWeightImperial from "@data/formulas/freight/dim_weight_imperial.json";
+import formulaGirthLengthPlusGirth from "@data/formulas/freight/girth_length_plus_girth.json";
+import formulaPalletCubeRatio from "@data/formulas/freight/pallet_cube_ratio.json";
+import formulaPalletLayerFit from "@data/formulas/freight/pallet_layer_fit.json";
 import formulaVolumetricWeightDivisor from "@data/formulas/freight/volumetric_weight_divisor.json";
+import formulaAbcShare from "@data/formulas/inventory/abc_share.json";
 import formulaCarryingCostBasic from "@data/formulas/inventory/carrying_cost_basic.json";
 import formulaDaysOfCoverBasic from "@data/formulas/inventory/days_of_cover_basic.json";
 import formulaEoqBasic from "@data/formulas/inventory/eoq_basic.json";
 import formulaInventoryTurnoverCogs from "@data/formulas/inventory/inventory_turnover_cogs.json";
+import formulaPeriodicReviewOrderUpTo from "@data/formulas/inventory/periodic_review_order_up_to.json";
 import formulaReorderPointBasic from "@data/formulas/inventory/reorder_point_basic.json";
+import formulaSafetyStockLeadTimeVariability from "@data/formulas/inventory/safety_stock_lead_time_variability.json";
 import formulaSafetyStockServiceLevel from "@data/formulas/inventory/safety_stock_service_level.json";
+import formulaStockoutCostBasic from "@data/formulas/inventory/stockout_cost_basic.json";
+import formulaBreakEvenUnits from "@data/formulas/pricing/break_even_units.json";
+import formulaDiscountImpact from "@data/formulas/pricing/discount_impact.json";
+import formulaLandedCostPerUnit from "@data/formulas/pricing/landed_cost_per_unit.json";
+import formulaMarginBasic from "@data/formulas/pricing/margin_basic.json";
+import formulaMarkupBasic from "@data/formulas/pricing/markup_basic.json";
 
 import referenceServiceLevelZFactors from "@data/reference_tables/service_level_z_factors.json";
 import referenceContainerVolumes from "@data/reference_tables/freight/container_volumes.json";
@@ -46,25 +78,57 @@ import referenceParcelGirthLimits from "@data/reference_tables/freight/parcel_gi
 const asRecord = <T>(record: unknown): T => record as T;
 
 export const CALCULATORS: readonly CalculatorRecord[] = Object.freeze([
+  asRecord<CalculatorRecord>(calculatorAbcAnalysis),
+  asRecord<CalculatorRecord>(calculatorBreakEven),
   asRecord<CalculatorRecord>(calculatorCarryingCost),
+  asRecord<CalculatorRecord>(calculatorCartonVolume),
   asRecord<CalculatorRecord>(calculatorCbm),
+  asRecord<CalculatorRecord>(calculatorChargeableWeight),
   asRecord<CalculatorRecord>(calculatorDaysOfCover),
+  asRecord<CalculatorRecord>(calculatorDimensionalWeight),
+  asRecord<CalculatorRecord>(calculatorDiscount),
   asRecord<CalculatorRecord>(calculatorEoq),
+  asRecord<CalculatorRecord>(calculatorFreightClass),
+  asRecord<CalculatorRecord>(calculatorFreightDensity),
   asRecord<CalculatorRecord>(calculatorInventoryTurnover),
+  asRecord<CalculatorRecord>(calculatorLandedCost),
+  asRecord<CalculatorRecord>(calculatorLengthGirth),
+  asRecord<CalculatorRecord>(calculatorMargin),
+  asRecord<CalculatorRecord>(calculatorMarkup),
+  asRecord<CalculatorRecord>(calculatorPallet),
+  asRecord<CalculatorRecord>(calculatorPeriodicReview),
   asRecord<CalculatorRecord>(calculatorReorderPoint),
   asRecord<CalculatorRecord>(calculatorSafetyStock),
+  asRecord<CalculatorRecord>(calculatorSafetyStockLtv),
+  asRecord<CalculatorRecord>(calculatorStockoutCost),
+  asRecord<CalculatorRecord>(calculatorVolumetricWeight),
 ]);
 
 export const FORMULAS: readonly FormulaRecord[] = Object.freeze([
+  asRecord<FormulaRecord>(formulaCartonVolumeBasic),
   asRecord<FormulaRecord>(formulaCbmBasic),
   asRecord<FormulaRecord>(formulaChargeableWeightBasic),
+  asRecord<FormulaRecord>(formulaDensityPcf),
+  asRecord<FormulaRecord>(formulaDimWeightImperial),
+  asRecord<FormulaRecord>(formulaGirthLengthPlusGirth),
+  asRecord<FormulaRecord>(formulaPalletCubeRatio),
+  asRecord<FormulaRecord>(formulaPalletLayerFit),
   asRecord<FormulaRecord>(formulaVolumetricWeightDivisor),
+  asRecord<FormulaRecord>(formulaAbcShare),
   asRecord<FormulaRecord>(formulaCarryingCostBasic),
   asRecord<FormulaRecord>(formulaDaysOfCoverBasic),
   asRecord<FormulaRecord>(formulaEoqBasic),
   asRecord<FormulaRecord>(formulaInventoryTurnoverCogs),
+  asRecord<FormulaRecord>(formulaPeriodicReviewOrderUpTo),
   asRecord<FormulaRecord>(formulaReorderPointBasic),
+  asRecord<FormulaRecord>(formulaSafetyStockLeadTimeVariability),
   asRecord<FormulaRecord>(formulaSafetyStockServiceLevel),
+  asRecord<FormulaRecord>(formulaStockoutCostBasic),
+  asRecord<FormulaRecord>(formulaBreakEvenUnits),
+  asRecord<FormulaRecord>(formulaDiscountImpact),
+  asRecord<FormulaRecord>(formulaLandedCostPerUnit),
+  asRecord<FormulaRecord>(formulaMarginBasic),
+  asRecord<FormulaRecord>(formulaMarkupBasic),
 ]);
 
 /** Service-level z-factor lookup table (verified, corpus-grounded). */

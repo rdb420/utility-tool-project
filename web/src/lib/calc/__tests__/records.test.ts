@@ -42,6 +42,10 @@ const EXPECTED_INVENTORY_FORMULAS = [
   "inventory.turnover.cogs",
   "inventory.days_of_cover.basic",
   "inventory.carrying_cost.basic",
+  "inventory.stockout_cost.basic",
+  "inventory.safety_stock.lead_time_variability",
+  "inventory.periodic_review.order_up_to",
+  "inventory.abc.share",
 ];
 
 function jsonFilesUnder(dir: string): string[] {
@@ -68,7 +72,7 @@ describe("formula records", () => {
     expect(formulas.size).toBeGreaterThanOrEqual(6);
   });
 
-  it("has the six expected inventory formulas", () => {
+  it("has the ten expected inventory formulas", () => {
     for (const id of EXPECTED_INVENTORY_FORMULAS) {
       expect(formulas.has(id), `missing formula record: ${id}`).toBe(true);
     }

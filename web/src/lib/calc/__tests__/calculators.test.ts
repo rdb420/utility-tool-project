@@ -47,6 +47,23 @@ const EXPECTED_CALCULATORS: Record<string, string> = {
   "calculator.days_of_cover": "days-of-inventory-calculator",
   "calculator.carrying_cost": "inventory-carrying-cost-calculator",
   "calculator.cbm": "cbm-calculator",
+  "calculator.freight_class": "freight-class-calculator",
+  "calculator.dimensional_weight": "dimensional-weight-calculator",
+  "calculator.volumetric_weight": "volumetric-weight-calculator",
+  "calculator.chargeable_weight": "chargeable-weight-calculator",
+  "calculator.freight_density": "freight-density-calculator",
+  "calculator.pallet": "pallet-calculator",
+  "calculator.carton_volume": "carton-volume-calculator",
+  "calculator.length_girth": "length-and-girth-calculator",
+  "calculator.margin": "margin-calculator",
+  "calculator.markup": "markup-calculator",
+  "calculator.break_even": "break-even-calculator",
+  "calculator.discount": "discount-calculator",
+  "calculator.landed_cost": "landed-cost-calculator",
+  "calculator.stockout_cost": "stockout-cost-calculator",
+  "calculator.safety_stock_ltv": "safety-stock-lead-time-variability-calculator",
+  "calculator.periodic_review": "periodic-review-calculator",
+  "calculator.abc_analysis": "abc-analysis-calculator",
 };
 
 function loadCalculators(): Map<string, CalculatorRecord> {

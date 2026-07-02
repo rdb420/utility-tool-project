@@ -104,13 +104,15 @@ describe("helpers", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("clusterOf: cbm is 'freight', the six inventory MVP tools are 'inventory'", () => {
-    expect(CALCULATORS).toHaveLength(7);
+  it("clusterOf follows the formula-id prefix (10 inventory, 9 freight, 5 pricing)", () => {
+    expect(CALCULATORS).toHaveLength(24);
+    const counts: Record<string, number> = { inventory: 0, freight: 0, pricing: 0 };
     for (const calculator of CALCULATORS) {
-      expect(clusterOf(calculator)).toBe(
-        calculator.id === "calculator.cbm" ? "freight" : "inventory",
-      );
+      const prefix = calculator.formula_ids[0].split(".")[0];
+      expect(clusterOf(calculator)).toBe(prefix);
+      counts[prefix] += 1;
     }
+    expect(counts).toEqual({ inventory: 10, freight: 9, pricing: 5 });
   });
 
   it("relatedTools resolves non-empty, in record order", () => {

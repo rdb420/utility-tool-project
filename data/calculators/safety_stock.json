@@ -35,7 +35,7 @@
       { "q": "How do I use the result?", "a": "Feed it into the reorder point calculator so your trigger level covers both expected demand and this buffer." }
     ]
   },
-  "related_tools": ["calculator.reorder_point", "calculator.days_of_cover", "calculator.carrying_cost"],
+  "related_tools": ["calculator.reorder_point", "calculator.days_of_cover", "calculator.carrying_cost", "calculator.safety_stock_ltv"],
   "disclaimer_level": "estimate",
   "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
 }

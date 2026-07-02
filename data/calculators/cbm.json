@@ -63,7 +63,7 @@
       }
     ]
   },
-  "related_tools": ["calculator.eoq", "calculator.carrying_cost", "calculator.days_of_cover"],
+  "related_tools": ["calculator.volumetric_weight", "calculator.chargeable_weight", "calculator.carton_volume"],
   "disclaimer_level": "estimate",
   "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
 }
