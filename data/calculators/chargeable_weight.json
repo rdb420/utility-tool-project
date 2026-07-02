@@ -1,0 +1,67 @@
+{
+  "id": "calculator.chargeable_weight",
+  "slug": "chargeable-weight-calculator",
+  "title": "Chargeable Weight Calculator",
+  "meta_description": "Calculate chargeable (billable) weight: enter dimensions, carton count, divisor, and actual weight to see volumetric weight and the greater figure your carrier actually bills on. Divisor presets are carrier-published — confirm against your rate card.",
+  "primary_keyword": "chargeable weight calculator",
+  "secondary_keywords": [
+    "billable weight calculator",
+    "chargeable weight formula",
+    "chargeable weight air freight",
+    "actual vs volumetric weight"
+  ],
+  "formula_ids": ["freight.volumetric_weight.divisor", "freight.chargeable_weight.basic"],
+  "input_groups": [
+    {
+      "label": "Shipment",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 120, "help": "Outer carton length." },
+        { "symbol": "W", "label": "Width", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 80, "help": "Outer carton width." },
+        { "symbol": "H", "label": "Height", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 100, "help": "Outer carton height." },
+        { "symbol": "Q", "label": "Cartons", "unit": "cartons", "type": "integer", "min": 0, "required": true, "default": 10, "help": "Number of identical cartons in the shipment." }
+      ]
+    },
+    {
+      "label": "Weight & carrier",
+      "inputs": [
+        { "symbol": "AW", "label": "Actual gross weight", "unit": "kg", "type": "number", "min": 0, "required": true, "default": 900, "help": "Scale weight of the whole shipment, including packaging." },
+        { "symbol": "divisor", "label": "DIM divisor", "unit": "cm3/kg", "type": "number", "min": 0, "required": true, "default": 6000, "help": "Carrier-published preset, checked July 2026 — 6000 for general air cargo, 5000 for express couriers. Your rate card may differ, so confirm with your carrier." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "CW", "label": "Chargeable weight", "unit": "kg", "primary": true, "description": "The greater of actual and volumetric weight — what the carrier actually rates the shipment on." },
+    { "symbol": "VW", "label": "Volumetric weight", "unit": "kg", "description": "Volume divided by the carrier divisor; the figure compared against your scale weight." }
+  ],
+  "copy_blocks": {
+    "intro": "Chargeable (billable) weight is what your freight bill is actually rated on: the greater of the shipment's actual scale weight and its volumetric weight. Carriers charge for the space a shipment takes as well as its mass, so a light, bulky shipment bills on volume — this tool runs both numbers and shows which one you pay for.",
+    "how_it_works": "Enter the carton dimensions, count, actual weight, and your carrier's DIM divisor. The tool first computes volumetric weight (volume in cm3 divided by the divisor), then compares it against the actual weight and reports the greater figure as the chargeable weight. If the chargeable weight is the volumetric one, the shipment is volumetrically dense — smaller cartons or tighter packing lower the bill.",
+    "formula_explanation": "VW = (L x W x H x Q) / divisor converts volume to a weight-equivalent using the carrier's divisor in cm3 per kg. CW = max(AW, VW): whichever of actual and volumetric weight is greater is what the carrier bills.",
+    "worked_example": "Ten cartons of 120 x 80 x 100 cm weighing 900 kg on the scale: volumetric weight = 9,600,000 cm3 / 6000 = 1,600 kg. Chargeable weight = max(900, 1,600) = 1,600 kg — the shipment bills on volume, not scale weight.",
+    "faq": [
+      {
+        "q": "What is chargeable weight?",
+        "a": "The weight a carrier actually rates a shipment on: the greater of the actual (scale) weight and the volumetric (dimensional) weight. Dense freight bills on actual weight; light-but-bulky freight bills on volumetric weight. The comparison rule is stable across major carriers, but the divisor behind the volumetric side varies."
+      },
+      {
+        "q": "How do I reduce my chargeable weight?",
+        "a": "If you are billed on volume, reduce the volume: smaller or better-fitted cartons, less void fill, denser packing, or splitting awkward items. Every cm3 removed comes straight off the volumetric weight. If you are billed on actual weight, the shipment is already dense and only lighter contents or packaging help."
+      },
+      {
+        "q": "Which divisor does this use?",
+        "a": "Whatever you enter — the default 6000 cm3/kg is the general air-cargo (IATA) convention, and 5000 is common for express couriers, both carrier-published figures checked July 2026. Divisors differ by carrier, service, and rate card, so confirm yours before relying on the result. Our volumetric and dimensional weight calculators cover the metric and imperial conventions in more detail."
+      },
+      {
+        "q": "Does this apply to sea freight too?",
+        "a": "Not directly. Sea/LCL freight is usually rated per revenue tonne — the greater of the shipment's cubic metres and its weight in metric tonnes — rather than by the parcel/air max(actual, volumetric) rule. Use our CBM calculator for sea and LCL volume."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.volumetric_weight",
+    "calculator.dimensional_weight",
+    "calculator.cbm"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

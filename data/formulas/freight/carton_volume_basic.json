@@ -1,0 +1,42 @@
+{
+  "id": "freight.carton_volume.basic",
+  "name": "Carton Volume (m3, litres, ft3)",
+  "category": "freight",
+  "description": "Total carton volume from centimetre dimensions and a carton count, expressed in cubic metres, litres, and cubic feet. The same volume in three units covers sea-freight quoting (m3), warehouse slotting (litres), and US LTL/parcel work (ft3).",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Cartons", "symbol": "Q", "type": "integer", "unit": "cartons", "required": true, "min": 0, "description": "Number of identical cartons; use 1 for a single carton." }
+  ],
+  "outputs": [
+    { "name": "Volume (cubic metres)", "symbol": "V_m3", "unit": "m3", "description": "Total volume in cubic metres (CBM)." },
+    { "name": "Volume (litres)", "symbol": "V_l", "unit": "l", "description": "Total volume in litres (1 m3 = 1,000 l)." },
+    { "name": "Volume (cubic feet)", "symbol": "V_ft3", "unit": "ft3", "description": "Total volume in cubic feet (1 ft3 = 28,316.846592 cm3)." }
+  ],
+  "expression": "V_m3 = (L * W * H * Q) / 1,000,000; V_l = (L * W * H * Q) / 1,000; V_ft3 = (L * W * H * Q) / 28,316.846592",
+  "assumptions": [
+    "Dimensions are outer carton dimensions in centimetres.",
+    "All cartons share the same dimensions.",
+    "Exact unit conversions: 1 m3 = 1,000,000 cm3 = 1,000 l; 1 ft = 30.48 cm, so 1 ft3 = 28,316.846592 cm3."
+  ],
+  "limitations": [
+    "Nominal outer dimensions only; bulging or irregular cartons occupy more space.",
+    "Simple sum of carton volumes — no packing, stacking, or honeycombing loss is modelled.",
+    "Carriers may round dimensions or volume when rating."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 60, "W": 40, "H": 30, "Q": 1 },
+      "expected": { "V_m3": 0.072, "V_l": 72, "V_ft3": 2.5425 },
+      "tolerance": 0.001,
+      "note": "One 60 x 40 x 30 cm carton: 72,000 cm3 = 0.072 m3 = 72 l = 72,000 / 28,316.846592 = about 2.5426 ft3."
+    }
+  ],
+  "sources": [],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "sourced-reference-data-2026-07-02.md", "chunk_index": 4, "quote": "CBM_CENTIMETRES | Cubic metres from cm | `(length_cm x width_cm x height_cm x quantity) / 1,000,000` | cm | m3 ... CUBIC_FEET | Cubic feet from inches | `(length_in x width_in x height_in) / 1728`" }
+  ],
+  "disclaimer_level": "estimate"
+}

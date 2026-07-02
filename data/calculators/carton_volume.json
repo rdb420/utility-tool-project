@@ -1,0 +1,61 @@
+{
+  "id": "calculator.carton_volume",
+  "slug": "carton-volume-calculator",
+  "title": "Carton Volume Calculator",
+  "meta_description": "Calculate carton volume from centimetre dimensions: get cubic metres, litres, and cubic feet for one carton or a whole shipment — the three units used across sea freight quotes, warehouse slotting, and US parcel work.",
+  "primary_keyword": "carton volume calculator",
+  "secondary_keywords": [
+    "box volume calculator",
+    "carton cbm calculator",
+    "cubic feet of a box",
+    "carton size calculator"
+  ],
+  "formula_ids": ["freight.carton_volume.basic"],
+  "input_groups": [
+    {
+      "label": "Carton",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 60, "help": "Outer carton length." },
+        { "symbol": "W", "label": "Width", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 40, "help": "Outer carton width." },
+        { "symbol": "H", "label": "Height", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 30, "help": "Outer carton height." },
+        { "symbol": "Q", "label": "Cartons", "unit": "cartons", "type": "integer", "min": 0, "required": true, "default": 1, "help": "Number of identical cartons; use 1 for a single carton." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "V_m3", "label": "Volume", "unit": "m3", "primary": true, "description": "Total volume in cubic metres — the unit sea and LCL freight is quoted in." },
+    { "symbol": "V_l", "label": "Volume in litres", "unit": "l", "description": "The same volume in litres, handy for warehouse slotting and bin sizing." },
+    { "symbol": "V_ft3", "label": "Volume in cubic feet", "unit": "ft3", "description": "The same volume in cubic feet, used in US LTL density and parcel cube rules." }
+  ],
+  "copy_blocks": {
+    "intro": "One carton, three volume units. Enter outer dimensions in centimetres and a carton count, and this tool returns the total volume in cubic metres (for sea and LCL freight quotes), litres (for slotting and storage planning), and cubic feet (for US LTL density and parcel cube rules) — so you never re-convert the same box by hand.",
+    "how_it_works": "The tool multiplies length x width x height x carton count to get total cubic centimetres, then converts: divide by 1,000,000 for cubic metres, by 1,000 for litres, and by 28,316.85 for cubic feet. All three results describe the same volume — pick the unit the form in front of you asks for.",
+    "formula_explanation": "V_m3 = (L x W x H x Q) / 1,000,000; V_l = (L x W x H x Q) / 1,000; V_ft3 = (L x W x H x Q) / 28,316.846592. The conversions are exact: 1 m3 = 1,000,000 cm3 = 1,000 l, and 1 ft = 30.48 cm so 1 ft3 = 28,316.846592 cm3.",
+    "worked_example": "One 60 x 40 x 30 cm carton: 72,000 cm3 = 0.072 m3 = 72 litres = about 2.54 cubic feet. Ten of them would be 0.72 m3 — the number a forwarder quotes LCL freight on.",
+    "faq": [
+      {
+        "q": "Should I measure inner or outer dimensions?",
+        "a": "Outer dimensions, as the carton ships. Freight is rated and stowed on the space the carton occupies, so include the corrugate thickness and any bulge. Inner dimensions only matter when you are checking whether a product fits inside the box."
+      },
+      {
+        "q": "Is this the same as CBM?",
+        "a": "The cubic-metres result is exactly the shipment's CBM. Our CBM calculator goes further for freight quoting — it also derives volumetric and chargeable weight from the same dimensions — while this tool focuses on giving you the volume in all three common units at once."
+      },
+      {
+        "q": "How do I convert cubic centimetres to cubic feet?",
+        "a": "Divide by 28,316.846592 — that is 30.48 cm cubed, since one foot is exactly 30.48 cm. Equivalently, convert the dimensions to inches and divide the cubic inches by 1,728. Both routes give the same answer; this tool uses the exact constant."
+      },
+      {
+        "q": "Can I mix carton sizes?",
+        "a": "Not in one calculation — the carton count assumes identical cartons. For mixed shipments, run the tool once per carton size and add the volumes. Keeping a note of volume per SKU carton makes future shipment totals a quick sum."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.cbm",
+    "calculator.pallet",
+    "calculator.length_girth"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

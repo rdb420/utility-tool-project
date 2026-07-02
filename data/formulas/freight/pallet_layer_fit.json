@@ -1,0 +1,44 @@
+{
+  "id": "freight.pallet.layer_fit",
+  "name": "Pallet Load (layer-fit method)",
+  "category": "freight",
+  "description": "Whole-case pallet load estimate: whole cases per layer from the pallet footprint, whole layers from the usable stack height, and the resulting case count and volume utilisation. This is the conservative single-orientation estimate a load planner starts from.",
+  "inputs": [
+    { "name": "Usable pallet length", "symbol": "PL", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Loadable deck length (48 in for a standard GMA pallet)." },
+    { "name": "Usable pallet width", "symbol": "PW", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Loadable deck width (40 in for a standard GMA pallet)." },
+    { "name": "Usable stack height", "symbol": "PH", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Maximum load height above the deck, after clearance and pallet-height allowances." },
+    { "name": "Case length", "symbol": "CL", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case length; must be greater than zero." },
+    { "name": "Case width", "symbol": "CW", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case width; must be greater than zero." },
+    { "name": "Case height", "symbol": "CH", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case height; must be greater than zero." }
+  ],
+  "outputs": [
+    { "name": "Cases per layer", "symbol": "CPL", "unit": "cases", "description": "Whole cases that fit one layer in a single orientation." },
+    { "name": "Layers", "symbol": "NL", "unit": "layers", "description": "Whole layers that fit within the usable stack height." },
+    { "name": "Cases per pallet", "symbol": "cases", "unit": "cases", "description": "Cases per layer times layers." },
+    { "name": "Volume utilisation", "symbol": "util_pct", "unit": "%", "description": "Share of the usable pallet cube occupied by the loaded cases." }
+  ],
+  "expression": "CPL = floor(PL / CL) * floor(PW / CW); NL = floor(PH / CH); cases = CPL * NL; util_pct = 100 * cases * (CL * CW * CH) / (PL * PW * PH)",
+  "assumptions": [
+    "All cases are identical and loaded in a single orientation (case length along pallet length).",
+    "Cases stack in full columns; no interlocking, pinwheel, or mixed-layer patterns.",
+    "Cases stay within the pallet footprint — no overhang."
+  ],
+  "limitations": [
+    "Single-orientation column stacking is a lower bound: rotating cases or mixing patterns within a layer often fits more (compare the cube-method upper bound in freight.pallet.cube_ratio).",
+    "Ignores weight limits — pallet, racking, and vehicle weight caps can bind before the cube does.",
+    "Ignores crush strength, load stability, and overhang rules, all of which constrain real stacking heights."
+  ],
+  "examples": [
+    {
+      "inputs": { "PL": 48, "PW": 40, "PH": 60, "CL": 16, "CW": 12, "CH": 10 },
+      "expected": { "CPL": 9, "NL": 6, "cases": 54, "util_pct": 90 },
+      "note": "48 x 40 x 60 in usable pallet, 16 x 12 x 10 in cases: floor(48/16) x floor(40/12) = 3 x 3 = 9 cases per layer; floor(60/10) = 6 layers; 54 cases; utilisation = 100 x 54 x 1,920 / 115,200 = 90%."
+    }
+  ],
+  "sources": [],
+  "grounding": "concept",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 835, "quote": "Cube utilization. All stocking equipment should be filled to the maximum cube capacity ... Honeycombing is the percentage of storage space lost because of ineffective use of the cube capacity of a storage area." }
+  ],
+  "disclaimer_level": "estimate"
+}

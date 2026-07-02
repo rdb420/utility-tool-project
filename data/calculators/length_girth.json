@@ -1,0 +1,59 @@
+{
+  "id": "calculator.length_girth",
+  "slug": "length-and-girth-calculator",
+  "title": "Length and Girth Calculator",
+  "meta_description": "Calculate parcel girth and length plus girth: enter package dimensions to get the size figure carriers check against their limits — e.g. UPS publishes a 165 in length-plus-girth maximum (checked July 2026). Estimates only; confirm limits with your carrier.",
+  "primary_keyword": "length and girth calculator",
+  "secondary_keywords": [
+    "girth calculator",
+    "package girth",
+    "length plus girth ups",
+    "parcel size limit calculator"
+  ],
+  "formula_ids": ["freight.girth.length_plus_girth"],
+  "input_groups": [
+    {
+      "label": "Package",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 40, "help": "Longest side of the package." },
+        { "symbol": "W", "label": "Width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 30 },
+        { "symbol": "H", "label": "Height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 20 }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "LG", "label": "Length plus girth", "unit": "in", "primary": true, "description": "Longest side plus girth — the figure most US carriers compare against their maximum-size and oversize-surcharge thresholds." },
+    { "symbol": "G", "label": "Girth", "unit": "in", "description": "2 x (width + height) — the distance around the package perpendicular to its longest side." }
+  ],
+  "copy_blocks": {
+    "intro": "Girth is the distance around a package's two smaller sides: 2 x (width + height). Add the longest side and you get length plus girth — the measurement parcel carriers check against maximum-size limits and oversize surcharges. This tool computes both so you can check a box against a carrier's published thresholds before it ships.",
+    "how_it_works": "Enter the three package dimensions with the longest side as the length. The tool doubles the sum of the two smaller sides to get girth, then adds the length. Compare the result against your carrier's current published limits — as carrier-published figures checked July 2026, UPS lists a 108 in maximum length and a 165 in maximum length plus girth. Those are reference points, not a pass/fail verdict: limits and surcharge tiers vary by carrier, service, and date.",
+    "formula_explanation": "G = 2 x (W + H), where W and H are the two smaller dimensions. LG = L + G, where L is the longest side. The formula is unit-agnostic — inches or centimetres — as long as all three dimensions use the same unit.",
+    "worked_example": "A 40 x 30 x 20 in package: girth = 2 x (30 + 20) = 100 in; length plus girth = 40 + 100 = 140 in. Against UPS's published 165 in maximum (checked July 2026) that leaves 25 in of headroom, though oversize surcharge tiers can start lower — check your carrier's current guide.",
+    "faq": [
+      {
+        "q": "How do I measure girth?",
+        "a": "Identify the longest side of the package — that is the length and it stays out of the girth. Girth is the distance around the remaining two sides: width plus height, doubled. On an irregular package, measure at the widest points, because that is how the carrier's automated dimensioners will see it."
+      },
+      {
+        "q": "What are the carrier size limits?",
+        "a": "As carrier-published figures checked July 2026, UPS lists packages up to 108 in in length and up to 165 in in length plus girth, with oversize surcharges starting at lower thresholds. Other carriers publish their own limits and tiers, and they change — so treat any figure here as a reference point and confirm against your carrier's current service guide rather than as a guarantee a package will be accepted."
+      },
+      {
+        "q": "Do all carriers use length plus girth?",
+        "a": "No. Most US parcel carriers (UPS, FedEx, USPS) size-check on length plus girth, but some postal operators use girth alone — Australia Post's size and weight guidelines cap the girth by itself, without adding the length. Check which convention your carrier uses before comparing numbers."
+      },
+      {
+        "q": "What happens if my package is over the limit?",
+        "a": "Depending on how far over, the carrier may apply a large-package or oversize surcharge, rate it at a minimum billable weight, or refuse it for the parcel network entirely — at which point LTL freight is the usual route. Borderline packages are risky because carriers re-measure with dimensioners and round dimensions by their own rules."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.dimensional_weight",
+    "calculator.carton_volume",
+    "calculator.chargeable_weight"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

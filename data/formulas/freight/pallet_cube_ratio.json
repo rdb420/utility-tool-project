@@ -1,0 +1,41 @@
+{
+  "id": "freight.pallet.cube_ratio",
+  "name": "Pallet Load (cube method)",
+  "category": "freight",
+  "description": "Theoretical cases per pallet from the cube method: the usable pallet volume divided by the volume of one case. Warehouse-planning texts use this ratio to size storage cube before applying layout allowances.",
+  "inputs": [
+    { "name": "Usable pallet length", "symbol": "PL", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Usable pallet width", "symbol": "PW", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Usable stack height", "symbol": "PH", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Case length", "symbol": "CL", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case length; must be greater than zero." },
+    { "name": "Case width", "symbol": "CW", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case width; must be greater than zero." },
+    { "name": "Case height", "symbol": "CH", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Outer case height; must be greater than zero." }
+  ],
+  "outputs": [
+    { "name": "Cube-method cases", "symbol": "cube_cases", "unit": "cases", "description": "Theoretical cases per pallet by pure volume ratio — an upper bound, not a load plan." }
+  ],
+  "expression": "cube_cases = (PL * PW * PH) / (CL * CW * CH)",
+  "assumptions": [
+    "All cases are identical.",
+    "Volume is perfectly divisible — every cubic inch of pallet cube is usable."
+  ],
+  "limitations": [
+    "A theoretical upper bound: real stacking geometry (whole cases, orientations, patterns) fits fewer cases — compare freight.pallet.layer_fit for the conservative estimate.",
+    "Ignores stacking geometry, weight limits, crush strength, and stability.",
+    "Warehouse planning applies further allowances (aisles, honeycombing) on top of this ratio."
+  ],
+  "examples": [
+    {
+      "inputs": { "PL": 48, "PW": 40, "PH": 60, "CL": 16, "CW": 12, "CH": 10 },
+      "expected": { "cube_cases": 60 },
+      "note": "115,200 in3 of usable pallet cube / 1,920 in3 per case = 60 cases by pure volume — versus 54 by whole-case layer fit."
+    }
+  ],
+  "sources": [],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 836, "quote": "Cubic feet of one pallet of item: 2 ft wide - 2 ft long - 6 (3 levels) ft high = 96 ft3 ... Cases per pallet: 96 ft3 / 8 ft3 (per case) = 12 cases per pallet" },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 835, "quote": "Cube utilization. All stocking equipment should be filled to the maximum cube capacity ... Allowances for aisles and honeycombing must be taken into consideration when planning warehouse layouts." }
+  ],
+  "disclaimer_level": "estimate"
+}

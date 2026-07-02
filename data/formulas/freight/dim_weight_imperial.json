@@ -1,0 +1,43 @@
+{
+  "id": "freight.dim_weight.imperial",
+  "name": "Dimensional (DIM) Weight, imperial divisor",
+  "category": "freight",
+  "description": "Dimensional weight in pounds: total shipment volume in cubic inches divided by a carrier-published divisor in in3 per lb (e.g. 139 for FedEx and UPS Daily Rates). US parcel carriers bill light-but-bulky packages on this figure instead of the scale weight.",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Pieces", "symbol": "Q", "type": "integer", "unit": "pieces", "required": true, "min": 0, "description": "Number of identical packages; use 1 for a single parcel." },
+    { "name": "Divisor", "symbol": "divisor", "type": "number", "unit": "in3/lb", "required": true, "min": 0, "description": "Carrier-published DIM divisor; must be greater than zero. Common imperial values: 139 (FedEx; UPS Daily Rates), 166 (UPS Retail Rates; USPS until 2026-07-11)." }
+  ],
+  "outputs": [
+    { "name": "Dimensional weight", "symbol": "DW", "unit": "lb", "description": "DIM weight the carrier compares against actual weight when rating." }
+  ],
+  "expression": "DW = (L * W * H * Q) / divisor",
+  "assumptions": [
+    "Dimensions are entered in inches and the divisor is in in3 per lb, so the result is pounds.",
+    "All packages share the same outer dimensions.",
+    "No carrier rounding is applied inside the formula."
+  ],
+  "limitations": [
+    "Carriers typically round each dimension (nearest or next whole inch, by their own rule) before computing, and round the DIM result up to the next whole pound — both can push the billed figure above this raw result.",
+    "Divisors vary by carrier, service, rate card, account agreement, and date — e.g. FedEx publishes 139 in3/lb, UPS 139 for Daily Rates and 166 for Retail Rates, and USPS moves from 166 to 139 on 2026-07-12. Confirm the current value in your carrier's service guide.",
+    "The metric variant of this formula uses centimetres and a divisor in cm3/kg (see freight.volumetric_weight.divisor); do not mix unit systems within one calculation.",
+    "Some carriers apply dimensional weight only above a size threshold (e.g. USPS applies DIM pricing above 1,728 in3)."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 30, "W": 24, "H": 22, "Q": 1, "divisor": 139 },
+      "expected": { "DW": 113.96 },
+      "tolerance": 0.01,
+      "note": "One 30 x 24 x 22 in package at divisor 139: 15,840 in3 / 139 = 113.96 lb (a carrier would round this up to 114 lb)."
+    }
+  ],
+  "sources": [
+    "FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html, checked 2026-07-02): L x W x H in inches / 139 for US/Puerto Rico/international packages.",
+    "UPS 'Shipping Dimensions and Weight' support page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight, checked 2026-07-02): divisor 139 for Daily Rates, 166 for Retail Rates; DIM result rounded up to the next whole pound."
+  ],
+  "grounding": "external",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}

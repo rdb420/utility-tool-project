@@ -1,0 +1,61 @@
+{
+  "id": "calculator.freight_density",
+  "slug": "freight-density-calculator",
+  "title": "Freight Density Calculator",
+  "meta_description": "Calculate freight density in pounds per cubic foot: enter shipment dimensions, piece count, and weight to get PCF and total cubic feet — the numbers LTL carriers ask for when quoting and classifying freight.",
+  "primary_keyword": "freight density calculator",
+  "secondary_keywords": [
+    "pounds per cubic foot calculator",
+    "pcf calculator",
+    "ltl density calculator",
+    "shipment density"
+  ],
+  "formula_ids": ["freight.density.pcf"],
+  "input_groups": [
+    {
+      "label": "Shipment",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 48, "help": "Longest side of the handling unit, including packaging and pallet." },
+        { "symbol": "W", "label": "Width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 40 },
+        { "symbol": "H", "label": "Height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 48, "help": "Measure to the highest point, including the pallet." },
+        { "symbol": "Q", "label": "Pieces", "unit": "pieces", "type": "integer", "min": 0, "required": true, "default": 1, "help": "Number of identical handling units." },
+        { "symbol": "AW", "label": "Actual weight", "unit": "lb", "type": "number", "min": 0, "required": true, "default": 500, "help": "Total scale weight including packaging and pallet." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "PCF", "label": "Density", "unit": "lb/ft3", "primary": true, "description": "Pounds per cubic foot — the density figure LTL carriers and brokers ask for on quotes." },
+    { "symbol": "V", "label": "Total volume", "unit": "ft3", "description": "Cubic feet of the shipment as measured, including packaging and pallet." }
+  ],
+  "copy_blocks": {
+    "intro": "Freight density — pounds per cubic foot (PCF) — is the first number an LTL carrier or broker asks for when quoting a shipment. It measures how much weight your freight packs into its space: divide the total weight by the cubic feet, measured at the widest points including packaging and pallet. Denser freight is cheaper to move per pound.",
+    "how_it_works": "Enter the handling-unit dimensions in inches, the piece count, and the total actual weight. The tool converts the dimensions to cubic feet (dividing cubic inches by 1728) and divides the weight by that volume. Use the result on LTL quote forms, to sanity-check a carrier's reweigh, or to compare packaging options — a denser pallet build often means a lower class and rate.",
+    "formula_explanation": "V = (L x W x H x Q) / 1728 gives total cubic feet (1 ft3 = 1,728 in3). PCF = AW / V gives density in pounds per cubic foot. Measure at the widest and highest points, including the pallet, because that is how carriers measure.",
+    "worked_example": "One 48 x 40 x 48 in pallet weighing 500 lb: V = 48 x 40 x 48 / 1728 = 53.33 ft3, so density = 500 / 53.33 = 9.375 lb/ft3 — a figure you can quote directly to an LTL carrier.",
+    "faq": [
+      {
+        "q": "Why do LTL carriers ask for density?",
+        "a": "Because trailer space is the scarce resource. Density tells the carrier how much revenue-earning weight your freight puts in each cubic foot of trailer, and it is the primary input to density-based NMFC classification. Quotes built on accurate density avoid reclassification and rebill surprises after the carrier measures your freight."
+      },
+      {
+        "q": "Do I include the pallet in the measurements?",
+        "a": "Yes. Measure the full handling unit as it ships — length and width at the widest points (including any overhang) and height from the floor to the highest point, pallet included. The scale weight should also include the pallet and packaging. Carriers measure this way, so quoting bare-carton numbers understates your volume."
+      },
+      {
+        "q": "How does density relate to freight class?",
+        "a": "For density-rated commodities, the NMFC maps density bands to classes — higher density means a lower class and usually a lower rate. But density is only one of four classification characteristics, and many commodities carry fixed classes. Use our freight class calculator to see the estimated class for your density, then confirm with NMFTA ClassIT+ or your carrier."
+      },
+      {
+        "q": "What if I have several different pieces?",
+        "a": "Compute each distinct piece size separately and combine: total the cubic feet across all pieces, total the weight, then divide total weight by total cubic feet. This tool handles multiple identical pieces via the piece count; for mixed freight, run it once per size and combine the volumes and weights yourself."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.freight_class",
+    "calculator.dimensional_weight",
+    "calculator.cbm"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

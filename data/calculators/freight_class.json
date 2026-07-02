@@ -1,0 +1,63 @@
+{
+  "id": "calculator.freight_class",
+  "slug": "freight-class-calculator",
+  "title": "Freight Class Calculator",
+  "meta_description": "Estimate your LTL freight class from shipment density. Enter dimensions and weight to get pounds per cubic foot and an estimated NMFC class under the 13-subprovision density scale. Density-based estimate only — confirm with NMFTA ClassIT+ or your carrier.",
+  "primary_keyword": "freight class calculator",
+  "secondary_keywords": [
+    "nmfc freight class calculator",
+    "ltl freight class",
+    "freight class chart",
+    "freight density calculator",
+    "nmfc class lookup"
+  ],
+  "formula_ids": ["freight.density.pcf"],
+  "input_groups": [
+    {
+      "label": "Shipment",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 48, "help": "Longest side of the handling unit, including packaging and pallet." },
+        { "symbol": "W", "label": "Width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 40 },
+        { "symbol": "H", "label": "Height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 48, "help": "Measure to the highest point, including the pallet." },
+        { "symbol": "Q", "label": "Pieces", "unit": "pieces", "type": "integer", "min": 0, "required": true, "default": 1, "help": "Number of identical handling units." },
+        { "symbol": "AW", "label": "Actual weight", "unit": "lb", "type": "number", "min": 0, "required": true, "default": 500, "help": "Total scale weight including packaging and pallet." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "PCF", "label": "Estimated density", "unit": "lb/ft3", "primary": true, "description": "Pounds per cubic foot — compare this against the NMFC 13-subprovision density scale to estimate the class." },
+    { "symbol": "V", "label": "Total volume", "unit": "ft3", "description": "Cubic feet of the shipment as measured, including packaging and pallet." }
+  ],
+  "copy_blocks": {
+    "intro": "This is an approximate, density-based freight class estimator. It computes your shipment's pounds per cubic foot and maps it to the NMFC 13-subprovision density scale that took effect on 2025-07-19. It is not an official classification: many commodities carry fixed NMFC classes regardless of density, and handling, stowability, and liability characteristics can override a density-implied class. Always confirm the class with NMFTA ClassIT+ or your carrier before quoting or booking.",
+    "how_it_works": "Enter the handling-unit dimensions (including packaging and pallet), the piece count, and the total actual weight. The tool computes cubic feet (length x width x height x pieces / 1728) and divides the weight by that volume to get density in pounds per cubic foot. Under the NMFC's density provisions, that figure falls into one of thirteen density bands, each mapped to a class from 50 (densest, cheapest to ship) to 500 (lightest, most expensive). Lower classes generally mean lower LTL rates.",
+    "formula_explanation": "V = (L x W x H x Q) / 1728 converts cubic inches to cubic feet. PCF = actual weight / V gives density in lb/ft3. The NMFC density scale then bands the density: for example, 8 to less than 10 lb/ft3 corresponds to class 100 under the 13-subprovision scale effective 2025-07-19.",
+    "worked_example": "One 48 x 40 x 48 in pallet weighing 500 lb: V = 92,160 / 1728 = 53.33 ft3, so density = 500 / 53.33 = 9.375 lb/ft3. On the 13-subprovision density scale, 9.375 falls in the 8-to-under-10 lb/ft3 band, giving an estimated class 100 — subject to any fixed class or handling, stowability, and liability provisions for the commodity.",
+    "faq": [
+      {
+        "q": "Is this my official freight class?",
+        "a": "No. This tool estimates a class from density alone. The NMFC assigns classes using four characteristics — density, handling, stowability, and liability — and many commodities carry fixed classes that do not change with density. Treat the result as a starting point and confirm the official class with NMFTA ClassIT+ or your carrier before quoting."
+      },
+      {
+        "q": "What changed in the 2025 NMFC update?",
+        "a": "Effective 2025-07-19 (NMFTA Docket 2025-1), the NMFC moved many density-rated commodities onto a standardised 13-subprovision density scale, replacing the older 11-band scale for those items. Density bands and their class assignments changed, so classes computed under the old scale may no longer match. This tool uses the 13-subprovision scale."
+      },
+      {
+        "q": "How do I calculate freight density?",
+        "a": "Multiply length x width x height in inches (including packaging and pallet, measured at the widest points), multiply by the piece count, and divide by 1728 to get cubic feet. Then divide the total weight in pounds by the cubic feet. The result is pounds per cubic foot (PCF) — denser freight gets a lower class and usually a lower rate."
+      },
+      {
+        "q": "What if my commodity has a fixed class?",
+        "a": "Then density does not decide it. Many NMFC items are assigned a single class based on what the commodity is — its handling, stowability, and liability profile — and that fixed class applies whatever your density works out to. Look the commodity up in ClassIT+ or ask your carrier; using a density-estimated class for a fixed-class commodity can trigger reclassification charges."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.freight_density",
+    "calculator.dimensional_weight",
+    "calculator.pallet",
+    "calculator.landed_cost"
+  ],
+  "disclaimer_level": "regional",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

@@ -50,3 +50,117 @@ export function containerFillPct(totalM3: number, containerM3: number): number {
   const container = requirePositive("container_m3", containerM3);
   return (total / container) * 100;
 }
+
+/**
+ * Cubic feet from inch dimensions: (L * W * H * Q) / 1728.
+ * Volume side of `freight.density.pcf` (V output).
+ */
+export function cubicFeetFromInches(
+  lengthIn: number,
+  widthIn: number,
+  heightIn: number,
+  quantity: number,
+): number {
+  const length = requireNonNegative("length_in", lengthIn);
+  const width = requireNonNegative("width_in", widthIn);
+  const height = requireNonNegative("height_in", heightIn);
+  const qty = requireNonNegative("quantity", quantity);
+  return (length * width * height * qty) / 1728;
+}
+
+/**
+ * Freight density (lb/ft^3) = actual weight / cubic feet.
+ * PCF output of `freight.density.pcf`; volume must be strictly positive.
+ */
+export function densityPcf(actualWeightLb: number, cubicFt: number): number {
+  const weight = requireNonNegative("actual_weight_lb", actualWeightLb);
+  const volume = requirePositive("cubic_ft", cubicFt);
+  return weight / volume;
+}
+
+export interface PalletLayerFit {
+  cpl: number;
+  nl: number;
+  cases: number;
+  utilPct: number;
+}
+
+/**
+ * Layer-fit pallet load (`freight.pallet.layer_fit`): whole cases per layer
+ * in a single orientation, whole layers, total cases, and volume utilisation.
+ * Case dimensions must be strictly positive (floor-division guards).
+ */
+export function palletLayerFit(
+  palletLengthIn: number,
+  palletWidthIn: number,
+  palletHeightIn: number,
+  caseLengthIn: number,
+  caseWidthIn: number,
+  caseHeightIn: number,
+): PalletLayerFit {
+  const palletLength = requireNonNegative("pallet_length_in", palletLengthIn);
+  const palletWidth = requireNonNegative("pallet_width_in", palletWidthIn);
+  const palletHeight = requireNonNegative("pallet_height_in", palletHeightIn);
+  const caseLength = requirePositive("case_length_in", caseLengthIn);
+  const caseWidth = requirePositive("case_width_in", caseWidthIn);
+  const caseHeight = requirePositive("case_height_in", caseHeightIn);
+
+  const cpl = Math.floor(palletLength / caseLength) * Math.floor(palletWidth / caseWidth);
+  const nl = Math.floor(palletHeight / caseHeight);
+  const cases = cpl * nl;
+  const palletVolume = palletLength * palletWidth * palletHeight;
+  const caseVolume = caseLength * caseWidth * caseHeight;
+  const utilPct = palletVolume > 0 ? (100 * cases * caseVolume) / palletVolume : 0;
+  return { cpl, nl, cases, utilPct };
+}
+
+/**
+ * Cube-method pallet ratio (`freight.pallet.cube_ratio`): usable pallet
+ * volume / case volume — a theoretical upper bound, not a load plan.
+ */
+export function palletCubeRatio(
+  palletLengthIn: number,
+  palletWidthIn: number,
+  palletHeightIn: number,
+  caseLengthIn: number,
+  caseWidthIn: number,
+  caseHeightIn: number,
+): number {
+  const palletLength = requireNonNegative("pallet_length_in", palletLengthIn);
+  const palletWidth = requireNonNegative("pallet_width_in", palletWidthIn);
+  const palletHeight = requireNonNegative("pallet_height_in", palletHeightIn);
+  const caseLength = requirePositive("case_length_in", caseLengthIn);
+  const caseWidth = requirePositive("case_width_in", caseWidthIn);
+  const caseHeight = requirePositive("case_height_in", caseHeightIn);
+  return (palletLength * palletWidth * palletHeight) / (caseLength * caseWidth * caseHeight);
+}
+
+/**
+ * Carton volume (m^3) from centimetre dimensions (`freight.carton_volume.basic`,
+ * V_m3 output). Same math as `cbmFromCm`; litre/ft^3 outputs come from
+ * `units.convert` in the registry.
+ */
+export function cartonVolumeM3(
+  lengthCm: number,
+  widthCm: number,
+  heightCm: number,
+  quantity: number,
+): number {
+  return cbmFromCm(lengthCm, widthCm, heightCm, quantity);
+}
+
+/** Girth (same unit as inputs) = 2 * (width + height). */
+export function girth(width: number, height: number): number {
+  const w = requireNonNegative("width", width);
+  const h = requireNonNegative("height", height);
+  return 2 * (w + h);
+}
+
+/**
+ * Length plus girth (`freight.girth.length_plus_girth`, LG output):
+ * longest side + 2 * (width + height).
+ */
+export function lengthPlusGirth(length: number, width: number, height: number): number {
+  const l = requireNonNegative("length", length);
+  return l + girth(width, height);
+}

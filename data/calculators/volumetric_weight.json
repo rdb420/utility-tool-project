@@ -1,0 +1,65 @@
+{
+  "id": "calculator.volumetric_weight",
+  "slug": "volumetric-weight-calculator",
+  "title": "Volumetric Weight Calculator",
+  "meta_description": "Calculate volumetric weight in kilograms: enter carton dimensions in centimetres and a carrier divisor (default 6000) to see the weight carriers rate light-but-bulky freight on. Divisor presets are carrier-published figures — confirm against your rate card.",
+  "primary_keyword": "volumetric weight calculator",
+  "secondary_keywords": [
+    "volumetric weight formula",
+    "volume weight calculator",
+    "dim divisor 6000",
+    "air freight volumetric weight"
+  ],
+  "formula_ids": ["freight.volumetric_weight.divisor"],
+  "input_groups": [
+    {
+      "label": "Shipment",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 120, "help": "Outer carton length." },
+        { "symbol": "W", "label": "Width", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 80, "help": "Outer carton width." },
+        { "symbol": "H", "label": "Height", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 100, "help": "Outer carton height." },
+        { "symbol": "Q", "label": "Cartons", "unit": "cartons", "type": "integer", "min": 0, "required": true, "default": 10, "help": "Number of identical cartons in the shipment." }
+      ]
+    },
+    {
+      "label": "Carrier",
+      "inputs": [
+        { "symbol": "divisor", "label": "DIM divisor", "unit": "cm3/kg", "type": "number", "min": 0, "required": true, "default": 6000, "help": "Carrier-published preset, checked July 2026 — 6000 for general air cargo (IATA convention), 5000 for DHL Express and most couriers. Your rate card may differ, so confirm with your carrier." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "VW", "label": "Volumetric weight", "unit": "kg", "primary": true, "description": "The dimensional weight the carrier compares against actual weight; the greater of the two is billed." }
+  ],
+  "copy_blocks": {
+    "intro": "Volumetric weight converts a shipment's volume into a billable weight: length x width x height in centimetres, divided by a carrier-published divisor in cm3 per kg. Air and courier carriers bill light-but-bulky freight on this figure instead of the scale weight, so it decides what a low-density shipment really costs to move.",
+    "how_it_works": "Enter the carton dimensions in centimetres, the carton count, and your carrier's divisor. The tool multiplies the dimensions into cubic centimetres and divides by the divisor to get kilograms. The carrier compares that against the actual scale weight and bills the greater. This is the metric convention; our dimensional weight calculator does the same math in the imperial convention (inches, pounds, and divisors like 139).",
+    "formula_explanation": "VW = (L x W x H x Q) / divisor, with dimensions in centimetres and the divisor in cm3 per kg. The IATA air-cargo convention of 6000 cm3/kg is equivalent to treating 1 cubic metre as 167 kg; express couriers commonly use 5000 cm3/kg, which makes bulky shipments more expensive.",
+    "worked_example": "Ten cartons of 120 x 80 x 100 cm: 120 x 80 x 100 x 10 = 9,600,000 cm3. At the air divisor of 6000, VW = 9,600,000 / 6000 = 1,600 kg. If the shipment weighs 900 kg on the scale, it is billed on the 1,600 kg volumetric figure.",
+    "faq": [
+      {
+        "q": "Which divisor should I use?",
+        "a": "Carrier-published figures, checked July 2026: 6000 cm3/kg for general air cargo (the IATA convention) and 5000 cm3/kg for DHL Express and most express couriers. US parcel carriers use imperial divisors instead (139 or 166 in3/lb). Divisors vary by carrier, service, country, and account agreement, so confirm the value in your carrier's current service guide."
+      },
+      {
+        "q": "What is the difference between volumetric and dimensional weight?",
+        "a": "They are the same idea in different unit conventions. Volumetric weight is the metric form (centimetres divided by a cm3/kg divisor); dimensional weight usually means the imperial form (inches divided by an in3/lb divisor). Our dimensional weight calculator runs the same math with inches and pounds."
+      },
+      {
+        "q": "Am I billed on volumetric weight or actual weight?",
+        "a": "Whichever is greater — the chargeable weight. If your volumetric weight exceeds your scale weight, the shipment is billed on volume; denser packing or smaller cartons bring the bill down. Use our chargeable weight calculator to run the comparison directly."
+      },
+      {
+        "q": "Does the carrier round the result?",
+        "a": "Usually, yes. Carriers round dimensions by their own rules before computing and round the final billable weight up (commonly to the next 0.5 kg or whole kg). This tool shows the raw formula result, so the billed figure can be slightly higher."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.dimensional_weight",
+    "calculator.chargeable_weight",
+    "calculator.cbm"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "calculator.pallet",
+  "slug": "pallet-calculator",
+  "title": "Pallet Calculator",
+  "meta_description": "Work out how many cases fit on a pallet: enter usable pallet and case dimensions to get cases per layer, layers, total cases, volume utilisation, and the cube-method theoretical maximum.",
+  "primary_keyword": "pallet calculator",
+  "secondary_keywords": [
+    "cases per pallet calculator",
+    "pallet stacking calculator",
+    "boxes on a pallet",
+    "pallet load calculator",
+    "pallet cube utilisation"
+  ],
+  "formula_ids": ["freight.pallet.layer_fit", "freight.pallet.cube_ratio"],
+  "input_groups": [
+    {
+      "label": "Pallet",
+      "inputs": [
+        { "symbol": "PL", "label": "Usable pallet length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 48, "help": "Loadable deck length — 48 in for a standard GMA pallet." },
+        { "symbol": "PW", "label": "Usable pallet width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 40, "help": "Loadable deck width — 40 in for a standard GMA pallet." },
+        { "symbol": "PH", "label": "Usable stack height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 60, "help": "Maximum load height above the deck, after truck/racking clearance and pallet height." }
+      ]
+    },
+    {
+      "label": "Case",
+      "inputs": [
+        { "symbol": "CL", "label": "Case length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 16, "help": "Outer case length; must be greater than zero." },
+        { "symbol": "CW", "label": "Case width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 12, "help": "Outer case width; must be greater than zero." },
+        { "symbol": "CH", "label": "Case height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 10, "help": "Outer case height; must be greater than zero." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "cases", "label": "Cases per pallet", "unit": "cases", "primary": true, "description": "Whole cases that fit by single-orientation column stacking — the conservative planning number." },
+    { "symbol": "CPL", "label": "Cases per layer", "unit": "cases", "description": "Whole cases per layer in a single orientation." },
+    { "symbol": "NL", "label": "Layers", "unit": "layers", "description": "Whole layers within the usable stack height." },
+    { "symbol": "util_pct", "label": "Volume utilisation", "unit": "%", "description": "Share of the usable pallet cube the stacked cases occupy." },
+    { "symbol": "cube_cases", "label": "Cube-method cases", "unit": "cases", "description": "Cube-method theoretical estimate: pallet volume divided by case volume — an upper bound, not a load plan." }
+  ],
+  "copy_blocks": {
+    "intro": "How many cases fit on a pallet? This tool answers it two ways: a layer-fit estimate that stacks whole cases in a single orientation (the conservative number you can actually build), and a cube-method figure that divides pallet volume by case volume (the theoretical ceiling). The gap between them shows how much a smarter stacking pattern could recover.",
+    "how_it_works": "Enter the usable pallet dimensions — the loadable deck footprint and the maximum stack height after clearances — and the outer case dimensions. The layer-fit method floors each division: whole cases along the length times whole cases along the width gives cases per layer, whole case-heights within the stack height gives layers, and the product is cases per pallet. The cube method simply divides total pallet volume by case volume. Volume utilisation shows how much of the cube the layer-fit load actually uses.",
+    "formula_explanation": "Cases per layer = floor(PL / CL) x floor(PW / CW). Layers = floor(PH / CH). Cases = cases per layer x layers. Utilisation % = 100 x cases x case volume / pallet volume. Cube-method cases = (PL x PW x PH) / (CL x CW x CH) — a pure volume ratio that ignores stacking geometry.",
+    "worked_example": "A 48 x 40 in pallet with 60 in of usable height and 16 x 12 x 10 in cases: floor(48/16) x floor(40/12) = 3 x 3 = 9 cases per layer; floor(60/10) = 6 layers; 9 x 6 = 54 cases at 90% volume utilisation. The cube method gives 115,200 / 1,920 = 60 cases — the 6-case gap is space a single-orientation pattern cannot reach.",
+    "faq": [
+      {
+        "q": "Why do the two case counts differ?",
+        "a": "The layer-fit count only stacks whole cases in one orientation, so leftover strips along the pallet edges go unused. The cube-method count assumes every cubic inch is usable, which no real pattern achieves. The truth is usually between the two: rotating cases or mixing orientations within a layer (pinwheeling) can beat the single-orientation number but never the cube ceiling."
+      },
+      {
+        "q": "What pallet size should I enter?",
+        "a": "Enter the usable load dimensions, not the nominal pallet size. A standard GMA pallet is 48 x 40 in, but if your cases may not overhang, that is also your footprint limit. For height, start from the constraint — truck door, container, or racking opening — subtract the pallet's own height (about 5-6 in for GMA) and any clearance, and enter what is left."
+      },
+      {
+        "q": "Does this account for weight limits or stacking strength?",
+        "a": "No. It is a pure dimensional fit: it ignores pallet and vehicle weight caps, case crush strength, load stability, and overhang rules. A 54-case dimensional fit can still be an illegal or uncrushable load, so check weight and compression limits before finalising a pallet spec."
+      },
+      {
+        "q": "Can I use centimetres instead of inches?",
+        "a": "Yes — the math is unit-agnostic as long as all six dimensions use the same unit. Enter everything in centimetres and the case counts and utilisation percentage are unchanged; only the volumes behind them change units."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.carton_volume",
+    "calculator.cbm",
+    "calculator.freight_class",
+    "calculator.eoq"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

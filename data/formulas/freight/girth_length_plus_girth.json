@@ -1,0 +1,40 @@
+{
+  "id": "freight.girth.length_plus_girth",
+  "name": "Girth and Length-plus-Girth",
+  "category": "freight",
+  "description": "Parcel girth (the distance around the package's two smaller sides) and length plus girth (longest side plus girth). Parcel carriers use length plus girth to set maximum-size limits and oversize surcharges.",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Longest side of the package." },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "in", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Girth", "symbol": "G", "unit": "in", "description": "2 x (width + height) — the distance around the package perpendicular to its longest side." },
+    { "name": "Length plus girth", "symbol": "LG", "unit": "in", "description": "Longest side plus girth — the figure carriers compare against their size limits." }
+  ],
+  "expression": "G = 2 * (W + H); LG = L + G",
+  "assumptions": [
+    "The package is a rectangular box and L is its longest side.",
+    "Dimensions are outer dimensions as shipped, including packaging.",
+    "The formula is unit-agnostic (inches or centimetres), as long as all three dimensions use the same unit."
+  ],
+  "limitations": [
+    "Carrier size limits vary by carrier, service, and date — e.g. UPS publishes a 165 in length-plus-girth maximum and 108 in maximum length (checked 2026-07-02); confirm current limits before booking.",
+    "Some carriers use girth alone rather than length plus girth — Australia Post's size guidelines cap girth by itself.",
+    "Carriers may round or re-measure dimensions, which can push a borderline package over a limit."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 40, "W": 30, "H": 20 },
+      "expected": { "G": 100, "LG": 140 },
+      "note": "40 x 30 x 20 in package: girth = 2 x (30 + 20) = 100 in; length plus girth = 40 + 100 = 140 in."
+    }
+  ],
+  "sources": [
+    "UPS 'Shipping Dimensions and Weight' support page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight, checked 2026-07-02): girth = 2 x width + 2 x height; packages up to 165 in in length and girth combined, up to 108 in in length.",
+    "Australia Post size and weight guidelines (auspost.com.au/business/shipping/guidelines/size-weight-guidelines, checked 2026-07-02): Australia Post measures girth alone (not length plus girth) against its parcel size limits."
+  ],
+  "grounding": "external",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}

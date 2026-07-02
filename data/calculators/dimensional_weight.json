@@ -1,0 +1,65 @@
+{
+  "id": "calculator.dimensional_weight",
+  "slug": "dimensional-weight-calculator",
+  "title": "Dimensional Weight Calculator",
+  "meta_description": "Calculate dimensional (DIM) weight in pounds: enter package dimensions in inches and a carrier divisor (default 139) to see the DIM weight carriers compare against scale weight. Divisor presets are carrier-published figures — confirm against your rate card.",
+  "primary_keyword": "dimensional weight calculator",
+  "secondary_keywords": [
+    "dim weight calculator",
+    "dimensional weight formula",
+    "dim factor 139",
+    "billable weight calculator"
+  ],
+  "formula_ids": ["freight.dim_weight.imperial"],
+  "input_groups": [
+    {
+      "label": "Package",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "in", "type": "number", "min": 0, "required": true, "default": 30 },
+        { "symbol": "W", "label": "Width", "unit": "in", "type": "number", "min": 0, "required": true, "default": 24 },
+        { "symbol": "H", "label": "Height", "unit": "in", "type": "number", "min": 0, "required": true, "default": 22 },
+        { "symbol": "Q", "label": "Pieces", "unit": "pieces", "type": "integer", "min": 0, "required": true, "default": 1, "help": "Number of identical packages." }
+      ]
+    },
+    {
+      "label": "Carrier",
+      "inputs": [
+        { "symbol": "divisor", "label": "DIM divisor", "unit": "in3/lb", "type": "number", "min": 0, "required": true, "default": 139, "help": "Carrier-published preset, checked July 2026 — 139 for FedEx and UPS Daily Rates, 166 for UPS Retail Rates. Your rate card may differ, so confirm with your carrier." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "DW", "label": "Dimensional weight", "unit": "lb", "primary": true, "description": "The DIM weight the carrier compares against scale weight; the greater of the two is billed. Carriers typically round this up to the next whole pound." }
+  ],
+  "copy_blocks": {
+    "intro": "Dimensional (DIM) weight converts a package's volume into a billable weight: length x width x height in inches, divided by a carrier-published divisor. US parcel carriers bill light-but-bulky packages on this figure instead of the scale weight, so knowing your DIM weight before you ship prevents rate surprises.",
+    "how_it_works": "Enter the package dimensions in inches, the piece count, and your carrier's DIM divisor. The tool multiplies the dimensions into cubic inches and divides by the divisor to get pounds. Your carrier compares this against the actual scale weight and bills whichever is greater. This is the imperial (inches/pounds) convention; our volumetric weight calculator does the same math in the metric convention (centimetres, kilograms, and divisors like 6000 or 5000).",
+    "formula_explanation": "DW = (L x W x H x Q) / divisor, with dimensions in inches and the divisor in cubic inches per pound. At the common 139 divisor, one cubic foot (1,728 in3) weighs about 12.4 lb dimensionally. A larger divisor produces a lower DIM weight; divisors are set by carrier and service and change over time.",
+    "worked_example": "A 30 x 24 x 22 in package: 30 x 24 x 22 = 15,840 in3. At divisor 139, DW = 15,840 / 139 = 113.96 lb — a carrier would round this up to 114 lb and bill on it if the scale weight is lower.",
+    "faq": [
+      {
+        "q": "Which DIM divisor should I use?",
+        "a": "Carrier-published figures, checked July 2026: 139 in3/lb for FedEx and for UPS Daily Rates, 166 in3/lb for UPS Retail Rates, and 166 for USPS until 2026-07-11 (139 from 2026-07-12). Divisors differ by rate card, service, and account agreement, so confirm the value in your carrier's current service guide or contract."
+      },
+      {
+        "q": "Why is my billed weight higher than this result?",
+        "a": "Carriers round each dimension by their own rule (nearest or next whole inch) before computing, and round the DIM result up to the next whole pound. This tool shows the raw formula result without rounding, so a borderline package can bill slightly higher. Re-measures at the hub can also change the dimensions used."
+      },
+      {
+        "q": "What is the difference between dimensional and volumetric weight?",
+        "a": "Same concept, different unit conventions. Dimensional weight usually refers to the imperial form (inches divided by an in3/lb divisor like 139), while volumetric weight refers to the metric form (centimetres divided by a cm3/kg divisor like 6000 or 5000). Our volumetric weight calculator handles the metric version — it is the same math with different units."
+      },
+      {
+        "q": "Do I get billed on DIM weight or actual weight?",
+        "a": "Whichever is greater — that is the chargeable (billable) weight. Dense shipments bill on scale weight; light, bulky shipments bill on DIM weight. Use our chargeable weight calculator to compare the two directly."
+      }
+    ]
+  },
+  "related_tools": [
+    "calculator.volumetric_weight",
+    "calculator.chargeable_weight",
+    "calculator.freight_class"
+  ],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

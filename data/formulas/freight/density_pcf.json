@@ -1,0 +1,43 @@
+{
+  "id": "freight.density.pcf",
+  "name": "Freight Density (pounds per cubic foot)",
+  "category": "freight",
+  "description": "Shipment density in pounds per cubic foot (PCF): total cubic feet from inch dimensions and piece count, then actual weight divided by that volume. Density is the primary input to LTL freight-class evaluation under the NMFC density provisions.",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Longest side of the handling unit, including packaging and pallet." },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "in", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "in", "required": true, "min": 0, "description": "Measure to the highest point, including the pallet height." },
+    { "name": "Pieces", "symbol": "Q", "type": "integer", "unit": "pieces", "required": true, "min": 0, "description": "Number of identical handling units; use 1 for a single pallet or crate." },
+    { "name": "Actual weight", "symbol": "AW", "type": "number", "unit": "lb", "required": true, "min": 0, "description": "Total scale weight of all pieces, including packaging and pallet." }
+  ],
+  "outputs": [
+    { "name": "Total volume", "symbol": "V", "unit": "ft3", "description": "Total cubic feet of the shipment (1 ft3 = 1,728 in3)." },
+    { "name": "Density", "symbol": "PCF", "unit": "lb/ft3", "description": "Pounds per cubic foot — the figure compared against the NMFC density scale." }
+  ],
+  "expression": "V = (L * W * H * Q) / 1728; PCF = AW / V",
+  "assumptions": [
+    "Dimensions are outer dimensions of the handling unit as shipped, including packaging and pallet.",
+    "All pieces share the same dimensions; weight is the combined scale weight.",
+    "1 cubic foot = 1,728 cubic inches (12 x 12 x 12)."
+  ],
+  "limitations": [
+    "Density is only one classification factor — the NMFC also weighs handling, stowability, and liability, and any of them can move a commodity off its density-implied class.",
+    "Many commodities carry fixed (non-density) NMFC classes; density alone does not determine their class.",
+    "Carriers may measure and round dimensions themselves; a reweigh/re-measure can change the billed density."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 48, "W": 40, "H": 48, "Q": 1, "AW": 500 },
+      "expected": { "V": 53.33, "PCF": 9.375 },
+      "tolerance": 0.01,
+      "note": "One 48 x 40 x 48 in pallet weighing 500 lb: V = 92,160 / 1728 = 53.33 ft3; PCF = 500 / 53.33 = 9.375 lb/ft3."
+    }
+  ],
+  "sources": [],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "sourced-reference-data-2026-07-02.md", "chunk_index": 4, "quote": "CUBIC_FEET | Cubic feet from inches | `(length_in x width_in x height_in) / 1728` | inches | ft3" },
+    { "source_file": "sourced-reference-data-2026-07-02.md", "chunk_index": 5, "quote": "`weight_lb / cubic_feet` | lb, ft3 | lb/ft3 | Use measured handling unit including packaging/pallet where applicable | LTL freight class density evaluation" }
+  ],
+  "disclaimer_level": "estimate"
+}
