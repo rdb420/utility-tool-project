@@ -1,0 +1,39 @@
+/*
+ * Footer — quiet paper strip above the fold-out of every page.
+ * Spec: docs/mockups/opscrunch_cbm_calculator_v0.2.html (.foot).
+ */
+.foot {
+  margin-top: 44px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 26px 24px 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.links a {
+  color: var(--slate);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.links a:hover {
+  color: var(--signal);
+}
+
+.note {
+  margin: 0;
+}

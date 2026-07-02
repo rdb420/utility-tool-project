@@ -1,0 +1,22 @@
+/*
+ * Breadcrumb — mono micro-label, stamped like a shipping label.
+ * Spec: docs/mockups/opscrunch_cbm_calculator_v0.2.html (.crumb / .lbl).
+ */
+.crumb {
+  padding: 22px 0 4px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.crumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.crumb a:hover {
+  color: var(--signal);
+}

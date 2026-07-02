@@ -1,0 +1,48 @@
+/*
+ * Wordmark — lowercase, heavy grotesk, tight tracking. "ops" in the current
+ * text colour, "crunch" in signal orange, closed by a blinking amber block
+ * cursor: a terminal waiting to crunch a number. Spec: brand kit §01, sizes
+ * from the CBM prototype app bar (bar) and the brand kit header (hero).
+ */
+.wm {
+  font-weight: 800;
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.bar {
+  font-size: 1.18rem;
+  letter-spacing: -0.02em;
+}
+
+.hero {
+  font-size: 2.6rem;
+  letter-spacing: -0.03em;
+}
+
+.crunch {
+  color: var(--signal);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: var(--amber);
+  margin-left: 0.13em;
+  transform: translateY(0.11em);
+  animation: blink 1.15s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
