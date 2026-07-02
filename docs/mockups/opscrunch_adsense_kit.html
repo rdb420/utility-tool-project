@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpsCrunch &middot; AdSense Kit v1</title>
+<style>
+  :root{
+    --ink:#14181e;--ink-2:#1c232c;--paper:#f1f3ef;--surface:#ffffff;
+    --signal:#ee5a1c;--signal-press:#cf4a11;--amber:#ffb020;
+    --slate:#3a4855;--muted:#6c7681;--line:#e0e2db;--line-2:#cfd2c9;--good:#1f7a54;--warn:#b23b1a;
+    --r-sm:6px;--r:9px;--r-lg:14px;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 26px}
+  .lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;color:var(--muted);font-weight:600}
+  h1{font-size:2.3rem;font-weight:800;letter-spacing:-.025em;margin:0 0 8px}
+  h2{font-size:1.4rem;font-weight:800;letter-spacing:-.01em;margin:0 0 6px}
+  h3{font-size:1rem;font-weight:700;margin:22px 0 8px;color:var(--slate)}
+  p{margin:0 0 12px}a{color:var(--signal)}
+  .top{background:var(--ink);color:#fff;padding:56px 0 46px}
+  .top .wm{font-weight:800;font-size:1.5rem;letter-spacing:-.02em;display:inline-flex;align-items:baseline}
+  .top .wm .c{color:var(--signal)}.top .wm .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:4px;transform:translateY(.11em)}
+  .top .tag{color:#c7ccd2;font-size:1.1rem;margin:14px 0 0;max-width:62ch}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .toc a{font-family:var(--mono);font-size:.72rem;text-decoration:none;color:#c7ccd2;border:1px solid #38424d;border-radius:20px;padding:5px 12px}
+  .toc a:hover{border-color:var(--signal);color:#fff}
+  section{padding:42px 0;border-bottom:1px solid var(--line)}
+  .note{font-size:.9rem;color:var(--slate)}
+  .rule{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--signal);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0}
+  .rule.warn{border-left-color:var(--warn)}
+  .rule b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;font-size:.64rem;color:var(--muted)}
+  td.m{font-family:var(--mono);font-size:.82rem}
+  code.k{font-family:var(--mono);background:#e7e9e2;border-radius:5px;padding:1px 6px;font-size:.84rem}
+  pre{background:var(--ink);color:#e9ece4;border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:.78rem;line-height:1.55;margin:12px 0}
+  pre .t{color:#8b95a0}pre .s{color:#7fb0a6}pre .a{color:var(--amber)}
+  ul.clean{list-style:none;padding:0;margin:8px 0}
+  ul.clean li{padding:8px 0 8px 24px;border-bottom:1px solid var(--line);font-size:.92rem;color:var(--slate);position:relative}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li::before{position:absolute;left:0;top:8px;font-family:var(--mono);font-weight:700}
+  ul.clean li.y::before{content:"+";color:var(--good)}
+  ul.clean li.n::before{content:"x";color:var(--warn)}
+  ul.clean b{color:var(--ink)}
+  /* priority stack */
+  .stack{display:grid;gap:8px;margin:14px 0;max-width:520px}
+  .layer{border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+  .layer .n{font-weight:800}.layer .d{font-size:.82rem;opacity:.85}
+  .layer.l1{background:var(--ink);color:#fff}.layer.l2{background:var(--signal);color:#fff}.layer.l3{background:#e7e9e2;color:var(--slate)}
+  /* ad-zone mock */
+  .mock{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:14px auto}
+  .m-bar{background:var(--ink);color:#fff;border-radius:8px;padding:9px 12px;font-weight:800;font-size:.9rem;display:flex;align-items:baseline}
+  .m-bar .c{color:var(--signal)}.m-bar .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:3px;transform:translateY(.12em)}
+  .m-h{font-weight:800;font-size:1.05rem;margin:12px 2px 8px}
+  .m-tool{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--good);border-radius:10px;overflow:hidden}
+  .m-tool .safe{position:absolute;top:-10px;left:12px;background:var(--good);color:#fff;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+  .m-in{padding:14px;font-size:.78rem;color:var(--slate)}
+  .m-in .box{height:12px;background:#eef0ea;border-radius:4px;margin:6px 0}
+  .m-in .cr{height:22px;background:var(--signal);border-radius:6px;margin-top:8px}
+  .m-ro{background:var(--ink-2);padding:14px;color:#fff}
+  .m-ro .big{font-family:var(--mono);color:var(--amber);font-size:1.5rem;font-weight:700}
+  .m-block{height:12px;background:#eef0ea;border-radius:4px;margin:9px 2px}
+  .adslot{border:1.5px dashed #b9bdb2;background:repeating-linear-gradient(45deg,#f4f5f1,#f4f5f1 8px,#eef0ea 8px,#eef0ea 16px);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#8a8f82;margin:12px 0;text-align:center}
+  .adslot .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#9a9f92}
+  .adslot .sz{font-family:var(--mono);font-size:.74rem;margin-top:3px;color:#6c7167}
+  .a-a{height:96px}.a-b{height:120px}.a-d{height:96px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:.82rem}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .foot{padding:32px 0 60px;color:var(--muted);font-size:.82rem}
+  @media(max-width:640px){.m-tool{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="lbl" style="color:var(--amber)">AdSense Kit v1</div>
+  <div class="wm" style="margin-top:12px">ops<span class="c">crunch</span><span class="cur"></span></div>
+  <p class="tag">How advertising is handled. Ads are the floor of the revenue model, not the business, so the whole discipline here is to earn what display can earn without ever degrading the tool or the higher-value pillars.</p>
+  <div class="toc">
+    <a href="#why">Principle</a><a href="#zones">Ad zones</a><a href="#slots">Slot spec</a><a href="#rules">Placement</a><a href="#perf">Performance</a><a href="#policy">Policy</a><a href="#consent">Consent</a><a href="#ladder">Tier ladder</a><a href="#impl">Implementation</a>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<section id="why">
+  <div class="lbl">01 &nbsp; The principle</div>
+  <h2>Ads are the floor</h2>
+  <p>The model is clear about where money comes from. Accounts and affiliate carry the business; display ads fund the build and little more. So ads are placed to a strict hierarchy, and they always yield to the tool and to the higher-value calls to action.</p>
+  <div class="stack">
+    <div class="layer l1"><span class="n">Accounts</span><span class="d">Recurring, the ceiling. Protect first.</span></div>
+    <div class="layer l2"><span class="n">Affiliate / lead-gen</span><span class="d">The mid lever. Never crowded by ads.</span></div>
+    <div class="layer l3"><span class="n">Display ads</span><span class="d">The floor. Fits around everything above.</span></div>
+  </div>
+  <div class="rule warn"><b>The golden rule.</b> An ad never touches the tool. Nothing renders between the inputs and the readout, nothing sits above the tool on the first screen, and nothing ever overlaps the Crunch button. The calculator loads and works before any ad script runs.</div>
+
+  <h3>Who sees ads</h3>
+  <p class="note">Ad eligibility is set by account tier. Signing up is free and stays ad-supported, so the free tool and the free account both still earn display revenue. Removing ads is a paid perk, one more concrete reason to subscribe alongside the API, bulk calculation, and saved scenarios.</p>
+  <table>
+    <thead><tr><th>Tier</th><th>Cost</th><th>Ads</th></tr></thead>
+    <tbody>
+      <tr><td>Anonymous visitor</td><td class="m">free</td><td>Ads served</td></tr>
+      <tr><td>Free account</td><td class="m">free</td><td>Ads served</td></tr>
+      <tr><td>Paid subscription</td><td class="m">$19/mo</td><td><b style="color:var(--good)">Zero ads</b></td></tr>
+    </tbody>
+  </table>
+  <div class="rule"><b>Why this works.</b> Paid subscribers are a small share of traffic, so the display revenue given up is negligible, while an ad-free experience is a tangible upgrade that lifts paid conversion. The funnel still monetises at every step: anonymous and free-account visitors fund the floor, and the people who value the tools enough to return pay to lose the ads and unlock bulk and API.</div>
+</section>
+
+<section id="zones">
+  <div class="lbl">02 &nbsp; Ad zones</div>
+  <h2>Where ads may and may not go</h2>
+  <p class="note">The tool shell is a permanent no-ad zone. Ads live only in the supporting content below it and in the desktop sidebar beside that content. This is the calculator anatomy from the Calculator Kit, with the four allowed slots marked.</p>
+  <div class="mock">
+    <div class="m-bar">ops<span class="c">crunch</span><span class="cur"></span></div>
+    <div class="lbl" style="margin:10px 2px 0">Freight / CBM Calculator</div>
+    <div class="m-h">CBM Calculator</div>
+    <div class="m-tool">
+      <span class="safe">No-ad zone</span>
+      <div class="m-in"><div class="box" style="width:70%"></div><div class="box" style="width:90%"></div><div class="box" style="width:50%"></div><div class="cr"></div></div>
+      <div class="m-ro"><div class="lbl" style="color:#8b95a0">Total volume</div><div class="big">9.600 m&#179;</div><div class="box" style="background:#2b333d;width:80%;margin-top:8px"></div><div class="box" style="background:#2b333d;width:60%"></div></div>
+    </div>
+    <div class="adslot a-a"><span class="tag">Advertisement</span><span class="sz">Slot A &middot; in-content top &middot; responsive</span></div>
+    <div class="lbl" style="margin:6px 2px">The formula</div>
+    <div class="m-block" style="width:96%"></div><div class="m-block" style="width:88%"></div><div class="m-block" style="width:70%"></div>
+    <div class="adslot a-b"><span class="tag">Advertisement</span><span class="sz">Slot B &middot; in-article, after the example &middot; fluid</span></div>
+    <div class="lbl" style="margin:6px 2px">The rest of the bench</div>
+    <div class="m-block" style="width:100%;height:40px"></div>
+    <div class="adslot a-d"><span class="tag">Advertisement</span><span class="sz">Slot D &middot; footer, after the bench &middot; responsive</span></div>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--good)"></span> No-ad zone (the tool)</span>
+    <span><span class="dot" style="background:#b9bdb2"></span> Allowed ad slot</span>
+    <span><span class="dot" style="background:var(--signal)"></span> Sidebar Slot C runs on desktop beside this content, never beside the tool</span>
+  </div>
+</section>
+
+<section id="slots">
+  <div class="lbl">03 &nbsp; Slot spec</div>
+  <h2>The four slots, plus a mobile anchor</h2>
+  <table>
+    <thead><tr><th>Slot</th><th>Position</th><th>Format</th><th>Devices</th><th>Reserved height</th><th>Lazy</th></tr></thead>
+    <tbody>
+      <tr><td class="m">A</td><td>Below the tool, above the formula</td><td class="m">responsive / 336x280</td><td>All</td><td class="m">280px mob / 250px desk</td><td>No</td></tr>
+      <tr><td class="m">B</td><td>In-article, after the worked example</td><td class="m">fluid in-article</td><td>All</td><td class="m">250px</td><td>Yes</td></tr>
+      <tr><td class="m">C</td><td>Sidebar, beside supporting content</td><td class="m">300x600 / 300x250</td><td>Desktop &#8805;1024px</td><td class="m">600px</td><td>Yes</td></tr>
+      <tr><td class="m">D</td><td>Footer, after the bench tiles</td><td class="m">responsive</td><td>All</td><td class="m">250px</td><td>Yes</td></tr>
+      <tr><td class="m">M</td><td>Dismissible bottom anchor</td><td class="m">anchor / overlay</td><td>Mobile only</td><td class="m">overlay, no reserve</td><td>n/a</td></tr>
+    </tbody>
+  </table>
+  <div class="rule"><b>Start with A and D only.</b> Two units is enough to prove RPM without loading the page. Add B, then the sidebar C, then the mobile anchor M only if the data shows no drop in tool completion or affiliate clicks. Density is earned, not assumed.</div>
+</section>
+
+<section id="rules">
+  <div class="lbl">04 &nbsp; Placement rules</div>
+  <h2>Do and do not</h2>
+  <ul class="clean">
+    <li class="y"><b>Label every unit</b> with the word Advertisement in the mono micro-label style, so ads read as ads.</li>
+    <li class="y"><b>Keep ads visually distinct</b> from OpsCrunch components. No signal orange, no amber, no readout styling. An ad must never look like a result.</li>
+    <li class="y"><b>Reserve space</b> for every slot so the page never shifts when an ad loads.</li>
+    <li class="y"><b>Keep more content than ads</b> on every page. The formula, example, assumptions, and FAQ carry the weight.</li>
+    <li class="n"><b>No ad between inputs and readout</b>, and none above the tool on the first screen.</li>
+    <li class="n"><b>No ad within a thumb's reach of the Crunch button or any control</b>, which prevents accidental clicks and the policy strike that follows.</li>
+    <li class="n"><b>No auto-ads inside the tool zone.</b> Use manual placements and exclude the calculator region, so Google cannot inject a unit into the workbench.</li>
+    <li class="n"><b>No large sticky ads, prestitials with countdowns, or sound.</b> These fail the Better Ads Standards and drive people off.</li>
+    <li class="n"><b>No more than one ad without content between it and the next.</b> Two stacked ad units never appear together.</li>
+  </ul>
+  <div class="rule warn"><b>No pop-ups.</b> The only overlay OpsCrunch shows is the privacy and consent or cookies banner on first visit, which the EEA, UK, and Switzerland require anyway. There are no newsletter modals, no interstitials or prestitials, no exit-intent pop-ups, and no sign-up dialogs. Upsells stay inline, like the dashed bulk nudge, never modal. The one overlay that is not a pop-up is the dismissible mobile anchor (Slot M): it is a sticky ad, not a modal, and it never covers the tool.</div>
+</section>
+
+<section id="perf">
+  <div class="lbl">05 &nbsp; Performance</div>
+  <h2>Ads never slow the crunch</h2>
+  <ul class="clean">
+    <li class="y"><b>Calculator first.</b> The tool's own script loads and runs independently. If ad code fails or is blocked, the calculator still works.</li>
+    <li class="y"><b>Reserve height</b> on every container to hold Cumulative Layout Shift near zero. The numbers in the slot spec are minimums.</li>
+    <li class="y"><b>Lazy-load</b> everything below the first screen (B, C, D), so ads fetch as the reader scrolls, not on load.</li>
+    <li class="y"><b>Load ad script async</b> and after the tool is interactive, protecting Largest Contentful Paint and Interaction to Next Paint.</li>
+    <li class="n"><b>Never let an ad unit block rendering</b> of the tool or the formula content.</li>
+  </ul>
+</section>
+
+<section id="policy">
+  <div class="lbl">06 &nbsp; Policy compliance</div>
+  <h2>Pass review, stay approved</h2>
+  <ul class="clean">
+    <li class="y"><b>Valuable content on every page.</b> The working tool plus the formula, worked example, and FAQ satisfy the content requirement. Never publish a bare calculator with no explanation.</li>
+    <li class="y"><b>Publish <code class="k">ads.txt</code></b> at the domain root listing authorised sellers, to protect revenue from spoofed inventory.</li>
+    <li class="y"><b>Label ads only</b> as Advertisement or Sponsored Links, the only wording AdSense permits.</li>
+    <li class="y"><b>Keep the legal pages live:</b> Privacy Policy, Cookie Policy, Terms, Contact, About. These are approval and trust requirements.</li>
+    <li class="n"><b>Never encourage clicks</b> with wording, arrows, or placement that invites accidental taps.</li>
+    <li class="n"><b>No ads on thin, error, or empty-state pages.</b> If there is no content, there is no ad.</li>
+  </ul>
+</section>
+
+<section id="consent">
+  <div class="lbl">07 &nbsp; Consent and privacy</div>
+  <h2>The launch blocker for your traffic</h2>
+  <p>OpsCrunch traffic is heavily EU, UK, and international, which makes consent the first thing to get right, not the last. Without a compliant setup, Google stops serving ads to exactly the higher-value regions you most want.</p>
+  <div class="rule warn"><b>Mandatory before any ad serves in Europe.</b> A Google-certified Consent Management Platform integrated with IAB TCF v2.2, plus Google Consent Mode v2, is required to serve ads to the EEA and UK (since 16 January 2024) and Switzerland (since 31 July 2024). No certified CMP means no ads to those users.</div>
+  <ul class="clean">
+    <li class="y"><b>Choose a certified CMP.</b> Google's own Privacy and Messaging European regulations message is free and certified, or use a certified third party. Confirm it is on Google's current certified list before committing.</li>
+    <li class="y"><b>Implement Consent Mode v2</b> (the ad_user_data and ad_personalization signals) and block ad scripts until consent is granted for users in covered regions.</li>
+    <li class="y"><b>Cover the other regions too.</b> A California privacy-choices link for CPRA, and an Australian-law-aware privacy and cookie policy, since the founder and a share of traffic are Australian.</li>
+    <li class="y"><b>Detect region</b> so the consent banner shows where it is required and stays out of the way where it is not.</li>
+    <li class="n"><b>Do not serve personalised ads without a valid consent signal</b> in the EEA, UK, or Switzerland. It is both a policy breach and a revenue risk.</li>
+  </ul>
+  <p class="note">Regulations shift, so verify the current requirements and the certified-CMP list against Google's own help pages before launch rather than treating this page as final.</p>
+</section>
+
+<section id="ladder">
+  <div class="lbl">08 &nbsp; Network tier ladder</div>
+  <h2>Climb only when the data earns it</h2>
+  <table>
+    <thead><tr><th>Stage</th><th>Network</th><th>Gate</th><th>Typical RPM</th></tr></thead>
+    <tbody>
+      <tr><td class="m">Start</td><td>Google AdSense</td><td class="m">Approval</td><td class="m">$2 to $5</td></tr>
+      <tr><td class="m">Grow</td><td>Ezoic</td><td class="m">works best &#8805;10k/mo</td><td class="m">$4 to $12</td></tr>
+      <tr><td class="m">Scale</td><td>Mediavine / Raptive</td><td class="m">50k sessions/mo</td><td class="m">$15 to $30+</td></tr>
+    </tbody>
+  </table>
+  <div class="rule"><b>Read this honestly.</b> The model shows this niche may sit in the AdSense and Ezoic tiers for a long time. That means piling on ad density to chase display RPM is the wrong trade, because it costs tool completion and affiliate clicks, which are worth far more per visitor. Move up a tier when session volume clears the gate, not by crowding the page. Ezoic in particular will want to place more ads than this kit allows, so hold the line on the no-ad zone.</div>
+  <h3>Guardrail metrics</h3>
+  <p class="note">Watch these together, never RPM alone. If added ad density lifts RPM but drops tool completion, affiliate click-through, or Core Web Vitals, roll it back. Ads serve the floor; they must not erode the ceiling.</p>
+</section>
+
+<section id="impl">
+  <div class="lbl">09 &nbsp; Implementation</div>
+  <h2>The ad-slot component</h2>
+  <p class="note">One reusable slot: a reserved-height container, a mono Advertisement label, consent-gated and lazy where required, styled to look nothing like an OpsCrunch component.</p>
+<pre><span class="t">&lt;!-- reserved height prevents layout shift --&gt;</span>
+&lt;aside class=<span class="s">"ad-slot"</span> style=<span class="s">"min-height:280px"</span> data-lazy=<span class="s">"true"</span>&gt;
+  &lt;span class=<span class="s">"ad-label"</span>&gt;Advertisement&lt;/span&gt;
+  &lt;ins class=<span class="s">"adsbygoogle"</span> …&gt;&lt;/ins&gt;
+&lt;/aside&gt;
+
+<span class="t">/* paid subscriber? render no slot and make no ad request at all */</span>
+<span class="t">/* only after: consent granted (region-aware) AND tool interactive */</span>
+<span class="t">/* auto-ads: page-level exclusion over the .oc-tool region */</span></pre>
+  <div class="rule"><b>Order of operations.</b> Render the calculator, make it interactive, resolve consent, then request ads into the reserved slots. Never the reverse.</div>
+  <div class="rule"><b>Gate by tier.</b> Before requesting any ad, check subscription status. For a paid subscriber, skip the slot entirely rather than hiding it, so no request is made and the page is genuinely ad-free. Anonymous and free-account visitors follow the normal consent-then-serve path.</div>
+</section>
+
+<div class="foot">
+  AdSense Kit v1. Completes the set with the Brand Kit and Calculator Kit. RPM ranges are 2026 benchmarks; consent and placement rules reflect Google policy as of mid-2026 and should be verified against Google's help pages before launch, since they change. This is planning guidance, not legal advice.
+</div>
+
+</div>
+</body>
+</html>

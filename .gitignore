@@ -37,3 +37,5 @@ secrets/
 Thumbs.db
 .idea/
 .vscode/
+docs/cloudflare/api.txt
+docs/google-adsense/verication-code.txt

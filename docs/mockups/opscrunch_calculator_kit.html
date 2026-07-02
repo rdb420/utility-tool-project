@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpsCrunch &middot; Calculator Kit v1</title>
+<style>
+  :root{
+    --ink:#14181e;--ink-2:#1c232c;--paper:#f1f3ef;--surface:#ffffff;
+    --signal:#ee5a1c;--signal-press:#cf4a11;--amber:#ffb020;
+    --slate:#3a4855;--muted:#6c7681;--line:#e0e2db;--line-2:#cfd2c9;--good:#1f7a54;
+    --r-sm:6px;--r:9px;--r-lg:14px;
+    --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:22px;--s6:34px;
+    --shadow:0 18px 40px -28px rgba(20,24,30,.4);
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 26px}
+  .lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;color:var(--muted);font-weight:600}
+  h1{font-size:2.3rem;font-weight:800;letter-spacing:-.025em;margin:0 0 8px}
+  h2{font-size:1.4rem;font-weight:800;letter-spacing:-.01em;margin:0 0 6px}
+  h3{font-size:1rem;font-weight:700;margin:20px 0 8px;color:var(--slate)}
+  p{margin:0 0 12px}
+  a{color:var(--signal)}
+  .top{background:var(--ink);color:#fff;padding:56px 0 46px}
+  .top .wm{font-weight:800;font-size:1.5rem;letter-spacing:-.02em;display:inline-flex;align-items:baseline}
+  .top .wm .c{color:var(--signal)}
+  .top .wm .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:4px;transform:translateY(.11em)}
+  .top .tag{color:#c7ccd2;font-size:1.1rem;margin:14px 0 0;max-width:60ch}
+  section{padding:42px 0;border-bottom:1px solid var(--line)}
+  .demo{border:1px dashed var(--line-2);border-radius:12px;padding:22px;background:var(--surface);margin:14px 0}
+  .note{font-size:.9rem;color:var(--slate)}
+  pre{background:var(--ink);color:#e9ece4;border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:.8rem;line-height:1.5;margin:12px 0}
+  pre .t{color:#8b95a0}pre .a{color:var(--amber)}pre .s{color:#7fb0a6}
+  code.k{font-family:var(--mono);background:#e7e9e2;border-radius:5px;padding:1px 6px;font-size:.86rem}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin:12px 0}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;font-size:.66rem;color:var(--muted)}
+  td.m{font-family:var(--mono)}
+  .anatomy{font-family:var(--mono);font-size:.76rem;color:var(--slate);white-space:pre;line-height:1.45;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow-x:auto}
+  ol.recipe{counter-reset:step;list-style:none;padding:0;margin:0}
+  ol.recipe li{position:relative;padding:12px 0 12px 46px;border-bottom:1px solid var(--line)}
+  ol.recipe li:last-child{border-bottom:0}
+  ol.recipe li::before{counter-increment:step;content:counter(step,decimal-leading-zero);position:absolute;left:0;top:12px;font-family:var(--mono);font-weight:700;color:var(--signal);font-size:.82rem}
+  ol.recipe b{color:var(--ink)}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .toc a{font-family:var(--mono);font-size:.72rem;text-decoration:none;color:#c7ccd2;border:1px solid #38424d;border-radius:20px;padding:5px 12px}
+  .toc a:hover{border-color:var(--signal);color:#fff}
+
+  /* ---------- SHARED COMPONENT CSS (lift these into the build) ---------- */
+  .oc-bar{background:var(--ink);color:#fff;border-radius:var(--r-lg) var(--r-lg) 0 0;border-bottom:2px solid var(--signal);display:flex;align-items:center;gap:22px;padding:12px 18px}
+  .oc-bar .wm{font-weight:800;font-size:1.05rem;color:#fff;text-decoration:none;display:flex;align-items:baseline}
+  .oc-bar .wm .c{color:var(--signal)}.oc-bar .wm .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:3px;transform:translateY(.12em)}
+  .oc-bar nav{display:flex;gap:18px}.oc-bar nav a{color:#c7ccd2;text-decoration:none;font-size:.86rem;font-weight:600}.oc-bar nav a:hover{color:#fff}
+  .oc-bar .r{margin-left:auto}.oc-bar .signin{color:#fff;text-decoration:none;font-size:.84rem;font-weight:600;border:1px solid #3a444f;border-radius:6px;padding:6px 12px}
+
+  .oc-tool{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line-2);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .oc-inputs{padding:20px 22px 22px}
+  .oc-field{margin-bottom:14px}.oc-field > span{display:block;font-size:.82rem;color:var(--slate);font-weight:600;margin-bottom:5px}
+  .oc-dims{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.oc-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  input[type=number]{width:100%;font-family:var(--mono);font-size:1.05rem;padding:11px 12px;border:1.5px solid var(--line-2);border-radius:var(--r);background:#fbfcfa;color:var(--ink)}
+  input[type=number]:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 3px rgba(238,90,28,.15)}
+  select{width:100%;font-family:var(--mono);font-size:.92rem;padding:10px 11px;border:1.5px solid var(--line-2);border-radius:var(--r);background:#fbfcfa;color:var(--ink)}
+  .oc-unit{display:flex;border:1.5px solid var(--line-2);border-radius:var(--r);overflow:hidden}
+  .oc-unit button{flex:1;font-family:var(--mono);font-size:.82rem;font-weight:600;padding:10px 0;border:0;background:#fbfcfa;color:var(--muted);cursor:pointer}
+  .oc-unit button[aria-pressed=true]{background:var(--ink);color:#fff}
+  .oc-check{display:flex;align-items:center;gap:9px;font-size:.86rem;color:var(--slate)}.oc-check input{width:16px;height:16px;accent-color:var(--signal)}
+  .oc-crunch{width:100%;font-weight:800;font-size:1rem;color:#fff;background:var(--signal);border:0;border-radius:var(--r);padding:13px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .oc-crunch:hover{background:var(--signal-press)}.oc-crunch:focus-visible{outline:3px solid var(--amber);outline-offset:2px}.oc-crunch .k{font-family:var(--mono);font-size:.72rem;opacity:.8}
+  .oc-adv-toggle{margin-top:14px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:13px 0 0;cursor:pointer;color:var(--slate);font-weight:700;font-size:.9rem;display:flex;gap:8px;align-items:center}
+  .oc-adv-toggle .chev{color:var(--signal);transition:transform .2s}.oc-adv-toggle[aria-expanded=true] .chev{transform:rotate(90deg)}
+  .oc-readout{background:var(--ink-2);color:#fff;padding:20px 22px;position:relative;background-image:repeating-linear-gradient(180deg,transparent 0 3px,rgba(255,255,255,.014) 3px 4px)}
+  .oc-readout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--signal)}
+  .oc-readtag{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.oc-readtag .lbl{color:#8b95a0}
+  .oc-big{font-family:var(--mono);font-weight:700;color:var(--amber);font-size:3rem;line-height:1;text-shadow:0 0 22px rgba(255,176,32,.28)}.oc-big .u{font-size:1.05rem;color:#c9cfd6;margin-left:8px}
+  .oc-flash{animation:ocflash .5s ease}@keyframes ocflash{0%{background:rgba(255,176,32,.16)}100%{background:transparent}}
+  .oc-derived{margin-top:15px;border-top:1px solid #2b333d;padding-top:12px;display:grid;gap:9px}
+  .oc-drow{display:flex;justify-content:space-between;font-size:.88rem;gap:12px}.oc-drow .k{color:#9aa3ad}.oc-drow .v{font-family:var(--mono);color:#fff}
+  .oc-drow.charge .v{color:var(--amber);font-weight:700}.oc-drow.charge .k{color:#e7eae3;font-weight:600}
+  .oc-copyrow{margin-top:15px;display:flex;gap:9px}.oc-copyrow button{flex:1;font-weight:700;font-size:.82rem;color:#e7eae3;background:#28323d;border:1px solid #38424d;border-radius:8px;padding:9px 0;cursor:pointer}
+  .oc-copyrow button:hover{border-color:var(--amber);color:#fff}
+  .oc-nudge{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px dashed var(--line-2);border-radius:var(--r);padding:13px 16px;background:#fbfcfa}
+  .oc-nudge .lbl{color:var(--signal)}.oc-nudge p{margin:0;font-size:.9rem;color:var(--slate)}.oc-nudge a{margin-left:auto;font-weight:700;color:var(--ink);text-decoration:none;font-size:.9rem}
+  .oc-bench{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .oc-tile{border:1px solid var(--line-2);border-radius:11px;background:var(--surface);padding:14px 15px;text-decoration:none;color:var(--ink);display:block}
+  .oc-tile:hover{border-color:var(--signal);box-shadow:0 10px 24px -18px rgba(238,90,28,.5)}.oc-tile .nm{font-weight:700;font-size:.94rem;margin:6px 0 3px}.oc-tile .vol{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+  .oc-formula{font-family:var(--mono);background:var(--ink);color:#e9ece4;border-radius:var(--r);padding:15px 17px;font-size:.92rem}.oc-formula .a{color:var(--amber)}
+  .oc-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:.85rem;font-weight:600;padding:10px 18px;border-radius:8px;border:1px solid var(--signal);opacity:0;pointer-events:none;transition:.2s;z-index:40}
+  .oc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .foot{padding:32px 0 60px;color:var(--muted);font-size:.82rem}
+  @media(max-width:760px){.oc-tool{grid-template-columns:1fr}.oc-bench{grid-template-columns:1fr 1fr}.oc-bar nav{display:none}}
+  @media(prefers-reduced-motion:reduce){.oc-flash{animation:none}.oc-adv-toggle .chev{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="lbl" style="color:var(--amber)">Calculator Kit v1</div>
+  <div class="wm" style="margin-top:12px">ops<span class="c">crunch</span><span class="cur"></span></div>
+  <p class="tag">The shared parts every tool is built from. Assemble a new calculator by combining these components and following the conventions below, so all fifty tools look, behave, and read as one workbench.</p>
+  <div class="toc">
+    <a href="#tokens">Tokens</a><a href="#anatomy">Anatomy</a><a href="#components">Components</a><a href="#conventions">Conventions</a><a href="#recipe">Build recipe</a>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<section id="tokens">
+  <div class="lbl">01 &nbsp; Foundations</div>
+  <h2>Design tokens</h2>
+  <p class="note">One source of truth for colour, radius, spacing, and type. Every component reads from these variables, so a change here updates the whole suite. Colours are documented in full in the Brand Kit.</p>
+<pre><span class="t">:root{</span>
+  <span class="s">--ink</span>:#14181e;      <span class="s">--ink-2</span>:#1c232c;   <span class="s">--paper</span>:#f1f3ef;   <span class="s">--surface</span>:#fff;
+  <span class="s">--signal</span>:#ee5a1c;   <span class="s">--signal-press</span>:#cf4a11; <span class="s">--amber</span>:#ffb020;
+  <span class="s">--slate</span>:#3a4855;    <span class="s">--muted</span>:#6c7681;   <span class="s">--line</span>:#e0e2db;   <span class="s">--line-2</span>:#cfd2c9; <span class="s">--good</span>:#1f7a54;
+  <span class="s">--r-sm</span>:6px; <span class="s">--r</span>:9px; <span class="s">--r-lg</span>:14px;   <span class="t">/* radius */</span>
+  <span class="s">--s1..s6</span>:4 8 12 16 22 34px;      <span class="t">/* spacing scale */</span>
+  <span class="s">--sans</span>: system grotesk stack;      <span class="s">--mono</span>: ui-monospace stack;
+<span class="t">}</span></pre>
+  <p class="note">Breakpoint: single column below 760px. Shadow token <code class="k">--shadow</code> is reserved for the tool card only. The full component CSS is the stylesheet of this file, ready to lift.</p>
+</section>
+
+<section id="anatomy">
+  <div class="lbl">02 &nbsp; Page anatomy</div>
+  <h2>How a calculator page is stacked</h2>
+  <p class="note">Every tool follows the same vertical order. The tool sits first so it is usable without scrolling; everything below feeds trust, SEO, and cross-tool flow.</p>
+<div class="anatomy">┌──────────────────────────────────────────────┐
+│  APP BAR   opscrunch▮   Inventory Freight … ↦ Sign in │
+├──────────────────────────────────────────────┤
+│  BREADCRUMB  Freight / CBM Calculator          │
+│  H1 + one-line what-it-does                    │
+│                                                │
+│  ┌─────────── TOOL ───────────┬──────────────┐ │
+│  │  INPUTS                     │  READOUT     │ │  ← above the fold
+│  │  dims · unit · count        │  big value   │ │
+│  │  [ Crunch it ]              │  derived     │ │
+│  │  ▸ Advanced                 │  copy row    │ │
+│  └─────────────────────────────┴──────────────┘ │
+│  ACCOUNT / BULK NUDGE  (dashed, quiet)         │
+│  FORMULA · WORKED EXAMPLE · ASSUMPTIONS        │  ← SEO + trust + AI-citation
+│  FAQ                                            │
+│  THE REST OF THE BENCH  (cross-tool tiles)     │  ← the suite
+└──────────────────────────────────────────────┘</div>
+</section>
+
+<section id="components">
+  <div class="lbl">03 &nbsp; Components</div>
+  <h2>The parts</h2>
+
+  <h3>App bar</h3>
+  <div class="demo" style="padding:0;overflow:hidden">
+    <div class="oc-bar"><a class="wm" href="#">ops<span class="c">crunch</span><span class="cur"></span></a>
+      <nav><a href="#">Inventory</a><a href="#">Freight</a><a href="#">Pricing</a><a href="#">Templates</a></nav>
+      <span class="r"></span><a class="signin" href="#">Sign in</a></div>
+  </div>
+  <p class="note">Fixed across every page. The three clusters plus Templates are always one click apart, which is how the suite stays connected. Sign in is a quiet ghost button until the account tier ships.</p>
+
+  <h3>Tool shell, inputs, and the signature readout</h3>
+  <div class="demo" style="padding:0;overflow:hidden;border-style:solid">
+    <div class="oc-tool">
+      <div class="oc-inputs">
+        <span class="lbl" style="display:block;margin-bottom:12px">Shipment</span>
+        <div class="oc-field"><span>Dimensions</span>
+          <div class="oc-dims"><input type="number" value="120" aria-label="L"><input type="number" value="80" aria-label="W"><input type="number" value="100" aria-label="H"></div></div>
+        <div class="oc-row2">
+          <div class="oc-field"><span>Unit</span>
+            <div class="oc-unit" role="group" aria-label="Unit" id="u"><button data-u="mm" aria-pressed="false">mm</button><button data-u="cm" aria-pressed="true">cm</button><button data-u="in" aria-pressed="false">in</button></div></div>
+          <div class="oc-field"><span>Cartons</span><input type="number" value="10" aria-label="Cartons"></div>
+        </div>
+        <button class="oc-crunch" id="cr">Crunch it <span class="k">&#9166;</span></button>
+        <button class="oc-adv-toggle" aria-expanded="false" id="advb"><span class="chev">&#9656;</span> Advanced</button>
+      </div>
+      <div class="oc-readout" id="ro">
+        <div class="oc-readtag"><span class="lbl">Total volume</span></div>
+        <div class="oc-big">9.600<span class="u">m&#179;</span></div>
+        <div class="oc-derived">
+          <div class="oc-drow"><span class="k">Per carton</span><span class="v">0.960 m&#179;</span></div>
+          <div class="oc-drow"><span class="k">Volumetric (Air, &#247;6000)</span><span class="v">1,600 kg</span></div>
+          <div class="oc-drow charge"><span class="k">Chargeable weight</span><span class="v">1,600 kg</span></div>
+        </div>
+        <div class="oc-copyrow"><button id="cpr">Copy result</button><button>Copy full</button></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">The shell is a two-column card: inputs left, readout right, collapsing to stacked on mobile. The readout is the one bold element, dark with amber digits, and it owns the "crunch" flash. Try the unit toggle and Copy result above.</p>
+<pre><span class="t">&lt;div class="oc-tool"&gt;</span>
+  <span class="t">&lt;div class="oc-inputs"&gt;</span> … fields, .oc-crunch, .oc-adv-toggle <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div class="oc-readout"&gt;</span> .oc-big + .oc-derived (.oc-drow[.charge]) + .oc-copyrow <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre>
+
+  <h3>Input primitives</h3>
+  <div class="demo">
+    <div class="oc-row2" style="max-width:520px">
+      <div class="oc-field"><span>Number field</span><input type="number" value="167" aria-label="n"></div>
+      <div class="oc-field"><span>Select</span><select><option>Air freight, &#247;6000</option><option>Express, &#247;5000</option></select></div>
+    </div>
+    <label class="oc-check" style="margin-top:6px"><input type="checkbox"> Apply carrier rounding</label>
+  </div>
+  <p class="note">All numeric inputs are monospace so digits align. Focus is a signal-orange ring. Segmented toggles (unit, kg/lb) are real buttons carrying <code class="k">aria-pressed</code>.</p>
+
+  <h3>Advanced disclosure, bench tiles, and the account nudge</h3>
+  <div class="demo">
+    <div class="oc-nudge" style="margin-bottom:16px"><span class="lbl">Bulk</span><p>Download the template, or bring any CSV and we map the columns.</p><a href="#">Save &amp; run bulk &#8594;</a></div>
+    <div class="oc-bench">
+      <a class="oc-tile" href="#"><span class="lbl">Freight</span><div class="nm">Volumetric weight</div><div class="vol">5,530 / mo</div></a>
+      <a class="oc-tile" href="#"><span class="lbl">Freight</span><div class="nm">Chargeable weight</div><div class="vol">3,180 / mo</div></a>
+      <a class="oc-tile" href="#"><span class="lbl">Freight</span><div class="nm">Freight density</div><div class="vol">1,660 / mo</div></a>
+      <a class="oc-tile" href="#"><span class="lbl">Inventory</span><div class="nm">Reorder point</div><div class="vol">1,050 / mo</div></a>
+    </div>
+  </div>
+  <p class="note">The nudge is dashed and quiet, present but never blocking the free tool. Bench tiles close every page with related tools, mixing clusters so a freight visitor discovers the inventory side.</p>
+
+  <h3>Formula, example, assumptions</h3>
+  <div class="demo">
+    <div class="oc-formula">CBM = <span class="a">L &#215; W &#215; H</span> (metres) &#215; cartons</div>
+    <p class="note" style="margin-top:10px"><b>Worked example:</b> 1.2 &#215; 0.8 &#215; 1.0 = 0.960 m&#179; &#215; 10 = <b>9.600 m&#179;</b></p>
+    <ul class="note" style="margin:6px 0 0;padding-left:18px"><li>State the formula, the assumptions, and when to confirm with a carrier or accountant.</li></ul>
+  </div>
+  <p class="note">Formula and example live in the HTML, visible to crawlers and AI engines. This block is what makes a tool citable rather than skippable.</p>
+</section>
+
+<section id="conventions">
+  <div class="lbl">04 &nbsp; Shared conventions</div>
+  <h2>Rules every tool obeys</h2>
+
+  <h3>Number formatting</h3>
+  <table>
+    <thead><tr><th>Value</th><th>Format</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Volume (m&#179;)</td><td class="m">3 dp, thousands sep</td><td class="m">9.600</td></tr>
+      <tr><td>Weight (kg)</td><td class="m">1 dp</td><td class="m">1,600.0</td></tr>
+      <tr><td>Weight (lb)</td><td class="m">0 dp</td><td class="m">3,527</td></tr>
+      <tr><td>Percent</td><td class="m">1 dp</td><td class="m">82.4 %</td></tr>
+      <tr><td>Currency</td><td class="m">local, 0 dp</td><td class="m">$1,200</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Unit coupling</h3>
+  <p class="note">Dimension unit drives the default weight unit and divisor. The user can override, but the default matches how that region actually ships.</p>
+  <table>
+    <thead><tr><th>Dimension unit</th><th>Default weight</th><th>Default mode / divisor</th></tr></thead>
+    <tbody>
+      <tr><td class="m">cm / mm</td><td class="m">kg</td><td>Air freight, &#247;6000 (167 kg/m&#179;)</td></tr>
+      <tr><td class="m">in</td><td class="m">lb</td><td>US parcel, &#247;139</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Volume is always reported in m&#179; regardless of input, since CBM is the global freight standard. Optional carrier rounding rounds each inch up, then the billable weight up to the next lb or 0.5 kg (FedEx and UPS, effective Aug 2025).</p>
+
+  <h3>Copy actions</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Contains</th></tr></thead>
+    <tbody>
+      <tr><td><b>Copy result</b></td><td>The headline outputs on one line: primary value, plus volumetric and chargeable where relevant.</td></tr>
+      <tr><td><b>Copy full</b></td><td>Every input and output as a labelled block, with the mode and the page URL, ready to paste into an email or sheet.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Disclaimer levels</h3>
+  <p class="note">Each formula record carries a level (from the corpus schema). The level sets the tone of the note under the readout.</p>
+  <table>
+    <thead><tr><th>Level</th><th>When</th><th>Note pattern</th></tr></thead>
+    <tbody>
+      <tr><td class="m">none</td><td>Pure, undisputed math (CBM, EOQ)</td><td>No caveat needed.</td></tr>
+      <tr><td class="m">estimate</td><td>Depends on a variable constant (DIM divisor)</td><td>"Divisors vary by carrier, so confirm yours."</td></tr>
+      <tr><td class="m">regional</td><td>Value differs by country (freight class)</td><td>"US NMFC classes. Check your region."</td></tr>
+      <tr><td class="m">professional_review</td><td>Money or compliance (landed cost, duty)</td><td>"A planning aid. Confirm with your broker or accountant."</td></tr>
+    </tbody>
+  </table>
+
+  <h3>SEO and schema slots</h3>
+  <ul class="note" style="padding-left:18px">
+    <li>One H1 per page, unique title and meta description, canonical URL.</li>
+    <li><code class="k">WebApplication</code> schema on the tool, plus <code class="k">FAQPage</code> and <code class="k">BreadcrumbList</code>.</li>
+    <li>Formula, example, and result rendered in HTML, never behind a JS-only shell.</li>
+  </ul>
+</section>
+
+<section id="recipe">
+  <div class="lbl">05 &nbsp; Build recipe</div>
+  <h2>Ship a new calculator in eight steps</h2>
+  <p class="note">Maps to the repo phases: corpus record (1b), formula engine (2), page spec (3), page build (4).</p>
+  <ol class="recipe">
+    <li><b>Pick the grounded formula record.</b> It carries inputs, expression, assumptions, a worked example, and a citation. No record, no page.</li>
+    <li><b>Lay out inputs.</b> Reuse the field, dimension trio, unit toggle, and select. Match input names to the formula record.</li>
+    <li><b>Configure the readout.</b> One primary value in the big amber slot, supporting figures as derived rows, the decisive one marked <code class="k">.charge</code>.</li>
+    <li><b>Add Advanced only if needed.</b> Divisors, modes, container fit, actual weight. If the formula is pure, skip it.</li>
+    <li><b>Wire copy and units.</b> Reuse the shared format, copy, and unit-coupling utilities. Do not reinvent per tool.</li>
+    <li><b>Write the copy blocks.</b> Intro line, formula, worked example from the record, assumptions, and three real FAQs. Set the disclaimer level.</li>
+    <li><b>Add metadata and schema.</b> Title, description, canonical, WebApplication, FAQ, Breadcrumb. Link four related bench tiles.</li>
+    <li><b>Write deterministic tests.</b> The worked example is a test case. Public result must match the cited example before launch.</li>
+  </ol>
+</section>
+
+<div class="foot">
+  Calculator Kit v1. The stylesheet of this file is the component library, ready to lift into the Phase 4 build. Pair with the Brand Kit for colour, type, voice, motion, and accessibility. Divisors reflect 2026 conventions and belong in dated reference tables before launch.
+</div>
+
+</div>
+<div class="oc-toast" id="toast">Copied</div>
+<script>
+(function(){
+  var u=document.getElementById('u'),ro=document.getElementById('ro');
+  function flash(){ro.classList.remove('oc-flash');void ro.offsetWidth;ro.classList.add('oc-flash');}
+  if(u)u.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+    u.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed','false');});
+    b.setAttribute('aria-pressed','true');flash();});});
+  var cr=document.getElementById('cr');if(cr)cr.addEventListener('click',flash);
+  var advb=document.getElementById('advb');if(advb)advb.addEventListener('click',function(){this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');});
+  var toast=document.getElementById('toast'),cpr=document.getElementById('cpr');
+  if(cpr)cpr.addEventListener('click',function(){
+    var t='CBM 9.600 m\u00b3 | Volumetric 1,600 kg (Air, \u00f76000) | Chargeable 1,600 kg';
+    function ok(){toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},1400);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,ok);else ok();
+  });
+})();
+</script>
+</body>
+</html>

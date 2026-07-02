@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpsCrunch &middot; Brand Kit v1</title>
+<style>
+  :root{
+    --ink:#14181e;--ink-2:#1c232c;--paper:#f1f3ef;--surface:#ffffff;
+    --signal:#ee5a1c;--signal-press:#cf4a11;--amber:#ffb020;
+    --slate:#3a4855;--muted:#6c7681;--line:#e0e2db;--line-2:#cfd2c9;--good:#1f7a54;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 26px}
+  .lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;color:var(--muted);font-weight:600}
+  h1{font-size:2.4rem;font-weight:800;letter-spacing:-.025em;margin:0 0 8px;line-height:1.05}
+  h2{font-size:1.4rem;font-weight:800;letter-spacing:-.01em;margin:0 0 4px}
+  h3{font-size:1.02rem;font-weight:700;margin:0 0 8px;color:var(--slate)}
+  p{margin:0 0 12px}
+  a{color:var(--signal)}
+  /* header */
+  .top{background:var(--ink);color:#fff;padding:64px 0 56px}
+  .top .wrap{display:block}
+  .wm{font-weight:800;font-size:2.6rem;letter-spacing:-.03em;display:inline-flex;align-items:baseline}
+  .wm .c{color:var(--signal)}
+  .wm .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:5px;transform:translateY(.11em);animation:blink 1.15s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .top .tag{color:#c7ccd2;font-size:1.15rem;margin:16px 0 0;max-width:56ch}
+  .persona{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+  .chip{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border:1px solid #38424d;border-radius:20px;padding:5px 12px}
+  /* sections */
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .sec-lbl{margin-bottom:18px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+  /* logo section */
+  .logo-box{border:1px solid var(--line);border-radius:12px;padding:34px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:2rem;letter-spacing:-.03em}
+  .logo-box.light{background:var(--paper)}
+  .logo-box.dark{background:var(--ink);color:#fff}
+  .logo-box .c{color:var(--signal)}
+  .logo-box .cur{display:inline-block;width:.5em;height:1em;background:var(--amber);margin-left:4px;transform:translateY(.11em)}
+  .mark{width:76px;height:76px;border-radius:16px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+  .mark .cur{width:12px;height:34px;background:var(--amber)}
+  .marks{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .mark.sig{background:var(--signal)}.mark.sig .cur{background:#fff}
+  .dos li{margin:0 0 7px}
+  .dont{color:#b23b1a}
+  .do{color:var(--good)}
+  /* color */
+  .sw{border-radius:10px;padding:16px 14px;border:1px solid rgba(0,0,0,.06);min-height:96px;display:flex;flex-direction:column;justify-content:flex-end}
+  .sw .n{font-weight:700;font-size:.92rem}
+  .sw .hex{font-family:var(--mono);font-size:.74rem;opacity:.85}
+  .sw .role{font-size:.72rem;opacity:.8;margin-top:2px}
+  .swgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  /* type */
+  .spec{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:22px 24px}
+  .scale-row{display:flex;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .scale-row:last-child{border-bottom:0}
+  .scale-row .meta{font-family:var(--mono);font-size:.72rem;color:var(--muted);width:150px;flex:none}
+  .num-demo{font-family:var(--mono);color:var(--slate)}
+  /* voice */
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:.68rem;color:var(--muted)}
+  .yes{color:var(--good);font-family:var(--mono);font-weight:700}
+  .no{color:#b23b1a;font-family:var(--mono);font-weight:700}
+  /* motion + a11y */
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding:9px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--slate)}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean b{color:var(--ink)}
+  .btn-demo{font-family:var(--sans);font-weight:800;color:#fff;background:var(--signal);border:0;border-radius:10px;padding:12px 20px;cursor:pointer}
+  .foot{padding:34px 0 60px;color:var(--muted);font-size:.82rem}
+  @media(max-width:760px){.two,.three,.swgrid{grid-template-columns:1fr 1fr}.wm{font-size:2rem}h1{font-size:1.9rem}}
+  @media(prefers-reduced-motion:reduce){.wm .cur{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="lbl" style="color:var(--amber)">Brand Kit v1</div>
+  <div class="wm" style="margin-top:14px">ops<span class="c">crunch</span><span class="cur"></span></div>
+  <p class="tag">Free, fast calculators for inventory and freight. One connected workbench for the people who move and count stock.</p>
+  <div class="persona">
+    <span class="chip">Fast</span><span class="chip">Utilitarian</span><span class="chip">Precise</span><span class="chip">Honest</span><span class="chip">Tool-first</span>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<section>
+  <div class="lbl sec-lbl">01 &nbsp; Logo</div>
+  <div class="two">
+    <div>
+      <h2>Wordmark</h2>
+      <p>Lowercase, heavy grotesk, tight tracking. <b>ops</b> in the surface colour, <b>crunch</b> in signal orange, closed by a blinking amber block cursor. The cursor is the brand's tell: a terminal waiting to crunch a number. It blinks only where motion is welcome, and holds steady when reduced motion is set.</p>
+      <div class="logo-box light" style="margin-bottom:14px">ops<span class="c">crunch</span><span class="cur"></span></div>
+      <div class="logo-box dark">ops<span class="c">crunch</span><span class="cur"></span></div>
+    </div>
+    <div>
+      <h2>App mark</h2>
+      <p>For favicons, avatars, and tight spaces: a rounded ink tile holding the amber cursor. It reads as OpsCrunch shrunk to its signature. A signal-orange variant exists for a single accent moment, never as the default.</p>
+      <div class="marks" style="margin-bottom:20px">
+        <div class="mark"><span class="cur"></span></div>
+        <div class="mark sig"><span class="cur"></span></div>
+      </div>
+      <h3>Clearspace &amp; size</h3>
+      <p style="font-size:.92rem;color:var(--slate)">Keep clearspace of one cursor-width on every side. Minimum wordmark width 96px on screen. Do not set below 22px cap height.</p>
+    </div>
+  </div>
+  <div class="two" style="margin-top:24px">
+    <div class="card"><h3 class="do">Do</h3><ul class="dos" style="padding-left:18px;font-size:.92rem;color:var(--slate)">
+      <li>Keep the wordmark lowercase and one weight.</li>
+      <li>Use the light lockup on paper, the dark lockup on ink.</li>
+      <li>Let the cursor be the only ornament.</li>
+    </ul></div>
+    <div class="card"><h3 class="dont">Do not</h3><ul class="dos" style="padding-left:18px;font-size:.92rem;color:var(--slate)">
+      <li>Recolour "crunch" to anything but signal orange.</li>
+      <li>Set the wordmark in a serif, or add a tagline lockup.</li>
+      <li>Stretch, outline, or drop-shadow the mark.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="lbl sec-lbl">02 &nbsp; Colour</div>
+  <p style="max-width:64ch">A warm signal-and-amber family against cool ink and paper, drawn from hi-vis gear and dock scales rather than another blue dashboard. Signal orange is for action. Amber is reserved for the live readout, so a number lighting up always means an answer. Everything else is structure.</p>
+  <h3 style="margin-top:22px">Core</h3>
+  <div class="swgrid">
+    <div class="sw" style="background:#14181e;color:#fff"><div class="n">Ink</div><div class="hex">#14181E</div><div class="role">Primary surfaces, text</div></div>
+    <div class="sw" style="background:#1c232c;color:#fff"><div class="n">Ink 2</div><div class="hex">#1C232C</div><div class="role">Readout panel</div></div>
+    <div class="sw" style="background:#f1f3ef;color:#14181e"><div class="n">Paper</div><div class="hex">#F1F3EF</div><div class="role">Page background</div></div>
+    <div class="sw" style="background:#ffffff;color:#14181e"><div class="n">Surface</div><div class="hex">#FFFFFF</div><div class="role">Cards, inputs</div></div>
+  </div>
+  <h3 style="margin-top:20px">Accent</h3>
+  <div class="swgrid">
+    <div class="sw" style="background:#ee5a1c;color:#fff"><div class="n">Signal</div><div class="hex">#EE5A1C</div><div class="role">Actions, links, focus</div></div>
+    <div class="sw" style="background:#cf4a11;color:#fff"><div class="n">Signal press</div><div class="hex">#CF4A11</div><div class="role">Active / hover</div></div>
+    <div class="sw" style="background:#ffb020;color:#14181e"><div class="n">Amber</div><div class="hex">#FFB020</div><div class="role">Readout digits only</div></div>
+    <div class="sw" style="background:#1f7a54;color:#fff"><div class="n">Good</div><div class="hex">#1F7A54</div><div class="role">Confirmations</div></div>
+  </div>
+  <h3 style="margin-top:20px">Support</h3>
+  <div class="swgrid">
+    <div class="sw" style="background:#3a4855;color:#fff"><div class="n">Slate</div><div class="hex">#3A4855</div><div class="role">Secondary text</div></div>
+    <div class="sw" style="background:#6c7681;color:#fff"><div class="n">Muted</div><div class="hex">#6C7681</div><div class="role">Labels, hints</div></div>
+    <div class="sw" style="background:#cfd2c9;color:#14181e"><div class="n">Line 2</div><div class="hex">#CFD2C9</div><div class="role">Input borders</div></div>
+    <div class="sw" style="background:#e0e2db;color:#14181e"><div class="n">Line</div><div class="hex">#E0E2DB</div><div class="role">Dividers</div></div>
+  </div>
+  <p style="margin-top:18px;font-size:.9rem;color:var(--slate)">Contrast: signal orange carries white text on buttons at large weight. Do not use amber for text on light surfaces, it fails contrast. Amber earns its glow only on the ink readout.</p>
+</section>
+
+<section>
+  <div class="lbl sec-lbl">03 &nbsp; Typography</div>
+  <div class="two">
+    <div>
+      <h2>Two roles, one rule</h2>
+      <p><b>Grotesk sans</b> for everything you read, drawn from the system stack so pages load instantly with no font fetch. A <b>monospace</b> utility face for everything you count: every input, figure, result, and label. Numbers in mono line up like an instrument, which is the point.</p>
+      <p class="lbl">Sans stack</p>
+      <p class="num-demo" style="color:var(--slate);font-family:var(--sans);font-size:.86rem">system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial</p>
+      <p class="lbl" style="margin-top:10px">Mono stack</p>
+      <p class="num-demo" style="font-size:.86rem">ui-monospace, SF Mono, JetBrains Mono, Menlo, Consolas</p>
+    </div>
+    <div class="spec">
+      <div class="scale-row"><span class="meta">Readout / 3.1rem / 700 mono</span><span style="font-family:var(--mono);font-weight:700;color:var(--signal);font-size:1.9rem">9.600</span></div>
+      <div class="scale-row"><span class="meta">H1 / 2.1rem / 800</span><span style="font-weight:800;font-size:1.5rem;letter-spacing:-.02em">CBM Calculator</span></div>
+      <div class="scale-row"><span class="meta">H2 / 1.35rem / 800</span><span style="font-weight:800;font-size:1.2rem">The formula</span></div>
+      <div class="scale-row"><span class="meta">Body / 1rem / 400</span><span style="font-size:1rem">Enter the carton size.</span></div>
+      <div class="scale-row"><span class="meta">Small / .88rem / 400</span><span style="font-size:.88rem;color:var(--slate)">Confirm the divisor.</span></div>
+      <div class="scale-row"><span class="meta">Label / .7rem mono caps</span><span class="lbl">Freight / CBM</span></div>
+    </div>
+  </div>
+  <p style="margin-top:16px;font-size:.9rem;color:var(--slate)">Micro-labels are mono, uppercase, and tracked (.14em), stamped like a shipping label. Use them for eyebrows, breadcrumbs, and section markers, never for body copy.</p>
+</section>
+
+<section>
+  <div class="lbl sec-lbl">04 &nbsp; Voice</div>
+  <p style="max-width:64ch">Plain verbs, sentence case, no filler. A control says exactly what it does and keeps the same word through the whole flow. Notes are honest about limits, because that is how a free tool earns an operator's trust. The tone is a competent colleague at the next desk, not a mascot and not an enterprise brochure.</p>
+  <table style="margin-top:16px">
+    <thead><tr><th style="width:52px"></th><th>Say this</th><th>Not this</th></tr></thead>
+    <tbody>
+      <tr><td><span class="yes">verb</span></td><td>Crunch it</td><td class="no">Submit / Calculate now!</td></tr>
+      <tr><td><span class="yes">plain</span></td><td>Enter the carton size and count.</td><td class="no">Leverage our powerful engine.</td></tr>
+      <tr><td><span class="yes">honest</span></td><td>Divisors vary by carrier, so confirm yours.</td><td class="no">Guaranteed accurate rates.</td></tr>
+      <tr><td><span class="yes">error</span></td><td>Enter a length, width, and height above zero.</td><td class="no">Oops! Something went wrong.</td></tr>
+      <tr><td><span class="yes">empty</span></td><td>Add your dimensions to see the volume.</td><td class="no">No data.</td></tr>
+    </tbody>
+  </table>
+  <h3 style="margin-top:22px">Interface vocabulary</h3>
+  <p style="font-size:.92rem;color:var(--slate)">Primary action is always <b>Crunch it</b>. Save/bulk actions read <b>Save &amp; run bulk</b>. Copy actions are <b>Copy result</b> and <b>Copy full</b>. Disclaimers open with the fact, then the caveat: state the formula, state the assumption, then say when to confirm with a carrier, accountant, or broker.</p>
+</section>
+
+<section>
+  <div class="lbl sec-lbl">05 &nbsp; Motion</div>
+  <ul class="clean">
+    <li><b>Result flash.</b> When a value updates, the readout pulses amber once over 0.5s. This is the one orchestrated moment, the "crunch."</li>
+    <li><b>Cursor blink.</b> The wordmark cursor blinks on a 1.15s step, evoking a terminal ready for input.</li>
+    <li><b>Hover.</b> Buttons deepen to signal-press; tiles lift with a soft signal-tinted shadow. Fast, 150ms.</li>
+    <li><b>Restraint.</b> Nothing else animates. No scroll parallax, no entrance choreography. Speed is the brand, so the interface never makes anyone wait for a flourish.</li>
+    <li><b>Reduced motion.</b> Under prefers-reduced-motion, the flash and blink stop and the interface stays completely still.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="lbl sec-lbl">06 &nbsp; Accessibility floor</div>
+  <ul class="clean">
+    <li><b>Contrast.</b> Body text meets WCAG AA on paper and ink. Amber is used for large readout digits on ink only, never small text on light.</li>
+    <li><b>Focus.</b> Every control shows a visible focus ring: 3px amber on the primary button, signal on inputs.</li>
+    <li><b>Keyboard.</b> The whole calculator works without a mouse. Enter crunches. Toggles are real buttons with aria-pressed.</li>
+    <li><b>Targets.</b> Tap targets are at least 44px on touch. Inputs are large and mono for legibility.</li>
+    <li><b>Labels.</b> Every input has a programmatic label; the tool is usable with a screen reader.</li>
+  </ul>
+  <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <button class="btn-demo">Crunch it</button>
+    <span class="lbl">Primary action, white on signal, 3px amber focus ring</span>
+  </div>
+</section>
+
+<div class="foot">
+  Brand Kit v1 for the OpsCrunch operations toolkit. Pair with the Calculator Kit, which applies these tokens to the shared components. Wordmark shown in a system font as direction; a finished logotype would refine the letterforms. Screen "OpsCrunch" for trademark before print or launch.
+</div>
+
+</div>
+</body>
+</html>
