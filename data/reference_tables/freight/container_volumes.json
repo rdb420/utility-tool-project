@@ -1,0 +1,20 @@
+{
+  "id": "reference.freight.container_volumes",
+  "name": "Container and Trailer Nominal Volumes",
+  "description": "Nominal internal volumes for common ocean containers and a 53ft US trailer, used by the CBM calculator's container-fit estimate. NOT in the knowledge base. Candidate values below are common industry figures and MUST be confirmed against ISO 668 / carrier equipment guides before being treated as verified.",
+  "region": "global (ISO containers) / US (53ft trailer)",
+  "effective_date": null,
+  "review_frequency": "yearly (container specs are stable; carrier equipment guides occasionally revise usable-volume figures)",
+  "grounding": "external",
+  "status": "needs_sourcing",
+  "source_type": "official_standard",
+  "source": "TO CONFIRM: ISO 668 series 1 freight container dimensions; ocean-carrier equipment guides (e.g. Maersk, Hapag-Lloyd container specifications); trailer OEM specs for the 53ft dry van.",
+  "sourcing_notes": "Values are nominal internal capacities commonly quoted in equipment guides (20ft DV ~33 m3, 40ft DV ~67 m3, 40ft HC ~76 m3, 53ft trailer ~114 m3). Real-world loadable volume is lower — practical loading typically achieves roughly 80-90% of nominal capacity depending on carton sizes, palletisation, and stacking rules — so the calculator presents fill % as an estimate only. Confirm each value against ISO 668 and a current carrier equipment guide, record the source per row, and set status to verified once confirmed.",
+  "columns": ["key", "container", "volume_m3", "verified"],
+  "rows": [
+    { "key": "c20", "container": "20ft dry van (DV)", "volume_m3": 33, "verified": false },
+    { "key": "c40", "container": "40ft dry van (DV)", "volume_m3": 67, "verified": false },
+    { "key": "hc40", "container": "40ft high cube (HC)", "volume_m3": 76, "verified": false },
+    { "key": "t53", "container": "53ft truck trailer", "volume_m3": 114, "verified": false }
+  ]
+}

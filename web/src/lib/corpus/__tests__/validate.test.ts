@@ -119,10 +119,10 @@ function calculatorRecord(overrides: Record<string, unknown> = {}) {
 // ---------------------------------------------------------------------------
 
 describe("real corpus", () => {
-  it("validates all 16 records with no errors", () => {
+  it("validates all 21 records with no errors", () => {
     const report = validateCorpus();
     expect(report.errors).toEqual([]);
-    expect(report.checked).toBe(16);
+    expect(report.checked).toBe(21);
     expect(report.ok).toBe(true);
   });
 });

@@ -1,0 +1,69 @@
+{
+  "id": "calculator.cbm",
+  "slug": "cbm-calculator",
+  "title": "CBM Calculator",
+  "meta_description": "Free CBM calculator: enter carton dimensions and count to get shipment volume in cubic metres, plus volumetric and chargeable weight. Carrier DIM divisors are presets to confirm against your carrier's current service guide.",
+  "primary_keyword": "cbm calculator",
+  "secondary_keywords": [
+    "cbm calculation",
+    "cubic meter calculator",
+    "volumetric weight calculator",
+    "chargeable weight calculator",
+    "dimensional weight calculator"
+  ],
+  "formula_ids": [
+    "freight.cbm.basic",
+    "freight.volumetric_weight.divisor",
+    "freight.chargeable_weight.basic"
+  ],
+  "input_groups": [
+    {
+      "label": "Shipment",
+      "inputs": [
+        { "symbol": "L", "label": "Length", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 120, "help": "Outer carton length." },
+        { "symbol": "W", "label": "Width", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 80, "help": "Outer carton width." },
+        { "symbol": "H", "label": "Height", "unit": "cm", "type": "number", "min": 0, "required": true, "default": 100, "help": "Outer carton height." },
+        { "symbol": "Q", "label": "Cartons", "unit": "cartons", "type": "integer", "min": 0, "required": true, "default": 10, "help": "Number of identical cartons in the shipment." }
+      ]
+    },
+    {
+      "label": "Carrier & mode",
+      "inputs": [
+        { "symbol": "divisor", "label": "Divisor", "unit": "cm3/kg", "type": "number", "min": 0, "required": true, "default": 6000, "help": "Carrier DIM divisor. Presets (6000 air, 5000 express) are estimates — confirm against your carrier's current service guide." },
+        { "symbol": "AW", "label": "Actual gross weight", "unit": "kg", "type": "number", "min": 0, "required": false, "help": "Optional. Scale weight of the whole shipment; chargeable weight is the greater of actual and volumetric." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "CBM", "label": "Total volume", "unit": "m3", "primary": true, "description": "Shipment volume in cubic metres — the figure sea/LCL freight is quoted on." },
+    { "symbol": "VW", "label": "Volumetric weight", "unit": "kg", "description": "Volume divided by the carrier divisor. Carriers bill light-but-bulky freight on this instead of scale weight." },
+    { "symbol": "CW", "label": "Chargeable weight", "unit": "kg", "description": "The greater of actual and volumetric weight — what the carrier actually rates the shipment on." }
+  ],
+  "copy_blocks": {
+    "intro": "CBM (cubic metres) is how freight measures size: multiply a carton's length, width, and height in metres, then multiply by the carton count. Forwarders quote sea and LCL rates per CBM, and parcel and air carriers convert the same volume into a volumetric weight to decide what you actually pay.",
+    "how_it_works": "Enter the carton dimensions and count to get total volume in cubic metres. The tool then divides the volume by a carrier DIM divisor to estimate volumetric weight, and — when you enter an actual gross weight — shows the chargeable weight, which is simply the greater of the two. Advanced options switch carrier mode and divisor, check the load against common container sizes, and apply carrier-style rounding.",
+    "formula_explanation": "CBM = (L * W * H * Q) / 1,000,000 with dimensions in centimetres. Volumetric weight = (L * W * H * Q) / divisor, where the divisor is carrier-published in cm3/kg (or in3/lb for US parcel carriers). Chargeable weight = max(actual weight, volumetric weight).",
+    "worked_example": "Ten cartons of 120 x 80 x 100 cm: (120 * 80 * 100 * 10) / 1,000,000 = 9.6 m3. At the air divisor of 6000, volumetric weight = 9,600,000 cm3 / 6000 = 1,600 kg. If the shipment actually weighs 900 kg on the scale, the chargeable weight is max(900, 1,600) = 1,600 kg — it is billed on volume, not on the scale weight.",
+    "faq": [
+      {
+        "q": "What divisor should I use?",
+        "a": "It depends on carrier and service. As of mid-2026, published figures are: 6000 cm3/kg for general air cargo (the IATA convention), 5000 cm3/kg for DHL Express and most express couriers, 139 in3/lb for FedEx and UPS Daily Rates in the US, 166 in3/lb for UPS Retail Rates, and 166 in3/lb for USPS (moving to 139 on 2026-07-12). Divisors change and can differ by rate card, country, and account agreement, so always confirm the value in your carrier's current service guide or contract before rating freight."
+      },
+      {
+        "q": "How is CBM used for sea and LCL freight?",
+        "a": "LCL (less-than-container-load) rates are usually quoted per revenue tonne: the greater of the shipment's cubic metres and its weight in metric tonnes (1 CBM is treated as 1 tonne). A 9.6 m3 shipment weighing 900 kg is therefore billed as 9.6 revenue tonnes. Full containers are booked by container size instead — the tool's container-fit option shows how much of a 20ft, 40ft, 40ft HC, or 53ft unit your volume occupies."
+      },
+      {
+        "q": "What is chargeable weight and why is it higher than my scale weight?",
+        "a": "Chargeable (billable) weight is the greater of actual weight and volumetric weight. Carriers charge for the space a shipment takes as well as its mass, so a light, bulky shipment is billed on its volume converted to weight through the DIM divisor. If your chargeable weight is above your scale weight, the shipment is volumetrically dense — better cartonisation or denser packing lowers the bill."
+      },
+      {
+        "q": "How many CBM fit in a shipping container?",
+        "a": "Nominal capacities are roughly 33 m3 for a 20ft container, 67 m3 for a 40ft, 76 m3 for a 40ft high cube, and about 114 m3 for a 53ft US trailer. Real-world loadable volume is lower — typically 80-90% of nominal, depending on carton sizes and stacking — so treat the fill percentage as a planning estimate, not a load plan."
+      }
+    ]
+  },
+  "related_tools": ["calculator.eoq", "calculator.carrying_cost", "calculator.days_of_cover"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

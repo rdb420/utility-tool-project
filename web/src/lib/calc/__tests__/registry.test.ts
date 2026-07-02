@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ValidationError } from "../errors";
 import { FORMULA_REGISTRY } from "../registry";
 
-/** Required input symbols per registry entry (mirrors src/calc/registry.py). */
+/** Required input symbols per registry entry (six inventory + three freight). */
 const REQUIRED_SYMBOLS: Record<string, readonly string[]> = {
   "inventory.reorder_point.basic": ["D", "LT", "SS"],
   "inventory.safety_stock.service_level": ["z", "sigma_d", "LT"],
@@ -11,6 +11,9 @@ const REQUIRED_SYMBOLS: Record<string, readonly string[]> = {
   "inventory.turnover.cogs": ["COGS", "avg_inv"],
   "inventory.days_of_cover.basic": ["stock", "D"],
   "inventory.carrying_cost.basic": ["rate", "avg_inv"],
+  "freight.cbm.basic": ["L", "W", "H", "Q"],
+  "freight.volumetric_weight.divisor": ["L", "W", "H", "Q", "divisor"],
+  "freight.chargeable_weight.basic": ["VW", "AW"],
 };
 
 function inputsWith(symbols: readonly string[], overrides: Record<string, number>) {
@@ -22,7 +25,7 @@ function inputsWith(symbols: readonly string[], overrides: Record<string, number
 }
 
 describe("FORMULA_REGISTRY", () => {
-  it("has exactly the six inventory entries", () => {
+  it("has exactly the six inventory + three freight entries", () => {
     expect(Object.keys(FORMULA_REGISTRY).sort()).toEqual(Object.keys(REQUIRED_SYMBOLS).sort());
   });
 
@@ -33,6 +36,11 @@ describe("FORMULA_REGISTRY", () => {
     expect(FORMULA_REGISTRY["inventory.turnover.cogs"].positiveInputs).toEqual(["avg_inv"]);
     expect(FORMULA_REGISTRY["inventory.days_of_cover.basic"].positiveInputs).toEqual(["D"]);
     expect(FORMULA_REGISTRY["inventory.carrying_cost.basic"].positiveInputs).toEqual([]);
+    expect(FORMULA_REGISTRY["freight.cbm.basic"].positiveInputs).toEqual([]);
+    expect(FORMULA_REGISTRY["freight.volumetric_weight.divisor"].positiveInputs).toEqual([
+      "divisor",
+    ]);
+    expect(FORMULA_REGISTRY["freight.chargeable_weight.basic"].positiveInputs).toEqual([]);
   });
 
   for (const [id, symbols] of Object.entries(REQUIRED_SYMBOLS)) {

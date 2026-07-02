@@ -13,12 +13,16 @@ import type {
 } from "./types.gen";
 
 import calculatorCarryingCost from "@data/calculators/carrying_cost.json";
+import calculatorCbm from "@data/calculators/cbm.json";
 import calculatorDaysOfCover from "@data/calculators/days_of_cover.json";
 import calculatorEoq from "@data/calculators/eoq.json";
 import calculatorInventoryTurnover from "@data/calculators/inventory_turnover.json";
 import calculatorReorderPoint from "@data/calculators/reorder_point.json";
 import calculatorSafetyStock from "@data/calculators/safety_stock.json";
 
+import formulaCbmBasic from "@data/formulas/freight/cbm_basic.json";
+import formulaChargeableWeightBasic from "@data/formulas/freight/chargeable_weight_basic.json";
+import formulaVolumetricWeightDivisor from "@data/formulas/freight/volumetric_weight_divisor.json";
 import formulaCarryingCostBasic from "@data/formulas/inventory/carrying_cost_basic.json";
 import formulaDaysOfCoverBasic from "@data/formulas/inventory/days_of_cover_basic.json";
 import formulaEoqBasic from "@data/formulas/inventory/eoq_basic.json";
@@ -27,6 +31,7 @@ import formulaReorderPointBasic from "@data/formulas/inventory/reorder_point_bas
 import formulaSafetyStockServiceLevel from "@data/formulas/inventory/safety_stock_service_level.json";
 
 import referenceServiceLevelZFactors from "@data/reference_tables/service_level_z_factors.json";
+import referenceContainerVolumes from "@data/reference_tables/freight/container_volumes.json";
 import referenceDimDivisors from "@data/reference_tables/freight/dimensional_weight_divisors.json";
 import referenceNmfcClasses from "@data/reference_tables/freight/nmfc_freight_classes.json";
 import referenceParcelGirthLimits from "@data/reference_tables/freight/parcel_girth_limits.json";
@@ -42,6 +47,7 @@ const asRecord = <T>(record: unknown): T => record as T;
 
 export const CALCULATORS: readonly CalculatorRecord[] = Object.freeze([
   asRecord<CalculatorRecord>(calculatorCarryingCost),
+  asRecord<CalculatorRecord>(calculatorCbm),
   asRecord<CalculatorRecord>(calculatorDaysOfCover),
   asRecord<CalculatorRecord>(calculatorEoq),
   asRecord<CalculatorRecord>(calculatorInventoryTurnover),
@@ -50,6 +56,9 @@ export const CALCULATORS: readonly CalculatorRecord[] = Object.freeze([
 ]);
 
 export const FORMULAS: readonly FormulaRecord[] = Object.freeze([
+  asRecord<FormulaRecord>(formulaCbmBasic),
+  asRecord<FormulaRecord>(formulaChargeableWeightBasic),
+  asRecord<FormulaRecord>(formulaVolumetricWeightDivisor),
   asRecord<FormulaRecord>(formulaCarryingCostBasic),
   asRecord<FormulaRecord>(formulaDaysOfCoverBasic),
   asRecord<FormulaRecord>(formulaEoqBasic),
@@ -69,6 +78,7 @@ export const Z_FACTORS: ReferenceTableRecord = asRecord<ReferenceTableRecord>(
  */
 export const FREIGHT_REFERENCE_TABLES: readonly ReferenceTableRecord[] =
   Object.freeze([
+    asRecord<ReferenceTableRecord>(referenceContainerVolumes),
     asRecord<ReferenceTableRecord>(referenceDimDivisors),
     asRecord<ReferenceTableRecord>(referenceNmfcClasses),
     asRecord<ReferenceTableRecord>(referenceParcelGirthLimits),

@@ -1,0 +1,45 @@
+{
+  "id": "freight.volumetric_weight.divisor",
+  "name": "Volumetric (Dimensional) Weight, metric divisor",
+  "category": "freight",
+  "description": "Volumetric (dimensional/DIM) weight in kilograms: total shipment volume in cubic centimetres divided by a carrier-published divisor in cm3 per kg (e.g. 6000 for general air cargo, 5000 for express couriers). Carriers bill light-but-bulky freight on this figure instead of the scale weight.",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Cartons", "symbol": "Q", "type": "integer", "unit": "cartons", "required": true, "min": 0, "description": "Number of identical cartons in the shipment." },
+    { "name": "Divisor", "symbol": "divisor", "type": "number", "unit": "cm3/kg", "required": true, "min": 0, "description": "Carrier-published DIM divisor; must be greater than zero. Common metric values: 6000 (IATA air convention), 5000 (DHL Express and other couriers)." }
+  ],
+  "outputs": [
+    { "name": "Volumetric weight", "symbol": "VW", "unit": "kg", "description": "Dimensional weight the carrier compares against actual weight when rating." }
+  ],
+  "expression": "VW = (L * W * H * Q) / divisor",
+  "assumptions": [
+    "Dimensions are entered in centimetres and the divisor is in cm3 per kg, so the result is kilograms.",
+    "All cartons share the same outer dimensions.",
+    "No carrier rounding is applied inside the formula; carriers typically round dimensions and the final billable weight by their own rules."
+  ],
+  "limitations": [
+    "Divisors are carrier-published and vary by carrier, service, rate card, country, account agreement, and date — e.g. DHL Express publishes 5000 cm3/kg, the IATA air convention is 6000 cm3/kg, and US parcel carriers use imperial divisors (FedEx 139 in3/lb; UPS 139 Daily Rates / 166 Retail Rates; USPS 166 in3/lb until 2026-07-11, 139 from 2026-07-12). Treat any preset divisor as an estimate and confirm against the carrier's current service guide.",
+    "The imperial variant of this formula uses inches and a divisor in in3/lb; do not mix unit systems within one calculation.",
+    "Carrier rounding rules differ (nearest vs round-up inch, round up to next lb or 0.5 kg) and can move the billed figure above this raw result.",
+    "Some carriers apply dimensional weight only above a size threshold (e.g. USPS applies DIM pricing above 1,728 in3)."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 120, "W": 80, "H": 100, "Q": 10, "divisor": 6000 },
+      "expected": { "VW": 1600 },
+      "note": "Ten cartons of 120 x 80 x 100 cm at the 6000 air divisor: 9,600,000 cm3 / 6000 = 1,600 kg."
+    }
+  ],
+  "sources": [
+    "DHL Express volumetric weight calculator page (dhlexpress.ee/en/terms-and-conditions-2/volumetric-weight-calculator/, checked 2026-07-02): L x W x H in cm / 5000 for kg, and / 139 for in/lb.",
+    "FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html, checked 2026-07-02): L x W x H in inches / 139 for US/Puerto Rico/international packages.",
+    "UPS 'Shipping Dimensions and Weight' support page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight, checked 2026-07-02): divisor 139 for Daily Rates, 166 for Retail Rates; DIM result rounded up to the next whole pound.",
+    "IATA TACT air-cargo convention: volumetric weight at 6000 cm3/kg (equivalently 1:6000 or 167 kg/m3) for general air freight.",
+    "USPS Postal Explorer QSG 150 (pe.usps.com/text/qsg300/q150.htm) shows divisor 166 for qualifying parcels as of 2026-07-02; the Federal Register final rule of 2026-05-15 changes it to 139 effective 2026-07-12."
+  ],
+  "grounding": "external",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}

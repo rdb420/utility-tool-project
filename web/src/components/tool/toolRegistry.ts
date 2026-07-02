@@ -6,11 +6,11 @@
  */
 
 import type { ComponentType } from "react";
+import CbmCalculator from "../cbm/CbmCalculator";
 import CalculatorTool, { type CalculatorToolProps } from "./CalculatorTool";
 
 const TOOL_OVERRIDES: Record<string, ComponentType<CalculatorToolProps>> = {
-  // "calculator.cbm": CbmCalculator, // Chunk E — custom freight island
-  //                                  // (web/src/components/cbm/CbmCalculator.tsx)
+  "calculator.cbm": CbmCalculator,
 };
 
 export function toolFor(

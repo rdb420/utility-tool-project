@@ -8,8 +8,8 @@
   "grounding": "external",
   "status": "needs_sourcing",
   "source_type": "carrier_published",
-  "source": "TO CONFIRM: UPS, FedEx, DHL published rate/service guides; IATA TACT for air.",
-  "sourcing_notes": "Confirm each divisor and its unit against the carrier's current service guide. Divisors change (e.g. US domestic parcel moved 194 -> 166 -> 139 in^3/lb historically). Record effective_date per carrier and set status to verified once confirmed. Note whether the divisor applies to all packages or only above a size threshold.",
+  "source": "TO CONFIRM against a dated capture: FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html); UPS 'Shipping Dimensions and Weight' page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight); DHL Express volumetric weight calculator page (dhlexpress.ee); USPS Postal Explorer QSG 150; IATA TACT for air.",
+  "sourcing_notes": "Confirm each divisor and its unit against the carrier's current service guide. Divisors change (e.g. US domestic parcel moved 194 -> 166 -> 139 in^3/lb historically). Record effective_date per carrier and set status to verified once confirmed. Note whether the divisor applies to all packages or only above a size threshold. Sourcing pack findings (checked 2026-07-02, pending formal verification): FedEx official page states 139 in^3/lb for US/Puerto Rico/international packages; UPS official page states 139 for Daily Rates and 166 for Retail Rates (so the 'international parcel 166' row label here is imprecise — 166 is a UPS Retail/US-retail figure, and DHL Express publishes 139 in^3/lb internationally); DHL Express publishes 5000 cm^3/kg metric; USPS currently uses 166 in^3/lb (Postal Explorer QSG 150) with a Federal Register final rule moving it to 139 effective 2026-07-12; the 6000 cm^3/kg air figure is the IATA TACT convention.",
   "columns": ["carrier", "service", "divisor", "unit", "verified"],
   "rows": [
     { "carrier": "UPS/FedEx", "service": "US domestic parcel", "divisor": 139, "unit": "in^3/lb", "verified": false },

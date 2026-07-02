@@ -15,8 +15,17 @@ import { FORMULA_REGISTRY, formatResult } from "@/lib/calc";
 import { CALCULATORS, FORMULAS_BY_ID } from "@/lib/records/records";
 import type { CalculatorRecord, Input } from "@/lib/records/types.gen";
 import CalculatorTool, { MESSAGES } from "../CalculatorTool";
+import { toolFor } from "../toolRegistry";
 
 afterEach(cleanup);
+
+/**
+ * Only the calculators that actually render through the generic island;
+ * custom islands (calculator.cbm -> CbmCalculator) have their own suites.
+ */
+const GENERIC_CALCULATORS = CALCULATORS.filter(
+  (calculator) => toolFor(calculator.id) === CalculatorTool,
+);
 
 function flatInputs(calculator: CalculatorRecord): Input[] {
   return calculator.input_groups.flatMap((group) => group.inputs);
@@ -84,7 +93,7 @@ function computeOutputs(
   return pool;
 }
 
-for (const calculator of CALCULATORS) {
+for (const calculator of GENERIC_CALCULATORS) {
   describe(`CalculatorTool: ${calculator.slug}`, () => {
     it("crunches the first worked example to every result card", () => {
       const inputs = exampleValues(calculator);

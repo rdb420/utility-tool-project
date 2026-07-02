@@ -1,0 +1,40 @@
+{
+  "id": "freight.cbm.basic",
+  "name": "CBM (Cubic Metres)",
+  "category": "freight",
+  "description": "Total shipment volume in cubic metres (CBM) from per-carton dimensions in centimetres and the carton count. CBM is the standard volume unit for quoting sea/LCL freight and sizing container loads.",
+  "inputs": [
+    { "name": "Length", "symbol": "L", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Width", "symbol": "W", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Height", "symbol": "H", "type": "number", "unit": "cm", "required": true, "min": 0 },
+    { "name": "Cartons", "symbol": "Q", "type": "integer", "unit": "cartons", "required": true, "min": 0, "description": "Number of identical cartons in the shipment." }
+  ],
+  "outputs": [
+    { "name": "Total volume", "symbol": "CBM", "unit": "m3", "description": "Total shipment volume in cubic metres." }
+  ],
+  "expression": "CBM = (L * W * H * Q) / 1,000,000",
+  "assumptions": [
+    "Dimensions are entered in centimetres (1 m3 = 1,000,000 cm3).",
+    "All cartons share the same outer dimensions.",
+    "Volume is the simple sum of carton volumes; no packing or stacking loss is modelled."
+  ],
+  "limitations": [
+    "Uses nominal outer carton dimensions; irregular or bulging cartons occupy more space.",
+    "Real-world loadable container volume is below the container's nominal capacity, so CBM alone does not prove a load fits.",
+    "Carriers and forwarders may round dimensions or volume when rating."
+  ],
+  "examples": [
+    {
+      "inputs": { "L": 120, "W": 80, "H": 100, "Q": 10 },
+      "expected": { "CBM": 9.6 },
+      "note": "Ten cartons of 120 x 80 x 100 cm: (120 * 80 * 100 * 10) / 1,000,000 = 9.6 m3."
+    }
+  ],
+  "sources": [
+    "FedEx 'What is CBM?' shipping glossary page (fedex.com/en-au/shipping/glossary/what-is-cbm.html, checked 2026-07-02): CBM = length x width x height in metres x quantity; the centimetre form here is the same formula with the cm-to-m unit conversion folded into the 1,000,000 divisor.",
+    "Standard metric unit conversion: 1 m3 = 100 cm x 100 cm x 100 cm = 1,000,000 cm3."
+  ],
+  "grounding": "external",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}

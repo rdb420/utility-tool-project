@@ -104,10 +104,12 @@ describe("helpers", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("clusterOf is 'inventory' for all six MVP calculators", () => {
-    expect(CALCULATORS).toHaveLength(6);
+  it("clusterOf: cbm is 'freight', the six inventory MVP tools are 'inventory'", () => {
+    expect(CALCULATORS).toHaveLength(7);
     for (const calculator of CALCULATORS) {
-      expect(clusterOf(calculator)).toBe("inventory");
+      expect(clusterOf(calculator)).toBe(
+        calculator.id === "calculator.cbm" ? "freight" : "inventory",
+      );
     }
   });
 

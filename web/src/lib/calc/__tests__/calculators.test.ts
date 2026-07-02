@@ -30,6 +30,7 @@ interface CalculatorRecord {
 interface FormulaRecord {
   id: string;
   inputs: { symbol: string }[];
+  outputs: { symbol: string }[];
   examples: { inputs: Record<string, number> }[];
 }
 
@@ -45,6 +46,7 @@ const EXPECTED_CALCULATORS: Record<string, string> = {
   "calculator.inventory_turnover": "inventory-turnover-calculator",
   "calculator.days_of_cover": "days-of-inventory-calculator",
   "calculator.carrying_cost": "inventory-carrying-cost-calculator",
+  "calculator.cbm": "cbm-calculator",
 };
 
 function loadCalculators(): Map<string, CalculatorRecord> {
@@ -91,17 +93,25 @@ describe("calculator page specs", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("calculator inputs cover referenced formula inputs", () => {
+  it("calculator inputs cover referenced formula inputs (chaining rule D4)", () => {
+    // Mirrors the corpus validator: an input also counts as covered when it is
+    // an OUTPUT of another referenced formula (e.g. chargeable weight's VW is
+    // produced by the volumetric-weight formula on the CBM page).
     for (const calc of calculators.values()) {
       const calcSymbols = new Set(
         calc.input_groups.flatMap((group) => group.inputs.map((input) => input.symbol)),
+      );
+      const chainedOutputs = new Set(
+        calc.formula_ids.flatMap(
+          (formulaId) => formulas.get(formulaId)?.outputs.map((output) => output.symbol) ?? [],
+        ),
       );
       for (const formulaId of calc.formula_ids) {
         const formula = formulas.get(formulaId);
         expect(formula, `${calc.id} references unknown formula ${formulaId}`).toBeDefined();
         const missing = formula!.inputs
           .map((input) => input.symbol)
-          .filter((symbol) => !calcSymbols.has(symbol));
+          .filter((symbol) => !calcSymbols.has(symbol) && !chainedOutputs.has(symbol));
         expect(
           missing,
           `${calc.id} missing inputs ${missing.join(", ")} for ${formulaId}`,
@@ -111,18 +121,24 @@ describe("calculator page specs", () => {
   });
 
   it("calculator results are produced by the calc library", () => {
-    // End-to-end: a calculator's formula example runs through the library and
-    // yields a value for every result card the page promises to show.
+    // End-to-end: run every referenced formula in record order, seeding the
+    // input pool with the union of each formula's first worked example and
+    // chaining raw outputs (exactly how the island computes), then check that
+    // a value exists for every result card the page promises to show.
     for (const calc of calculators.values()) {
-      const formulaId = calc.formula_ids[0];
-      const entry = FORMULA_REGISTRY[formulaId];
-      expect(entry, `no calc function registered for ${formulaId}`).toBeDefined();
-      const exampleInputs = formulas.get(formulaId)!.examples[0].inputs;
-      const computed = entry.compute(exampleInputs);
+      const pool: Record<string, number> = {};
+      for (const formulaId of calc.formula_ids) {
+        Object.assign(pool, formulas.get(formulaId)!.examples[0].inputs);
+      }
+      for (const formulaId of calc.formula_ids) {
+        const entry = FORMULA_REGISTRY[formulaId];
+        expect(entry, `no calc function registered for ${formulaId}`).toBeDefined();
+        Object.assign(pool, entry.compute(pool));
+      }
       for (const card of calc.result_cards) {
         expect(
-          card.symbol in computed,
-          `${calc.id} result_card '${card.symbol}' not produced by ${formulaId}`,
+          card.symbol in pool,
+          `${calc.id} result_card '${card.symbol}' not produced by ${calc.formula_ids.join(", ")}`,
         ).toBe(true);
       }
     }

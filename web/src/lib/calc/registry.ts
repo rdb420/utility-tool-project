@@ -16,6 +16,7 @@
  */
 
 import { ValidationError } from "./errors";
+import * as freight from "./freight";
 import * as inventory from "./inventory";
 
 export interface RegistryEntry {
@@ -65,6 +66,29 @@ export const FORMULA_REGISTRY: Record<string, RegistryEntry> = {
   "inventory.carrying_cost.basic": {
     compute: (i) => ({
       carrying_cost: inventory.carryingCost(req(i, "rate"), req(i, "avg_inv")),
+    }),
+    positiveInputs: [],
+  },
+  "freight.cbm.basic": {
+    compute: (i) => ({
+      CBM: freight.cbmFromCm(req(i, "L"), req(i, "W"), req(i, "H"), req(i, "Q")),
+    }),
+    positiveInputs: [],
+  },
+  "freight.volumetric_weight.divisor": {
+    // Record inputs are per-carton cm dimensions; the library function takes
+    // total volume in cm^3, so the volume is assembled here.
+    compute: (i) => ({
+      VW: freight.volumetricWeightKg(
+        req(i, "L") * req(i, "W") * req(i, "H") * req(i, "Q"),
+        req(i, "divisor"),
+      ),
+    }),
+    positiveInputs: ["divisor"],
+  },
+  "freight.chargeable_weight.basic": {
+    compute: (i) => ({
+      CW: freight.chargeableWeight(req(i, "AW"), req(i, "VW")),
     }),
     positiveInputs: [],
   },

@@ -1,0 +1,39 @@
+{
+  "id": "freight.chargeable_weight.basic",
+  "name": "Chargeable (Billable) Weight",
+  "category": "freight",
+  "description": "The weight a carrier actually rates a shipment on: the greater of the actual (gross/scale) weight and the volumetric (dimensional) weight. Dense freight is billed on actual weight; light-but-bulky freight is billed on volumetric weight.",
+  "inputs": [
+    { "name": "Volumetric weight", "symbol": "VW", "type": "number", "unit": "kg", "required": true, "min": 0, "description": "Dimensional weight from the carrier's divisor formula (see freight.volumetric_weight.divisor)." },
+    { "name": "Actual gross weight", "symbol": "AW", "type": "number", "unit": "kg", "required": true, "min": 0, "description": "Scale weight of the shipment including packaging." }
+  ],
+  "outputs": [
+    { "name": "Chargeable weight", "symbol": "CW", "unit": "kg", "description": "Weight the carrier bills on: the greater of actual and volumetric weight." }
+  ],
+  "expression": "CW = max(VW, AW)",
+  "assumptions": [
+    "Actual and volumetric weight are expressed in the same unit before comparing.",
+    "Volumetric weight is computed with the carrier's own current divisor.",
+    "No final-weight rounding is applied inside the formula; carriers typically round the billable weight up (e.g. UPS to the next whole pound)."
+  ],
+  "limitations": [
+    "Carriers may apply minimum billable weights, per-piece vs per-shipment comparison rules, and their own rounding before rating.",
+    "Sea/LCL freight is commonly rated per revenue tonne — the greater of cubic metres and metric tonnes — rather than by this parcel/air rule.",
+    "The comparison rule is stable across major carriers, but the volumetric side depends on divisors that change over time."
+  ],
+  "examples": [
+    {
+      "inputs": { "VW": 1600, "AW": 900 },
+      "expected": { "CW": 1600 },
+      "note": "Volumetric 1,600 kg vs actual 900 kg: the shipment is billed on the volumetric 1,600 kg."
+    }
+  ],
+  "sources": [
+    "DHL eCommerce 'Chargeable Weight' business help page (dhl.com/us-en/home/ecommerce/business-help-center/chargeable-weight.html, checked 2026-07-02): chargeable weight is the greater of actual and dimensional weight.",
+    "FedEx 'What is dimensional weight?' page (fedex.com/en-us/shipping/packaging/what-is-dimensional-weight.html, checked 2026-07-02): shipments are charged on the greater of actual and dimensional weight.",
+    "UPS 'Shipping Dimensions and Weight' support page (ups.com/us/en/support/shipping-support/shipping-dimensions-weight, checked 2026-07-02): billable weight is the greater of dimensional and actual weight."
+  ],
+  "grounding": "external",
+  "citations": [],
+  "disclaimer_level": "estimate"
+}
