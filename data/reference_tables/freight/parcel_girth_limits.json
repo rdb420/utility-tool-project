@@ -1,18 +1,20 @@
 {
   "id": "reference.freight.parcel_girth_limits",
   "name": "Parcel Size Limits (length + girth)",
-  "description": "Carrier maximum-size limits expressed as length and length-plus-girth, where girth = 2 x (width + height). NOT in the knowledge base; candidate values below are common carrier limits and MUST be confirmed against current carrier guides.",
+  "description": "Carrier maximum-size limits expressed as length and length-plus-girth, where girth = 2 x (width + height). UPS and Australia Post rows are confirmed against carrier pages (checked 2026-07-02); remaining rows are candidates that MUST be confirmed against current carrier guides.",
   "region": "carrier-specific",
   "effective_date": null,
   "review_frequency": "annually (carriers revise size/oversize thresholds)",
   "grounding": "external",
   "status": "needs_sourcing",
   "source_type": "carrier_published",
-  "source": "TO CONFIRM: UPS, FedEx, USPS, Australia Post service guides.",
-  "sourcing_notes": "Define girth = 2*(width + height); length-plus-girth = length + girth. Confirm each carrier's max length, max length+girth, oversize thresholds, and the units. USPS and international posts differ from UPS/FedEx. Record effective_date per carrier once confirmed.",
-  "columns": ["carrier", "max_length", "max_length_plus_girth", "unit", "verified"],
+  "source": "UPS 'Shipping Dimensions and Weight' page and Australia Post 'Size and Weight Guidelines' page, both checked 2026-07-02 via corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md. FedEx and USPS rows: TO CONFIRM against current service guides.",
+  "sourcing_notes": "Define girth = 2*(width + height); length-plus-girth = length + girth. UPS US small package max confirmed: 108 in length, 165 in length+girth, 150 lb (UPS official page, checked 2026-07-02). Australia Post international parcels confirmed: 105 cm max length, 140 cm max girth (girth alone, not length+girth - AusPost uses girth = (width + height) x 2), 20 kg (AusPost guidelines, checked 2026-07-02). FedEx Ground commonly cited at 108 in / 165 in but not confirmed by the 2026-07-02 pack; USPS retail ground 130 in length+girth unconfirmed. Table status stays needs_sourcing until all rows are verified. Record effective_date per carrier once fully confirmed.",
+  "columns": ["carrier", "max_length", "max_length_plus_girth", "max_girth", "unit", "verified"],
   "rows": [
-    { "carrier": "UPS/FedEx (US)", "max_length": 108, "max_length_plus_girth": 165, "unit": "in", "verified": false },
-    { "carrier": "USPS (retail ground)", "max_length": 130, "max_length_plus_girth": 130, "unit": "in", "verified": false }
+    { "carrier": "UPS (US small package)", "max_length": 108, "max_length_plus_girth": 165, "max_girth": null, "unit": "in", "verified": true },
+    { "carrier": "FedEx Ground (US)", "max_length": 108, "max_length_plus_girth": 165, "max_girth": null, "unit": "in", "verified": false },
+    { "carrier": "USPS (retail ground)", "max_length": 130, "max_length_plus_girth": 130, "max_girth": null, "unit": "in", "verified": false },
+    { "carrier": "Australia Post (international parcel)", "max_length": 105, "max_length_plus_girth": null, "max_girth": 140, "unit": "cm", "verified": true }
   ]
 }

@@ -117,15 +117,17 @@ describe("freight reference tables", () => {
   });
 
   // dimensional_weight_divisors was verified against carrier sources on
-  // 2026-07-02 (see corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md);
+  // 2026-07-02 and nmfc_freight_classes against NMFTA's 13-sub FCDC scale
+  // (both via corpus-logistics-supply-chain/sourced-reference-data-2026-07-02.md);
   // the other freight tables remain needs_sourcing placeholders.
-  const VERIFIED_FREIGHT_TABLES = new Set(["dimensional_weight_divisors.json"]);
+  const VERIFIED_FREIGHT_TABLES = new Set([
+    "dimensional_weight_divisors.json",
+    "nmfc_freight_classes.json",
+  ]);
 
-  it("dimensional_weight_divisors is verified with an effective date", () => {
-    const file = files.find(
-      (candidate) => path.basename(candidate) === "dimensional_weight_divisors.json",
-    );
-    expect(file, "dimensional_weight_divisors.json should exist").toBeDefined();
+  it.each([...VERIFIED_FREIGHT_TABLES])("%s is verified with an effective date", (tableName) => {
+    const file = files.find((candidate) => path.basename(candidate) === tableName);
+    expect(file, `${tableName} should exist`).toBeDefined();
     const table = JSON.parse(fs.readFileSync(file!, "utf8")) as ReferenceTable;
     expect(table.status).toBe("verified");
     expect(table.effective_date, "verified table needs a non-null effective_date").toBeTruthy();
