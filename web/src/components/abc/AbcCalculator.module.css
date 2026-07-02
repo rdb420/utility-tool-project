@@ -1,0 +1,215 @@
+/*
+ * ABC analysis island layout — the SKU row grid, add/remove controls, the
+ * thresholds pair, and the full-width ranked table below the tool card.
+ * Field/readout styling comes from the shared tool component modules;
+ * colours are tokens only (globals.css).
+ */
+
+.groupLbl {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Column headers + each SKU row share one grid so everything lines up. */
+.rowGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 44px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.colHead {
+  font-size: 0.75rem;
+  color: var(--slate);
+  font-weight: 600;
+}
+
+.textInput,
+.numInput {
+  width: 100%;
+  min-height: 44px;
+  font-size: 0.95rem;
+  padding: 10px 11px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r);
+  background: #fbfcfa;
+  color: var(--ink);
+}
+
+.numInput {
+  font-family: var(--mono);
+}
+
+.textInput:focus,
+.numInput:focus {
+  outline: none;
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px rgba(238, 90, 28, 0.15);
+}
+
+.removeBtn {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--slate);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.removeBtn:hover:not(:disabled) {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.removeBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.addBtn {
+  display: block;
+  min-height: 44px;
+  width: 100%;
+  margin: 2px 0 16px;
+  padding: 10px 12px;
+  border: 1.5px dashed var(--line-2);
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--slate);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addBtn:hover:not(:disabled) {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.addBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.thresholds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--slate);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.unit {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.help {
+  margin: 6px 0 14px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.error {
+  margin: 6px 0 10px;
+  font-size: 0.78rem;
+  color: var(--signal);
+  font-weight: 600;
+}
+
+/* Ranked table — full width below the tool card, own horizontal scroll. */
+.tableWrap {
+  margin-top: 18px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.table caption {
+  text-align: left;
+  padding: 12px 14px 4px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.table th {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--line-2);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.num {
+  font-family: var(--mono);
+  text-align: right;
+}
+
+.table th.num {
+  text-align: right;
+}
+
+.badge {
+  display: inline-block;
+  min-width: 26px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  color: var(--slate);
+  background: transparent;
+}
+
+.badgeA {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
