@@ -1,0 +1,45 @@
+{
+  "id": "inventory.reorder_point.basic",
+  "name": "Reorder Point (basic)",
+  "category": "inventory",
+  "description": "The inventory level at which a replenishment order should be placed: expected demand during the lead time plus safety stock.",
+  "inputs": [
+    { "name": "Average daily demand", "symbol": "D", "type": "number", "unit": "units/day", "required": true, "min": 0 },
+    { "name": "Lead time", "symbol": "LT", "type": "number", "unit": "days", "required": true, "min": 0 },
+    { "name": "Safety stock", "symbol": "SS", "type": "number", "unit": "units", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Reorder point", "symbol": "ROP", "unit": "units", "description": "Order when on-hand inventory position reaches this level." }
+  ],
+  "expression": "ROP = (D * LT) + SS",
+  "assumptions": [
+    "Demand and lead time use the same time unit.",
+    "Average daily demand is stable over the lead time.",
+    "Safety stock is supplied separately (see inventory.safety_stock.service_level)."
+  ],
+  "limitations": [
+    "Deterministic form; when demand or lead time vary, size SS with the service-level method.",
+    "Not a min/max system; the max level is computed separately."
+  ],
+  "examples": [
+    {
+      "inputs": { "D": 10, "LT": 4, "SS": 0 },
+      "expected": { "ROP": 40 },
+      "note": "Definitive Guide example: 10 units/day over a 4-day lead time, no safety stock.",
+      "citation": { "source_file": "312523353-The-Definitive-Guide-to-Inventory-Management.md", "chunk_index": 42, "quote": "the sales during the lead time is 10 units per day times 4 days or 40 units ... the reorder point is 40 units (ROP = 40)." }
+    },
+    {
+      "inputs": { "D": 10, "LT": 15, "SS": 19 },
+      "expected": { "ROP": 169 },
+      "note": "Garden-centre example: reorder level = average demand during lead time + safety stock.",
+      "citation": { "source_file": "479665818-Total-SupplyChain-Man-pdf.md", "chunk_index": 102, "quote": "Reorder level = Average demand during lead time + safety stock = 10 x 15 + 19 = 169 sacks" }
+    }
+  ],
+  "sources": ["APICS/Chopra-Meindl continuous-review (Q, ROP) model"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "312523353-The-Definitive-Guide-to-Inventory-Management.md", "chunk_index": 44, "quote": "the reorder point is made up of the expected demand during the lead time plus the safety stock." },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 481, "quote": "Reorder point = DL + SS = 3,000 + 1,087.40 = 4,087.40 units." }
+  ],
+  "disclaimer_level": "estimate"
+}

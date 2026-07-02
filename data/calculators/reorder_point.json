@@ -1,0 +1,41 @@
+{
+  "id": "calculator.reorder_point",
+  "slug": "reorder-point-calculator",
+  "title": "Reorder Point Calculator",
+  "meta_description": "Work out when to reorder stock. Enter average daily demand, lead time, and safety stock to get your reorder point, with the formula and a worked example.",
+  "primary_keyword": "reorder point calculator",
+  "secondary_keywords": [
+    "reorder level calculator",
+    "when to reorder stock",
+    "ROP formula",
+    "reorder point formula"
+  ],
+  "formula_ids": ["inventory.reorder_point.basic"],
+  "input_groups": [
+    {
+      "label": "Demand and lead time",
+      "inputs": [
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Days from placing a replenishment order to receiving it." },
+        { "symbol": "SS", "label": "Safety stock", "unit": "units", "type": "number", "min": 0, "required": false, "default": 0, "help": "Buffer stock. Leave 0 or size it with the safety stock calculator." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "ROP", "label": "Reorder point", "unit": "units", "primary": true, "description": "Place a replenishment order when on-hand inventory reaches this level." }
+  ],
+  "copy_blocks": {
+    "intro": "The reorder point tells you the on-hand quantity at which to place a new order so stock arrives before you run out. It is the demand you expect during the lead time, plus a safety buffer for variability.",
+    "how_it_works": "Multiply your average daily demand by the lead time to get expected demand during replenishment, then add safety stock. Keep demand and lead time in the same time unit.",
+    "formula_explanation": "Reorder point = (average daily demand x lead time) + safety stock. With no safety stock, you reorder exactly when expected lead-time demand is left on the shelf.",
+    "worked_example": "At 10 units/day with a 15-day lead time and 19 units of safety stock, the reorder point is 10 x 15 + 19 = 169 units.",
+    "faq": [
+      { "q": "What is a reorder point?", "a": "It is the inventory level that triggers a new purchase or production order, set so replenishment arrives roughly as you sell the last of your buffer." },
+      { "q": "How much safety stock should I add?", "a": "Size it to a target service level from demand variability. Use the safety stock calculator, then feed the result into this tool." },
+      { "q": "Does this handle variable lead times?", "a": "This is the basic deterministic form. If lead time varies a lot, increase safety stock to cover that variability." }
+    ]
+  },
+  "related_tools": ["calculator.safety_stock", "calculator.eoq", "calculator.days_of_cover"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

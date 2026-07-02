@@ -1,0 +1,40 @@
+{
+  "id": "calculator.carrying_cost",
+  "slug": "inventory-carrying-cost-calculator",
+  "title": "Inventory Carrying Cost Calculator",
+  "meta_description": "Calculate the annual cost of holding inventory. Enter your carrying cost rate and average inventory value to see total carrying cost, with the formula explained.",
+  "primary_keyword": "inventory carrying cost calculator",
+  "secondary_keywords": [
+    "carrying cost calculator",
+    "holding cost calculator",
+    "cost of carrying inventory",
+    "inventory holding cost formula"
+  ],
+  "formula_ids": ["inventory.carrying_cost.basic"],
+  "input_groups": [
+    {
+      "label": "Rate and inventory value",
+      "inputs": [
+        { "symbol": "rate", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "help": "Annual carrying cost as a fraction of value, e.g. 0.25 for 25%. Typical range 15-30%." },
+        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Average value of inventory held during the year, at cost." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "carrying_cost", "label": "Annual carrying cost", "unit": "currency/year", "primary": true, "description": "Estimated annual cost of holding this inventory." }
+  ],
+  "copy_blocks": {
+    "intro": "Carrying cost is what it costs to hold inventory for a year: capital tied up, storage, insurance, shrinkage, and obsolescence. It is usually expressed as a percentage of inventory value.",
+    "how_it_works": "Multiply your carrying cost rate by the average value of inventory held. If you do not know your rate, derive it as annual carrying costs divided by average inventory value.",
+    "formula_explanation": "Annual carrying cost = carrying cost rate x average inventory value. The rate bundles capital, storage, service, and risk costs and is policy-dependent.",
+    "worked_example": "At a 26% carrying rate on 2,000,000 of average inventory, annual carrying cost = 0.26 x 2,000,000 = 520,000.",
+    "faq": [
+      { "q": "What rate should I use?", "a": "Many firms use 15-30% depending on capital cost, storage, and risk. Derive your own from annual carrying costs divided by average inventory value where possible." },
+      { "q": "What goes into carrying cost?", "a": "Cost of capital, warehousing and handling that varies with volume, insurance, taxes, shrinkage, damage, and obsolescence." },
+      { "q": "How does this connect to EOQ?", "a": "The carrying rate times unit cost is the per-unit holding cost the EOQ formula uses to balance against ordering cost." }
+    ]
+  },
+  "related_tools": ["calculator.eoq", "calculator.inventory_turnover", "calculator.days_of_cover"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

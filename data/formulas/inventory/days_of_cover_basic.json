@@ -1,0 +1,37 @@
+{
+  "id": "inventory.days_of_cover.basic",
+  "name": "Days of Inventory Cover",
+  "category": "inventory",
+  "description": "How many days current stock will last at the average usage rate: available stock divided by average daily demand.",
+  "inputs": [
+    { "name": "Available stock", "symbol": "stock", "type": "number", "unit": "units", "required": true, "min": 0 },
+    { "name": "Average daily demand", "symbol": "D", "type": "number", "unit": "units/day", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Days of cover", "symbol": "days", "unit": "days" }
+  ],
+  "expression": "days = stock / D",
+  "assumptions": [
+    "Average daily demand is representative of the coming period.",
+    "Stock and demand are expressed in the same unit (units, cases, or value)."
+  ],
+  "limitations": [
+    "A crude single-item view; it ignores demand variability and in-transit stock.",
+    "For financial reporting the reciprocal (stockturn) is often used instead; weeks of cover = stock value / annual usage x 52."
+  ],
+  "examples": [
+    {
+      "inputs": { "stock": 600, "D": 100 },
+      "expected": { "days": 6 },
+      "note": "Illustrative application of the cited stock-cover definition: 600 units on hand at 100 units/day lasts 6 days.",
+      "citation": { "source_file": "402402904-Best-Practice-in-Inventory-Management-Oliver-Wight-Manufacturing-pdf.md", "chunk_index": 38, "quote": "the time in which the stock will run out at average usage rate." }
+    }
+  ],
+  "sources": ["Best Practice in Inventory Management (stock cover); Supply Chain Manager's Handbook (days of supply)"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "402402904-Best-Practice-in-Inventory-Management-Oliver-Wight-Manufacturing-pdf.md", "chunk_index": 38, "quote": "Overall stock cover is calculated from the total value of stock divided by the annual issue value and multiplied by 52 to give data in terms of weeks." },
+    { "source_file": "509390811-Supply-Chain-Manager-s-Handbook-JSI.md", "chunk_index": 100, "quote": "Days of supply ... uses average daily consumption based on historical demand to calculate an order quantity for a defined number of days of supply." }
+  ],
+  "disclaimer_level": "none"
+}

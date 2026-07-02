@@ -1,0 +1,20 @@
+{
+  "id": "reference.freight.dim_divisors",
+  "name": "Dimensional Weight Divisors by Carrier",
+  "description": "Volumetric (DIM) divisors used to convert shipment volume to billable weight. NOT in the knowledge base; the corpus only defines the concept (volume / minimum density requirement). Candidate values below are common industry figures and MUST be confirmed against current carrier rate cards before use.",
+  "region": "carrier-specific",
+  "effective_date": null,
+  "review_frequency": "quarterly (carriers revise divisors, often at annual GRI)",
+  "grounding": "external",
+  "status": "needs_sourcing",
+  "source_type": "carrier_published",
+  "source": "TO CONFIRM: UPS, FedEx, DHL published rate/service guides; IATA TACT for air.",
+  "sourcing_notes": "Confirm each divisor and its unit against the carrier's current service guide. Divisors change (e.g. US domestic parcel moved 194 -> 166 -> 139 in^3/lb historically). Record effective_date per carrier and set status to verified once confirmed. Note whether the divisor applies to all packages or only above a size threshold.",
+  "columns": ["carrier", "service", "divisor", "unit", "verified"],
+  "rows": [
+    { "carrier": "UPS/FedEx", "service": "US domestic parcel", "divisor": 139, "unit": "in^3/lb", "verified": false },
+    { "carrier": "UPS/FedEx", "service": "international parcel", "divisor": 166, "unit": "in^3/lb", "verified": false },
+    { "carrier": "IATA", "service": "air cargo (general)", "divisor": 6000, "unit": "cm^3/kg", "verified": false },
+    { "carrier": "Courier", "service": "express air", "divisor": 5000, "unit": "cm^3/kg", "verified": false }
+  ]
+}

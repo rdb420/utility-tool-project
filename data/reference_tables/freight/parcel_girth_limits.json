@@ -1,0 +1,18 @@
+{
+  "id": "reference.freight.parcel_girth_limits",
+  "name": "Parcel Size Limits (length + girth)",
+  "description": "Carrier maximum-size limits expressed as length and length-plus-girth, where girth = 2 x (width + height). NOT in the knowledge base; candidate values below are common carrier limits and MUST be confirmed against current carrier guides.",
+  "region": "carrier-specific",
+  "effective_date": null,
+  "review_frequency": "annually (carriers revise size/oversize thresholds)",
+  "grounding": "external",
+  "status": "needs_sourcing",
+  "source_type": "carrier_published",
+  "source": "TO CONFIRM: UPS, FedEx, USPS, Australia Post service guides.",
+  "sourcing_notes": "Define girth = 2*(width + height); length-plus-girth = length + girth. Confirm each carrier's max length, max length+girth, oversize thresholds, and the units. USPS and international posts differ from UPS/FedEx. Record effective_date per carrier once confirmed.",
+  "columns": ["carrier", "max_length", "max_length_plus_girth", "unit", "verified"],
+  "rows": [
+    { "carrier": "UPS/FedEx (US)", "max_length": 108, "max_length_plus_girth": 165, "unit": "in", "verified": false },
+    { "carrier": "USPS (retail ground)", "max_length": 130, "max_length_plus_girth": 130, "unit": "in", "verified": false }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operations-utility-toolkit/schemas/formula.schema.json",
+  "title": "Formula",
+  "description": "A reusable calculation record grounded in the knowledge base (see docs/CORPUS_DESIGN.md).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "category",
+    "description",
+    "inputs",
+    "outputs",
+    "expression",
+    "assumptions",
+    "limitations",
+    "examples",
+    "grounding",
+    "citations",
+    "disclaimer_level"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$",
+      "description": "Stable dotted identifier, e.g. inventory.reorder_point.basic"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "category": {
+      "type": "string",
+      "enum": ["inventory", "freight", "packaging", "pricing", "workforce", "safety"]
+    },
+    "description": { "type": "string", "minLength": 1 },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "symbol", "type", "unit"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "symbol": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["number", "integer"] },
+          "unit": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "min": { "type": "number" },
+          "max": { "type": "number" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "symbol", "unit"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "symbol": { "type": "string", "minLength": 1 },
+          "unit": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "expression": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Canonical human-readable expression."
+    },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Worked examples; prefer values lifted from a cited KB passage.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["inputs", "expected"],
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          },
+          "tolerance": { "type": "number", "minimum": 0 },
+          "note": { "type": "string" },
+          "citation": { "$ref": "#/$defs/citation" }
+        }
+      }
+    },
+    "sources": { "type": "array", "items": { "type": "string" } },
+    "grounding": {
+      "type": "string",
+      "enum": ["corpus", "concept", "external"],
+      "description": "corpus = formula in KB; concept = KB defines idea not constants; external = sourced elsewhere"
+    },
+    "citations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/citation" }
+    },
+    "disclaimer_level": {
+      "type": "string",
+      "enum": ["none", "estimate", "regional", "professional_review"]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "grounding": { "const": "corpus" } } },
+      "then": { "properties": { "citations": { "minItems": 1 } } }
+    },
+    {
+      "if": { "properties": { "grounding": { "const": "external" } } },
+      "then": { "required": ["sources"], "properties": { "sources": { "minItems": 1 } } }
+    }
+  ],
+  "$defs": {
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_file", "chunk_index"],
+      "properties": {
+        "source_file": { "type": "string", "minLength": 1 },
+        "chunk_index": { "type": "integer", "minimum": 0 },
+        "quote": { "type": "string" }
+      }
+    }
+  }
+}

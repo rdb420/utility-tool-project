@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operations-utility-toolkit/schemas/calculator.schema.json",
+  "title": "Calculator",
+  "description": "Public tool/page definition binding formula records to a page spec (MVP inventory cluster).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "slug",
+    "title",
+    "primary_keyword",
+    "formula_ids",
+    "input_groups",
+    "result_cards",
+    "copy_blocks",
+    "related_tools",
+    "schema_types"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^calculator(\\.[a-z0-9_]+)+$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "meta_description": { "type": "string", "minLength": 1, "maxLength": 320 },
+    "primary_keyword": { "type": "string", "minLength": 1 },
+    "secondary_keywords": { "type": "array", "items": { "type": "string" } },
+    "formula_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$" }
+    },
+    "input_groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "inputs"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/input" }
+          }
+        }
+      }
+    },
+    "result_cards": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/result_card" }
+    },
+    "copy_blocks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intro", "faq"],
+      "properties": {
+        "intro": { "type": "string", "minLength": 1 },
+        "how_it_works": { "type": "string" },
+        "formula_explanation": { "type": "string" },
+        "worked_example": { "type": "string" },
+        "faq": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["q", "a"],
+            "properties": {
+              "q": { "type": "string", "minLength": 1 },
+              "a": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "related_tools": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^calculator(\\.[a-z0-9_]+)+$" }
+    },
+    "disclaimer_level": {
+      "type": "string",
+      "enum": ["none", "estimate", "regional", "professional_review"]
+    },
+    "schema_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["WebApplication", "FAQPage", "BreadcrumbList", "Organization"]
+      }
+    }
+  },
+  "$defs": {
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "label", "unit"],
+      "properties": {
+        "symbol": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "unit": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["number", "integer"] },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "required": { "type": "boolean" },
+        "default": { "type": "number" },
+        "help": { "type": "string" }
+      }
+    },
+    "result_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "label", "unit"],
+      "properties": {
+        "symbol": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "unit": { "type": "string", "minLength": 1 },
+        "primary": { "type": "boolean" },
+        "description": { "type": "string" }
+      }
+    }
+  }
+}

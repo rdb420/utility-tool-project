@@ -1,0 +1,42 @@
+{
+  "id": "inventory.eoq.basic",
+  "name": "Economic Order Quantity (EOQ)",
+  "category": "inventory",
+  "description": "The order quantity that minimises total ordering plus holding cost, balancing the fixed cost of ordering against the cost of carrying inventory.",
+  "inputs": [
+    { "name": "Annual demand", "symbol": "D", "type": "number", "unit": "units/year", "required": true, "min": 0 },
+    { "name": "Ordering cost", "symbol": "OC", "type": "number", "unit": "currency/order", "required": true, "min": 0 },
+    { "name": "Carrying cost rate", "symbol": "k", "type": "number", "unit": "ratio", "required": true, "min": 0, "description": "Annual holding cost as a fraction of unit cost, e.g. 0.21 for 21%." },
+    { "name": "Unit cost", "symbol": "UC", "type": "number", "unit": "currency/unit", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Economic order quantity", "symbol": "EOQ", "unit": "units" }
+  ],
+  "expression": "EOQ = sqrt((2 * D * OC) / (k * UC))",
+  "assumptions": [
+    "Demand is constant and known.",
+    "Ordering cost and unit cost are constant (no quantity discounts).",
+    "The full order arrives at once and stock is drawn down linearly."
+  ],
+  "limitations": [
+    "Not appropriate for just-in-time items or highly variable demand.",
+    "Ignores quantity discounts, capacity limits, and order-investment ceilings.",
+    "Result is typically rounded to a practical order/pack multiple."
+  ],
+  "examples": [
+    {
+      "inputs": { "D": 20000, "OC": 125, "k": 0.21, "UC": 34 },
+      "expected": { "EOQ": 836.83 },
+      "tolerance": 1,
+      "note": "Distribution Planning Exercise 8.8.",
+      "citation": { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 490, "quote": "EOQ = sqrt((2 x 20,000 x US$125) / (21% x US$34)) = 837 (836.83)" }
+    }
+  ],
+  "sources": ["Harris/Wilson EOQ model; APICS Dictionary"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 490, "quote": "EOQ = sqrt((2 x Demand(D) x Ordering cost(OC)) / (Carrying cost %(k) x Unit cost(UC)))" },
+    { "source_file": "479665818-Total-SupplyChain-Man-pdf.md", "chunk_index": 101, "quote": "The formula for EOQ is Q = the square root 2 x D O / P H where D is annual demand, O is the cost of raising an order, P is the price per unit and H is the holding cost." }
+  ],
+  "disclaimer_level": "estimate"
+}

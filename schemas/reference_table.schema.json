@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operations-utility-toolkit/schemas/reference_table.schema.json",
+  "title": "ReferenceTable",
+  "description": "Lookup-style data (z-factors, carrier divisors, freight classes, pallet sizes).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "region", "grounding", "status", "source_type", "rows"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "region": { "type": "string", "minLength": 1 },
+    "effective_date": {
+      "type": ["string", "null"],
+      "description": "ISO date the values apply from, or null if not yet sourced."
+    },
+    "review_frequency": { "type": "string" },
+    "grounding": { "type": "string", "enum": ["corpus", "concept", "external"] },
+    "status": {
+      "type": "string",
+      "enum": ["verified", "needs_sourcing"],
+      "description": "needs_sourcing means rows are placeholders pending an authoritative source."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["official_standard", "carrier_published", "public_reference", "internal_assumption"]
+    },
+    "source": { "type": "string" },
+    "sourcing_notes": { "type": "string" },
+    "columns": { "type": "array", "items": { "type": "string" } },
+    "rows": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_file", "chunk_index"],
+        "properties": {
+          "source_file": { "type": "string" },
+          "chunk_index": { "type": "integer", "minimum": 0 },
+          "quote": { "type": "string" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "verified" } } },
+      "then": {
+        "properties": { "rows": { "minItems": 1 } },
+        "required": ["effective_date"]
+      }
+    },
+    {
+      "if": { "properties": { "grounding": { "const": "corpus" } } },
+      "then": { "properties": { "citations": { "minItems": 1 } } }
+    },
+    {
+      "if": { "properties": { "grounding": { "const": "external" } } },
+      "then": { "required": ["source", "sourcing_notes"] }
+    }
+  ]
+}

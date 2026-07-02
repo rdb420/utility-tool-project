@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operations-utility-toolkit/schemas/unit.schema.json",
+  "title": "Unit",
+  "description": "A unit of measure with conversion to a base unit for internal calculation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "symbol", "dimension", "base_unit", "conversion_factor"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^unit(\\.[a-z0-9_]+)+$",
+      "description": "e.g. unit.length.cm"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "symbol": { "type": "string", "minLength": 1 },
+    "dimension": {
+      "type": "string",
+      "enum": ["length", "weight", "volume", "time", "currency", "count", "ratio"]
+    },
+    "base_unit": { "type": "string", "minLength": 1 },
+    "conversion_factor": {
+      "type": "number",
+      "description": "Multiply a value in this unit by this factor to get the base unit."
+    },
+    "precision": { "type": "integer", "minimum": 0 }
+  }
+}

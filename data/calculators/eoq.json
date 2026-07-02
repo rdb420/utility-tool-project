@@ -1,0 +1,42 @@
+{
+  "id": "calculator.eoq",
+  "slug": "eoq-calculator",
+  "title": "EOQ Calculator (Economic Order Quantity)",
+  "meta_description": "Calculate your economic order quantity (EOQ). Enter annual demand, ordering cost, carrying rate, and unit cost to find the order size that minimises total cost.",
+  "primary_keyword": "eoq calculator",
+  "secondary_keywords": [
+    "economic order quantity calculator",
+    "eoq formula",
+    "optimal order quantity",
+    "how much to order"
+  ],
+  "formula_ids": ["inventory.eoq.basic"],
+  "input_groups": [
+    {
+      "label": "Demand and costs",
+      "inputs": [
+        { "symbol": "D", "label": "Annual demand", "unit": "units/year", "type": "number", "min": 0, "required": true, "help": "Total units expected over the year." },
+        { "symbol": "OC", "label": "Ordering cost", "unit": "currency/order", "type": "number", "min": 0, "required": true, "help": "Fixed cost to raise and receive one order." },
+        { "symbol": "k", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "help": "Annual holding cost as a fraction of unit cost, e.g. 0.21 for 21%." },
+        { "symbol": "UC", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "help": "Purchase or production cost per unit." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "EOQ", "label": "Economic order quantity", "unit": "units", "primary": true, "description": "Order size that minimises combined ordering and holding cost. Round to a practical pack or case multiple." }
+  ],
+  "copy_blocks": {
+    "intro": "The economic order quantity is the order size that minimises the total of ordering cost and inventory holding cost. Order too little and you pay to order too often; order too much and you tie up cash in stock.",
+    "how_it_works": "EOQ balances the fixed cost of each order against the cost of carrying the resulting average inventory. It rises with demand and ordering cost, and falls as holding cost rises.",
+    "formula_explanation": "EOQ = sqrt( (2 x annual demand x ordering cost) / (carrying rate x unit cost) ). The carrying rate x unit cost is the annual cost to hold one unit.",
+    "worked_example": "With annual demand 20,000, ordering cost 125, carrying rate 21%, and unit cost 34: EOQ = sqrt((2 x 20,000 x 125) / (0.21 x 34)) = about 837 units.",
+    "faq": [
+      { "q": "What is EOQ used for?", "a": "It sets a cost-efficient reorder quantity for stable, repeatably ordered items. Pair it with the reorder point to know both how much and when to order." },
+      { "q": "When does EOQ not apply?", "a": "Skip it for just-in-time items, highly variable demand, or when big quantity discounts change the unit cost by order size." },
+      { "q": "Should I order exactly the EOQ?", "a": "No. Round to a practical case, pallet, or minimum-order multiple. EOQ is a target, not a rigid quantity." }
+    ]
+  },
+  "related_tools": ["calculator.reorder_point", "calculator.carrying_cost", "calculator.inventory_turnover"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

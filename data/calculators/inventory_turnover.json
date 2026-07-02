@@ -1,0 +1,40 @@
+{
+  "id": "calculator.inventory_turnover",
+  "slug": "inventory-turnover-calculator",
+  "title": "Inventory Turnover Calculator",
+  "meta_description": "Calculate inventory turnover from cost of goods sold and average inventory, and see days inventory outstanding. Formula and worked example included.",
+  "primary_keyword": "inventory turnover calculator",
+  "secondary_keywords": [
+    "inventory turnover ratio",
+    "stock turn calculator",
+    "days inventory outstanding",
+    "inventory turnover formula"
+  ],
+  "formula_ids": ["inventory.turnover.cogs"],
+  "input_groups": [
+    {
+      "label": "Cost and inventory",
+      "inputs": [
+        { "symbol": "COGS", "label": "Cost of goods sold", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Cost of goods sold over the period (usually a year)." },
+        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Average inventory at cost, e.g. average of opening and closing." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "turns", "label": "Inventory turnover", "unit": "turns/period", "primary": true, "description": "How many times inventory sold and was replaced during the period." }
+  ],
+  "copy_blocks": {
+    "intro": "Inventory turnover shows how many times you sold and replaced your average stock over a period. Higher turnover usually means leaner working capital, as long as service levels hold.",
+    "how_it_works": "Divide cost of goods sold by average inventory value, both measured at cost. Divide the period length by turnover to get days inventory outstanding.",
+    "formula_explanation": "Inventory turnover = cost of goods sold / average inventory value. Using COGS (not revenue) keeps both sides valued at cost for a like-for-like ratio.",
+    "worked_example": "With COGS of 150,000,000 and average inventory of 30,000,000, turnover = 150M / 30M = 5 turns. That is about 365 / 5 = 73 days of inventory outstanding.",
+    "faq": [
+      { "q": "Should I use sales or COGS?", "a": "Use COGS. Dividing sales by inventory mixes cost and retail values and overstates turnover." },
+      { "q": "What is a good turnover ratio?", "a": "It varies by industry. Compare against your own trend and peers rather than a universal target." },
+      { "q": "How does this relate to days of cover?", "a": "Days inventory outstanding = period days / turnover. Days of cover looks forward from current stock and demand; turnover looks back over a period." }
+    ]
+  },
+  "related_tools": ["calculator.days_of_cover", "calculator.carrying_cost", "calculator.eoq"],
+  "disclaimer_level": "none",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

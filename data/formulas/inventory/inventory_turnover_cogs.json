@@ -1,0 +1,38 @@
+{
+  "id": "inventory.turnover.cogs",
+  "name": "Inventory Turnover",
+  "category": "inventory",
+  "description": "How many times average inventory is sold and replaced over a period, measured as cost of goods sold divided by average inventory value.",
+  "inputs": [
+    { "name": "Cost of goods sold", "symbol": "COGS", "type": "number", "unit": "currency", "required": true, "min": 0 },
+    { "name": "Average inventory value", "symbol": "avg_inv", "type": "number", "unit": "currency", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Inventory turnover", "symbol": "turns", "unit": "turns/period", "description": "Times inventory turns over in the period." }
+  ],
+  "expression": "turns = COGS / avg_inv",
+  "assumptions": [
+    "COGS and average inventory are valued on a consistent basis (both at cost).",
+    "Average inventory represents the period (e.g. average of opening and closing).",
+    "Days inventory outstanding follows as period_days / turns."
+  ],
+  "limitations": [
+    "Sales-based turnover (revenue / inventory) inflates the ratio; use COGS for a like-for-like measure.",
+    "Seasonal businesses need a representative average, not a single snapshot."
+  ],
+  "examples": [
+    {
+      "inputs": { "COGS": 150000000, "avg_inv": 30000000 },
+      "expected": { "turns": 5 },
+      "note": "Distribution Planning review problem: COGS US$150M, average inventory US$30M.",
+      "citation": { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 455, "quote": "Cost of goods is US$150 million; Average inventory is US$30 million ... calculate the inventory turnover ratio." }
+    }
+  ],
+  "sources": ["APICS Dictionary; standard financial ratio"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "402402904-Best-Practice-in-Inventory-Management-Oliver-Wight-Manufacturing-pdf.md", "chunk_index": 30, "quote": "turnover is given by Annual usage x Unit cost." },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 446, "quote": "7.5.3 Inventory turns and ratios ... financial measurements of inventory." }
+  ],
+  "disclaimer_level": "none"
+}

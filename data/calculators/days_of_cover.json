@@ -1,0 +1,40 @@
+{
+  "id": "calculator.days_of_cover",
+  "slug": "days-of-inventory-calculator",
+  "title": "Days of Inventory Cover Calculator",
+  "meta_description": "Calculate how many days your current stock will last at average demand. Enter available stock and average daily demand to get days of cover.",
+  "primary_keyword": "days of inventory calculator",
+  "secondary_keywords": [
+    "days of cover calculator",
+    "days of supply calculator",
+    "stock cover calculator",
+    "how long will stock last"
+  ],
+  "formula_ids": ["inventory.days_of_cover.basic"],
+  "input_groups": [
+    {
+      "label": "Stock and demand",
+      "inputs": [
+        { "symbol": "stock", "label": "Available stock", "unit": "units", "type": "number", "min": 0, "required": true, "help": "Current on-hand quantity (or value, if demand is in the same unit)." },
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "days", "label": "Days of cover", "unit": "days", "primary": true, "description": "How many days current stock lasts at average usage." }
+  ],
+  "copy_blocks": {
+    "intro": "Days of inventory cover estimates how long your current stock will last at the average usage rate. It is a fast health check for each item and for total inventory.",
+    "how_it_works": "Divide available stock by average daily demand. Keep both in the same unit, whether units, cases, or value.",
+    "formula_explanation": "Days of cover = available stock / average daily demand. For a value basis over a year, weeks of cover = stock value / annual usage x 52.",
+    "worked_example": "With 600 units on hand and average demand of 100 units/day, days of cover = 600 / 100 = 6 days.",
+    "faq": [
+      { "q": "What is the difference from inventory turnover?", "a": "Days of cover is forward-looking from current stock and expected demand; turnover is a backward-looking ratio over a completed period." },
+      { "q": "Does it account for demand spikes?", "a": "No. It uses average demand, so pair it with safety stock and a reorder point for variable items." },
+      { "q": "Can I use it on value instead of units?", "a": "Yes, as long as stock and demand are both expressed in the same unit or currency basis." }
+    ]
+  },
+  "related_tools": ["calculator.reorder_point", "calculator.inventory_turnover", "calculator.safety_stock"],
+  "disclaimer_level": "none",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

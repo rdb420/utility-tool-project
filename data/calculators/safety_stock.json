@@ -1,0 +1,41 @@
+{
+  "id": "calculator.safety_stock",
+  "slug": "safety-stock-calculator",
+  "title": "Safety Stock Calculator",
+  "meta_description": "Calculate safety stock for a target service level. Enter the service-level factor, demand variability, and lead time to size your buffer, with the formula explained.",
+  "primary_keyword": "safety stock calculator",
+  "secondary_keywords": [
+    "safety stock formula",
+    "service level safety stock",
+    "buffer stock calculator",
+    "how much safety stock"
+  ],
+  "formula_ids": ["inventory.safety_stock.service_level"],
+  "input_groups": [
+    {
+      "label": "Service level and demand variability",
+      "inputs": [
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand. Higher variability needs more buffer." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Replenishment lead time in days." }
+      ]
+    }
+  ],
+  "result_cards": [
+    { "symbol": "SS", "label": "Safety stock", "unit": "units", "primary": true, "description": "Buffer stock to hold above expected lead-time demand." }
+  ],
+  "copy_blocks": {
+    "intro": "Safety stock is the buffer that protects against running out when demand or supply varies. The service-level method sizes it from how much daily demand swings and how long replenishment takes.",
+    "how_it_works": "Pick a service-level factor (z) for your target service level, multiply by the standard deviation of daily demand, and scale by the square root of the lead time.",
+    "formula_explanation": "Safety stock = z x standard deviation of daily demand x sqrt(lead time). The square root reflects that variability accumulates over the lead time, not linearly.",
+    "worked_example": "For a 95% service level (z = 1.64), demand standard deviation of 3 units/day, and a 15-day lead time: 1.64 x 3 x sqrt(15) = about 19 units.",
+    "faq": [
+      { "q": "What service-level factor should I use?", "a": "Common values: 90% = 1.28, 95% = 1.65, 98% = 2.05, 99% = 2.33. Higher service levels need more buffer." },
+      { "q": "What if lead time also varies?", "a": "Use the combined form that adds lead-time variance: sigma over lead time = sqrt(LT x sigmaD^2 + D^2 x sigmaLT^2). This tool assumes constant lead time." },
+      { "q": "How do I use the result?", "a": "Feed it into the reorder point calculator so your trigger level covers both expected demand and this buffer." }
+    ]
+  },
+  "related_tools": ["calculator.reorder_point", "calculator.days_of_cover", "calculator.carrying_cost"],
+  "disclaimer_level": "estimate",
+  "schema_types": ["WebApplication", "FAQPage", "BreadcrumbList"]
+}

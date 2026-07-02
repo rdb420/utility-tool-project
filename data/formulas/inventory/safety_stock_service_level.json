@@ -1,0 +1,40 @@
+{
+  "id": "inventory.safety_stock.service_level",
+  "name": "Safety Stock (service-level method)",
+  "category": "inventory",
+  "description": "Buffer stock sized to a target service level from demand variability over the lead time: a service-level factor times the standard deviation of demand during the lead time.",
+  "inputs": [
+    { "name": "Service-level factor", "symbol": "z", "type": "number", "unit": "sigma", "required": true, "min": 0, "description": "Safety factor for the target service level (see reference.service_level_z_factors)." },
+    { "name": "Standard deviation of daily demand", "symbol": "sigma_d", "type": "number", "unit": "units/day", "required": true, "min": 0 },
+    { "name": "Lead time", "symbol": "LT", "type": "number", "unit": "days", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Safety stock", "symbol": "SS", "unit": "units" }
+  ],
+  "expression": "SS = z * sigma_d * sqrt(LT)",
+  "assumptions": [
+    "Lead-time demand is approximately normally distributed.",
+    "Lead time is constant; only demand varies.",
+    "Daily demand observations are independent (so variance scales with LT)."
+  ],
+  "limitations": [
+    "When lead time also varies, use the combined form sigma_L = sqrt(LT*sigma_d^2 + D^2*sigma_LT^2) and SS = z*sigma_L.",
+    "The service-level factor assumes a cycle-service-level target, not a fill-rate target."
+  ],
+  "examples": [
+    {
+      "inputs": { "z": 1.64, "sigma_d": 3, "LT": 15 },
+      "expected": { "SS": 19 },
+      "tolerance": 1,
+      "note": "Garden-centre example: 95% service level (z=1.64), sigma_d=3/day, 15-day lead time. sigma over lead time = sqrt(15*3^2)=11.6; SS = 1.64*11.6 = 19.",
+      "citation": { "source_file": "479665818-Total-SupplyChain-Man-pdf.md", "chunk_index": 102, "quote": "For 95 per cent service level safety stock = 1.64 x standard deviation of demand during lead time ... Safety stock = 1.64 x 11.6 = 19" }
+    }
+  ],
+  "sources": ["Wild (2002); APICS safety-factor tables"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 480, "quote": "calculate the standard deviation of the lead time by first finding the square root of the lead time (L) and then multiplying this value by the standard deviation of demand, sigma_L = sqrt(L) * sigma_D." },
+    { "source_file": "470379145-LEAN-Supply-Chain-Planning-The-New-Supply-Chain-Management-Paradigm-for-Process-Industries-to-Master-Today-s-VUCA-World-pdf.md", "chunk_index": 197, "quote": "The required service level is 99%, which translates into a safety factor of 2.33 ... safety stock = safety factor x standard deviation x sqrt(uncertainty period)." }
+  ],
+  "disclaimer_level": "estimate"
+}

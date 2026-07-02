@@ -1,0 +1,37 @@
+{
+  "id": "inventory.carrying_cost.basic",
+  "name": "Inventory Carrying Cost",
+  "category": "inventory",
+  "description": "The annual cost of holding inventory: the carrying-cost rate applied to the average value of inventory held.",
+  "inputs": [
+    { "name": "Carrying cost rate", "symbol": "rate", "type": "number", "unit": "ratio", "required": true, "min": 0, "description": "Annual carrying cost as a fraction of inventory value, e.g. 0.26 for 26%." },
+    { "name": "Average inventory value", "symbol": "avg_inv", "type": "number", "unit": "currency", "required": true, "min": 0 }
+  ],
+  "outputs": [
+    { "name": "Annual carrying cost", "symbol": "carrying_cost", "unit": "currency/year" }
+  ],
+  "expression": "carrying_cost = rate * avg_inv",
+  "assumptions": [
+    "The carrying-cost rate captures capital, storage, service, and risk costs.",
+    "Average inventory value is representative of the year."
+  ],
+  "limitations": [
+    "The rate is policy-dependent; components vary by firm (typical range ~15-30%).",
+    "Derive the rate as annual carrying costs / average inventory value when a firm-specific figure is needed."
+  ],
+  "examples": [
+    {
+      "inputs": { "rate": 0.26, "avg_inv": 2000000 },
+      "expected": { "carrying_cost": 520000 },
+      "note": "Distribution Planning worked example.",
+      "citation": { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 425, "quote": "if the average inventory value of a company is US$2 million, the carrying cost is 2,000,000 x 26% or US$520,000." }
+    }
+  ],
+  "sources": ["APICS Dictionary; total-cost-of-inventory models"],
+  "grounding": "corpus",
+  "citations": [
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 425, "quote": "The carrying cost is calculated by multiplying the carrying cost percentage by the average value of the items being stored." },
+    { "source_file": "376190909-Distribution-Planning-and-Control-Managing-in-the-Era-of-Supply-Chain-Management-pdf.md", "chunk_index": 424, "quote": "If the average value of the inventory is $12 million, the percentage of carrying cost for the warehouse is 20.3% (2,428,000/12,000,000)." }
+  ],
+  "disclaimer_level": "estimate"
+}
