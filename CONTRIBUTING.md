@@ -12,15 +12,29 @@
 - Avoid regulated claims, freight-rate guarantees, or definitive compliance advice.
 - Prefer small, useful tools over broad pages with shallow content.
 
+## Website Workflow
+
+The site, the calculation library, and the corpus validator are TypeScript under
+`web/` (Node >= 20.19):
+
+```bash
+cd web
+npm install
+npm run test       # vitest: calc, record-driven, validator, and component tests
+npm run validate   # validate data/ records vs schemas/
+npm run lint
+npm run typecheck
+```
+
 ## Python Workflow
 
+Python covers the knowledge-base tooling (ingestion, retrieval, Google checks).
 Use `uv` for environment and tool execution:
 
 ```bash
 uv sync
 uv run pytest
 uv run ruff check .
-uv run python scripts/validate_corpus.py   # validate data/ records vs schemas/
 ```
 
 ## Adding a Formula or Calculator
@@ -29,12 +43,14 @@ The pieces must stay in lockstep (enforced by tests and the validator):
 
 1. Author the formula record in `data/formulas/` with citations and a worked
    example (see `docs/CORPUS_DESIGN.md` for fields).
-2. Implement the pure function in `src/calc/` and register it in
-   `src/calc/registry.py` (id -> function). The record's worked examples are then
-   run through the real library automatically.
+2. Implement the pure function in `web/src/lib/calc/` and register it in
+   `web/src/lib/calc/registry.ts` (id -> function). The record-driven Vitest
+   suite then runs the record's worked examples through the real library
+   automatically.
 3. For a public page, add a calculator record in `data/calculators/` following
-   `docs/MVP_PAGE_SPECS.md`; its inputs must cover the formula's inputs.
-4. Run `uv run python scripts/validate_corpus.py` and `uv run pytest`.
+   `docs/MVP_PAGE_SPECS.md`; its inputs must cover the formula's inputs (an input
+   satisfied by another referenced formula's output counts as covered).
+4. Run `cd web && npm run validate && npm run test`.
 
 ## Documentation Workflow
 

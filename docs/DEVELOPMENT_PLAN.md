@@ -76,14 +76,17 @@ Exit criteria:
 
 ## Phase 2: Calculation Library
 
-Status: inventory calculators complete; freight calculators blocked on
-reference-table sourcing (Phase 1b task 4).
+Status: complete. Originally implemented in Python (`src/calc/`), then ported to
+TypeScript during Phase 4 and the Python version deleted after a parity gate.
 
-Implemented in `src/calc/`: pure functions for the six inventory formulas
-(`inventory.py`), input validation (`errors.py`), unit conversion (`units.py`),
-result formatting (`formatting.py`), and a `registry.py` that binds each formula
-record id to its function. The record-driven test runs every corpus worked
-example through the real library, so results trace to a cited corpus example.
+Implemented in `web/src/lib/calc/`: pure functions for the six inventory
+formulas (`inventory.ts`) and the CBM/volumetric/chargeable-weight freight
+formulas (`freight.ts`), input validation (`errors.ts`), unit conversion
+(`units.ts`), result formatting (`formatting.ts`), and a `registry.ts` that
+binds each formula record id to its function. The record-driven test runs every
+corpus worked example through the real library, so results trace to a cited
+corpus example. Freight results are labelled estimates until the reference
+tables are verified (Phase 1b task 4).
 
 Goal:
 
@@ -153,15 +156,30 @@ Exit criteria:
 - The MVP page specs are clear enough to implement without revisiting the research
   documents. (Met.)
 - Every page has a validated record whose result the calc library can produce,
-  enforced by `scripts/validate_corpus.py` and `tests/test_calculators.py`. (Met.)
+  enforced by the corpus validator (`cd web && npm run validate`) and the
+  record-driven Vitest suites. (Met.)
 
 ## Phase 4: Website MVP
+
+Status: delivered (2026-07-02). Built as a Next.js App Router + TypeScript app
+at `web/` (design spec:
+`docs/superpowers/specs/2026-07-02-phase4-website-mvp-design.md`). Shipped:
+
+- The six inventory calculator pages plus `/cbm-calculator/` (CBM, volumetric
+  weight, chargeable weight, container fill), with carrier DIM divisors
+  labelled as unverified estimates.
+- Home page, inventory and freight cluster hubs, privacy/cookie/terms/contact/
+  about pages, sitemap, robots, ads.txt, canonical URLs, and JSON-LD
+  (WebApplication, FAQPage, BreadcrumbList).
+- Formula execution client-side via the TS calc library; corpus validation in
+  TS wired into the build; ad, consent, and analytics scaffolds (GA4 wiring
+  pending — Phase 5).
 
 Goal:
 
 Build the first public calculator cluster.
 
-Recommended requirements:
+Requirements (met):
 
 - Fast mobile-first UI.
 - Tool visible near the top of each page.
@@ -236,25 +254,32 @@ Exit criteria:
 
 ## Open Technical Decisions
 
-- Public frontend framework.
-- Whether formulas run only client-side or share generated artifacts across Python and frontend code.
-- Layer 2 record format: JSON, YAML, CSV, or a small database. (The Layer 1
-  knowledge base is already decided: Qdrant hybrid vectors.)
-- Whether exports are simple CSV/PDF downloads or later premium features.
-- Analytics provider and event taxonomy.
+Resolved (2026-07-02, Phase 4):
+
+- Public frontend framework: **Next.js App Router + TypeScript**, statically
+  generated, at `web/`.
+- Formula execution: **client-side TypeScript library**
+  (`web/src/lib/calc/`), the single source of truth; the Python calc library
+  was deleted after a parity gate, so nothing is shared across stacks.
+- Layer 2 record format: **JSON** under `data/`, validated by the TS validator.
+- Analytics event taxonomy: typed event union scaffolded in
+  `web/src/lib/analytics/` (calculator_start, calculator_result,
+  calculator_validation_error, result_copy, result_export,
+  related_tool_click); GA4 transport wiring pending (Phase 5).
+- Exports: copy-to-clipboard shipped; CSV/PDF downloads deferred.
+
+Still open:
+
+- Analytics provider confirmation (GA4 assumed) and consent-mode upgrade
+  (IAB TCF v2.2 CMP) before AdSense.
 
 ## Near-Term Next Step
 
-Define schemas and grounded sample records for the first six inventory formulas,
-which are fully corpus-grounded and ready to author from the knowledge base:
+Phase 5 launch tasks: connect the production domain, submit the sitemap to
+Search Console, wire GA4 into the analytics scaffold, and apply for AdSense
+once the trust pages are live.
 
-1. Reorder point.
-2. Safety stock.
-3. EOQ.
-4. Inventory turnover.
-5. Days of cover.
-6. Carrying cost.
-
-In parallel, open a sourcing task for the freight reference tables (carrier DIM
-divisors, NMFC classes, parcel girth limits) that the knowledge base does not
-contain, so the freight cluster is unblocked when inventory ships.
+In parallel, close the freight sourcing task (`data/reference_tables/freight/`):
+verify carrier DIM divisors, NMFC classes, parcel girth limits, and container
+volumes against carrier/NMFTA publications so the freight values can drop their
+`needs_sourcing` status and estimate labelling can be tightened.

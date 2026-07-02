@@ -7,9 +7,11 @@ document defines the **cross-cutting standards** every page must follow. Togethe
 they are meant to be enough to build the pages without reopening the research
 reports.
 
-The freight calculators (dimensional weight, CBM, chargeable weight) are **not**
-in this MVP — they are blocked on external reference-table sourcing
-(`data/reference_tables/freight/`). See `docs/DEVELOPMENT_PLAN.md` Phase 1b/2.
+The CBM / chargeable-weight page (`/cbm-calculator/`) shipped alongside this
+cluster with its carrier divisors labelled as unverified estimates — see the
+addendum at the end of this document. The remaining freight reference tables
+stay blocked on external sourcing (`data/reference_tables/freight/`). See
+`docs/DEVELOPMENT_PLAN.md` Phase 1b/2.
 
 ## The six pages
 
@@ -25,12 +27,13 @@ in this MVP — they are blocked on external reference-table sourcing
 Each record's `input_groups`, `result_cards`, `copy_blocks`, `related_tools`, and
 `schema_types` define that page. Validation guarantees every calculator's inputs
 cover its formula's inputs and every result card is a real formula output
-(`scripts/validate_corpus.py`).
+(`cd web && npm run validate`).
 
 ## Where computation happens
 
-Pages compute results with the `src/calc` library, addressed by the formula id in
-`formula_ids` via `calc.registry.FORMULA_REGISTRY`. Inputs are keyed by the
+Pages compute results with the TypeScript calc library (`web/src/lib/calc/`),
+addressed by the formula id in `formula_ids` via
+`web/src/lib/calc/registry.ts` (`FORMULA_REGISTRY`). Inputs are keyed by the
 `symbol` field, which matches the formula record's input symbols. No page should
 reimplement a formula; if a result cannot be produced by the library, the page
 is not ready.
@@ -65,8 +68,9 @@ never disagree:
 
 ## Result display
 
-- Round for display with `calc.formatting` (default 2 decimals; trim trailing
-  zeros). Never round the value used in chained calculations.
+- Round for display with the library's formatting helpers
+  (`web/src/lib/calc/formatting.ts`; default 2 decimals, half-to-even, trim
+  trailing zeros). Never round the value used in chained calculations.
 - Show the unit from the result card.
 - Offer copy-to-clipboard for each result; CSV export of the entered scenario is
   a nice-to-have, not required for launch.
@@ -117,6 +121,22 @@ and about pages, plus sitemap, robots, and canonical handling (see
 ## Exit criteria (Phase 3)
 
 - Every MVP page has a validated calculator record and a formula the calc library
-  can execute. (Met — see `scripts/validate_corpus.py` and `tests/test_calculators.py`.)
+  can execute. (Met — see `web/scripts/validate-corpus.ts` and the record-driven
+  Vitest suites under `web/src/lib/calc/__tests__/`.)
 - Inputs, outputs, validation, copy, FAQ, related tools, disclaimer, and schema
   are specified per page without reference to the research reports. (Met.)
+
+## Addendum (2026-07-02): CBM / freight page and chained inputs
+
+- `/cbm-calculator/` (`calculator.cbm`, record `data/calculators/cbm.json`)
+  shipped as part of the Phase 4 build. It is a **custom client island**
+  (`web/src/components/cbm/CbmCalculator.tsx`) rather than the generic
+  record-driven `CalculatorTool` — it adds live recalculation, unit/mode/weight
+  coupling, and carrier rounding — but its math still delegates to the shared
+  calc library (`web/src/lib/calc/freight.ts`), and the page is otherwise
+  rendered from its record like every other calculator. Carrier DIM divisors are
+  labelled unverified estimates (`disclaimer_level: estimate`).
+- **Chained-input rule** (corpus validator): a formula input counts as covered
+  by a calculator if it is an **output of another formula the calculator
+  references** — e.g. chargeable weight consumes the `VW` produced by the
+  volumetric-weight formula, so `VW` needs no input field.

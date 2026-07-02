@@ -1,6 +1,6 @@
 # Operations Utility Toolkit
 
-Documentation and project scaffold for an SEO-driven utility website focused on logistics, inventory planning, packaging, dimensional weight, freight, and operations calculators.
+An SEO-driven utility website (OpsCrunch) focused on logistics, inventory planning, packaging, dimensional weight, freight, and operations calculators. The public site lives at `web/` (Next.js + TypeScript); Python tooling maintains the grounding knowledge base.
 
 The source research under `docs/project/` points to a clear first-build direction: avoid generic utility-site competition and start with a focused B2B operations cluster. The recommended wedge is an inventory replenishment calculator suite, followed by freight and dimensional weight tools.
 
@@ -66,15 +66,18 @@ Phase 2 should expand into logistics and packaging:
 ├── schemas/                      # JSON Schema for corpus records
 ├── src/
 │   ├── ingestion/                # Corpus -> Qdrant hybrid-vector pipeline
-│   ├── retrieval/                # Hybrid search over the knowledge base
-│   ├── corpus/                   # Record validation against schemas
-│   └── calc/                     # Pure calculation library (inventory formulas)
-├── scripts/                      # CLI entry points (ingest, search, validate, checks)
+│   └── retrieval/                # Hybrid search over the knowledge base
+├── scripts/                      # Python CLI entry points (ingest, search, checks)
 ├── data/
-│   ├── formulas/                 # Hand-authored, KB-grounded formula records
-│   ├── calculators/              # MVP page specs (validated calculator records)
+│   ├── formulas/                 # Hand-authored formula records (inventory + freight)
+│   ├── calculators/              # Page specs (validated calculator records)
 │   └── reference_tables/         # Lookup tables (z-factors, freight sourcing)
-└── tests/
+├── web/                          # The public site: Next.js App Router + TypeScript
+│   ├── src/app/                  # Pages (record-driven [slug] route, home, hubs, legal)
+│   ├── src/lib/calc/             # TS calculation library (single source of truth)
+│   ├── src/lib/corpus/           # TS corpus validator (data/ vs schemas/)
+│   └── scripts/                  # validate-corpus.ts, generate-record-types.ts
+└── tests/                        # Python tests (Qdrant pipeline/retrieval only)
 ```
 
 The three original markdown research documents live under `docs/project/` as source material.
@@ -90,28 +93,46 @@ record cites the source passages it was derived from. See
 
 ## Local Workflow
 
-This repo is prepared for a Python-first corpus and formula-engine workflow using `uv`.
+### Website (`web/`)
+
+Next.js App Router + TypeScript. Requires Node >= 20.19.
+
+```bash
+cd web
+npm install
+npm run dev        # local dev server
+npm run test       # vitest
+npm run validate   # validate data/ records against schemas/
+npm run build      # static production build (prebuild runs the validator)
+```
+
+Live pages: seven calculators (`/reorder-point-calculator/`,
+`/safety-stock-calculator/`, `/eoq-calculator/`,
+`/inventory-turnover-calculator/`, `/days-of-inventory-calculator/`,
+`/inventory-carrying-cost-calculator/`, `/cbm-calculator/`), the home page, two
+cluster hubs (`/inventory-calculators/`, `/freight-calculators/`), and legal
+pages (privacy, cookies, terms, contact, about), plus sitemap/robots/ads.txt.
+
+### Knowledge-base tooling (Python)
+
+Python is now KB tooling only, run with `uv` (needs `.env.local`; copy from
+`.env.example`):
 
 ```bash
 uv sync
 uv run pytest
 uv run ruff check .
-```
-
-Working with the knowledge base and corpus records (needs `.env.local`; copy from
-`.env.example`):
-
-```bash
 uv run python scripts/search_corpus.py "reorder point formula"   # query the KB
 uv run python scripts/ingest_qdrant.py --dry-run                 # (re)build the KB
-uv run python scripts/validate_corpus.py                         # validate records vs schemas
 ```
 
-No production app framework has been selected yet. The likely split is:
+The split of responsibilities:
 
-- Python for corpus conversion, formula validation, fixtures, and data QA.
-- A static or server-rendered web app for the public calculators.
-- JSON/CSV artifacts as the contract between corpus tooling and the website.
+- TypeScript (`web/`) for the public calculators, formula execution, and corpus
+  record validation.
+- Python for knowledge-base ingestion and retrieval (grounding/citation).
+- Validated JSON records under `data/` as the contract between corpus authoring
+  and the website.
 
 ## Documentation Map
 
@@ -126,22 +147,23 @@ No production app framework has been selected yet. The likely split is:
 
 ## Current Status
 
-The knowledge base is built and searchable, and the first corpus record schemas
-and grounded inventory formula records exist (reorder point, safety stock, EOQ,
-inventory turnover, days of cover, carrying cost), each cited to source passages
-and validated against the schemas.
+Phase 4 (website MVP) is built. The site at `web/` serves seven calculator pages
+(six inventory + the CBM/freight calculator, whose carrier divisors are labelled
+unverified estimates), record-driven from validated calculator records in
+`data/calculators/`. Formula execution and corpus validation are TypeScript
+(`web/src/lib/calc/`, `web/src/lib/corpus/`); the former Python calc library and
+validator were deleted after a parity gate.
 
-Corpus coverage is asymmetric: the inventory and pricing formulas are strongly
-grounded in the source books, while the freight and dimensional-weight formulas
-are only conceptually grounded — carrier DIM divisors, NMFC freight classes, and
-parcel girth limits are not in the corpus and are tracked as an external-sourcing
-task (`data/reference_tables/freight/`).
+The knowledge base is built and searchable, and grounded formula records exist
+for the six inventory formulas (cited to source passages) plus three freight
+formulas (`grounding: external`, with named carrier/IATA/ISO sources).
 
-The calculation library (`src/calc/`) implements and tests all six inventory
-formulas, and the MVP page specifications for the inventory cluster are authored
-as validated calculator records in `data/calculators/` (see
-[MVP Page Specs](docs/MVP_PAGE_SPECS.md)).
+Corpus coverage remains asymmetric: inventory and pricing formulas are strongly
+grounded in the source books, while carrier DIM divisors, NMFC freight classes,
+and parcel girth limits are not in the corpus — the freight reference tables
+under `data/reference_tables/freight/` are still `needs_sourcing` stubs pending
+verification.
 
-Next milestones: build the public inventory calculator cluster (Phase 4) from
-these specs, and source the freight reference tables to unblock the freight
-cluster. See [Development Plan](docs/DEVELOPMENT_PLAN.md).
+Next milestones (Phase 5): production domain, Search Console, GA4 wiring, and
+AdSense application, plus verifying the freight reference tables. See
+[Development Plan](docs/DEVELOPMENT_PLAN.md).

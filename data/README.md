@@ -5,25 +5,25 @@ and **gitignored generated/working data**.
 
 ```text
 data/
-├── formulas/           # Committed: KB-grounded formula records (validated)
-│   └── inventory/
+├── formulas/           # Committed: formula records (validated)
+│   ├── inventory/      #   KB-grounded (grounding: corpus)
+│   └── freight/        #   externally sourced (grounding: external)
 ├── reference_tables/   # Committed: lookup tables (z-factors, freight sourcing)
 │   └── freight/
-├── units/              # Committed: unit definitions (as needed)
-├── calculators/        # Committed: public tool/page definitions (Phase 3)
+├── calculators/        # Committed: public tool/page definitions (one per page)
 ├── raw/                # Gitignored: original source/keyword exports
 ├── interim/            # Gitignored: normalized intermediate data
-├── processed/          # Gitignored: validated artifacts consumed by the app
+├── processed/          # Gitignored: generated artifacts
 └── exports/            # Gitignored: generated public artifacts
 ```
 
 The `raw/`, `interim/`, `processed/`, and `exports/` subtrees are gitignored
 (generated or large/licensed). The record subtrees (`formulas/`,
-`reference_tables/`, `units/`, `calculators/`) are the committed corpus source of
-truth, validated against [`../schemas`](../schemas):
+`reference_tables/`, `calculators/`) are the committed corpus source of
+truth, validated against [`../schemas`](../schemas) by the TypeScript validator:
 
 ```bash
-uv run python scripts/validate_corpus.py
+cd web && npm run validate
 ```
 
 Every formula/reference record with `grounding: corpus` cites the knowledge-base

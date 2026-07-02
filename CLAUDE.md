@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-An SEO-driven B2B operations utility website (logistics, inventory, freight, dimensional-weight calculators) that is **still in the documentation and corpus-preparation stage**. No frontend/app framework has been chosen yet. The only executable code today is Python tooling:
+An SEO-driven B2B operations utility website (OpsCrunch: logistics, inventory, freight, dimensional-weight calculators). The public site **exists** as a Next.js (App Router) + TypeScript app at `web/` — seven calculator pages (six inventory + CBM/freight), a home page, two cluster hubs, legal pages, and full SEO plumbing (sitemap/robots/ads.txt, JSON-LD). All formula execution and corpus validation happen in TypeScript inside `web/`.
+
+Python remains **only** for the knowledge-base tooling:
 
 1. A **Qdrant ingestion pipeline** that chunks the logistics corpus, embeds it via a remote sidecar, and upserts hybrid vectors.
 2. A **hybrid-search retrieval module** that queries that knowledge base to ground/cite formula records.
-3. **Structured corpus records + a calculation library**: grounded formula records under `data/`, validated against `schemas/`, with pure calc functions in `src/calc/` (the six inventory formulas are implemented; freight is blocked on external reference-table sourcing).
-4. A **Google Workspace connectivity check** script.
+3. A **Google Workspace connectivity check** script.
 
-The planned public site (inventory + freight calculator pages, static/SSR frontend) is described in `README.md` and `docs/` but not yet built. Treat those docs as the spec, not as existing code.
+The former Python calc library (`src/calc/`) and corpus validator (`src/corpus/`, `scripts/validate_corpus.py`) were ported to TypeScript and deleted after a parity gate — do not resurrect them. Structured corpus records still live under `data/` (validated against `schemas/` by the TS validator).
 
 ## Commands
 
@@ -30,20 +31,41 @@ uv run python scripts/ingest_qdrant.py --recreate         # drop + rebuild the c
 # Retrieval (hybrid search over the KB; use to ground/cite formula records)
 uv run python scripts/search_corpus.py "reorder point formula" --limit 5
 
-# Validate the structured corpus records against schemas/
-uv run python scripts/validate_corpus.py
-
 # Google Workspace check (opens a browser OAuth consent flow on first run)
 uv run python scripts/check_google_workspace.py
 ```
 
-Requires Python >=3.12. Use `uv` for everything (per user global instructions).
+Requires Python >=3.12. Use `uv` for everything Python (per user global instructions).
+
+Website (run from `web/`; Node >= 20.19):
+
+```bash
+cd web
+npm run dev                  # local dev server
+npm run build                # prod build (prebuild runs the corpus validator)
+npm run test                 # vitest (calc, records, validator, components)
+npm run lint                 # eslint
+npm run typecheck            # tsc --noEmit
+npm run validate             # validate data/ records against schemas/ (TS validator)
+npm run typegen              # regenerate src/lib/records/types.gen.ts from schemas/ (committed; must be diff-free)
+```
 
 ## Architecture
 
+### Website (`web/`)
+
+Next.js App Router + TypeScript (strict), Tailwind v4 + CSS Modules hybrid; all pages SSG (`generateStaticParams` + `dynamicParams = false`, `trailingSlash: true`), default Node output. The site is **record-driven**:
+
+- **Route** `web/src/app/[slug]/page.tsx` renders every calculator page from its record in `data/calculators/`; `web/src/components/tool/toolRegistry.ts` maps calculator id → island component (default `CalculatorTool`; `calculator.cbm` → the custom `CbmCalculator` island). Server HTML carries formula/example/FAQ/JSON-LD for crawlability.
+- **Calc library** `web/src/lib/calc/` — pure functions (`inventory.ts`, `freight.ts`), guards (`errors.ts`), units (`units.ts`), half-to-even formatting (`formatting.ts`). `registry.ts` maps each formula record id → its function + `positiveInputs`; this is the traceability contract. Pages compute via the registry, never by reimplementing a formula.
+- **Corpus validator** `web/src/lib/corpus/` + `web/scripts/validate-corpus.ts` (Ajv 2020) — validates `data/` against `schemas/`, enforces the grounding contract and calculator cross-checks; wired into `prebuild`.
+- **Records loader** `web/src/lib/records/records.ts` — typed frozen imports of all `data/` records; types generated from `schemas/` into committed `types.gen.ts` (`npm run typegen` must produce no diff).
+- **Design system** — tokens as CSS custom properties in `web/src/styles/tokens.css`, lifted from the HTML mockups in `docs/mockups/` (the visual source of truth).
+- **Ads/consent/analytics scaffolds** — `components/ads/AdSlot` (reserved heights, gated on `NEXT_PUBLIC_ADS_ENABLED` + consent), `ConsentBanner`/`useConsent`, and `web/src/lib/analytics/` (typed event union that structurally cannot carry user input values; no-op transport until GA4).
+
 ### Ingestion pipeline (`src/ingestion/qdrant_pipeline.py`)
 
-This is the core implemented module. `scripts/ingest_qdrant.py` is a thin CLI wrapper that adds `src/` to the path and calls `main()`.
+The core Python module. `scripts/ingest_qdrant.py` is a thin CLI wrapper that adds `src/` to the path and calls `main()`.
 
 Flow: markdown files in `corpus-logistics-supply-chain/*.md` → `chunk_text` (char-based, ~2800 chars with 350 overlap, prefers paragraph/sentence soft breaks) → `EmbeddingsSidecar` HTTP calls → `points_from_embeddings` → `client.upsert`.
 
@@ -65,25 +87,28 @@ Two-layer corpus (see `docs/CORPUS_DESIGN.md`): the Qdrant KB is the grounding
 layer; hand-authored records under `data/` are the product layer.
 
 - **Records** (committed): `data/formulas/**`, `data/reference_tables/**`, and
-  `data/calculators/**` (MVP page specs), validated against JSON Schemas in
-  `schemas/` by `src/corpus/validation.py` (`scripts/validate_corpus.py`). The
+  `data/calculators/**` (page specs), validated against JSON Schemas in
+  `schemas/` by `web/src/lib/corpus/` (`cd web && npm run validate`). The
   schemas enforce the grounding contract: `grounding: corpus` requires a
   `citation` (source_file + chunk_index); `grounding: external` requires named
-  `sources`. Freight reference tables are `status: needs_sourcing` stubs — do not
+  `sources` (the freight formula records are `external`, cited to carrier/IATA/ISO
+  sources). Freight reference tables are `status: needs_sourcing` stubs — do not
   treat their values as verified. The validator also cross-checks calculators:
-  `formula_ids` must exist, inputs must cover the formula's inputs, result cards
-  must be formula outputs, and `related_tools` must resolve.
-- **Page specs**: `data/calculators/*.json` define the six inventory MVP pages
+  `formula_ids` must exist, inputs must cover the formula's inputs (an input also
+  counts as covered if another referenced formula outputs it — chained inputs),
+  result cards must be formula outputs, and `related_tools` must resolve.
+- **Page specs**: `data/calculators/*.json` define the seven pages
   (inputs/results/copy/FAQ/related tools/schema). Cross-cutting page standards
   (layout, validation, disclaimers, SEO/schema) are in `docs/MVP_PAGE_SPECS.md`.
-  Pages compute via `calc.registry`, never by reimplementing a formula.
-- **Calc library** `src/calc/`: pure functions per formula (`inventory.py`),
-  input guards (`errors.py`), unit conversion (`units.py`), formatting
-  (`formatting.py`). `registry.py` maps each formula record id → its function;
-  this is the traceability contract. Adding a formula = author the record +
-  implement the function + add a registry entry; the record-driven test
-  (`tests/test_corpus_records.py`) then runs its worked examples through the
-  library automatically.
+  Pages compute via the calc registry, never by reimplementing a formula.
+- **Calc library** `web/src/lib/calc/` (TypeScript — the single source of truth
+  for formula execution): pure functions per formula (`inventory.ts`,
+  `freight.ts`), input guards (`errors.ts`), unit conversion (`units.ts`),
+  half-to-even formatting (`formatting.ts`). `registry.ts` maps each formula
+  record id → its function; this is the traceability contract. Adding a formula =
+  author the record + implement the TS function + add a registry entry; the
+  record-driven tests (`web/src/lib/calc/__tests__/records.test.ts`) then run its
+  worked examples through the library automatically.
 
 ### Google Workspace check (`scripts/check_google_workspace.py`)
 
@@ -91,13 +116,14 @@ Standalone OAuth (installed-app flow) script that verifies Drive + Sheets read a
 
 ## Configuration & secrets
 
-- Both scripts read `.env.local` via a local `load_env` (uses `os.environ.setdefault`, so real env vars win). Copy `.env.example` → `.env.local` and fill values.
+- The Python scripts read `.env.local` via a local `load_env` (uses `os.environ.setdefault`, so real env vars win). Copy `.env.example` → `.env.local` and fill values.
+- The website reads `web/.env.local` (copy from `web/.env.example`): `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ADS_ENABLED`, `NEXT_PUBLIC_GA4_ID`.
 - `.env`, `.env.*` (except `.env.example`), and `secrets/` are gitignored and **sensitive** — do not read, print, or commit them unless the user explicitly asks.
 - Generated data goes under `data/{raw,interim,processed,exports}/` — all gitignored.
 
 ## Conventions
 
-- Formula/calculation logic (once built) must be pure, testable functions with example-based tests, kept separate from UI/content rendering (see `CONTRIBUTING.md` and `docs/TECHNICAL_ARCHITECTURE.md`).
+- Formula/calculation logic lives in TypeScript (`web/src/lib/calc/`) as pure, testable functions with example-based Vitest tests, kept separate from UI/content rendering (see `CONTRIBUTING.md` and `docs/TECHNICAL_ARCHITECTURE.md`).
 - Avoid regulated/compliance claims, freight-rate guarantees, or definitive duty/tax advice in any calculator content.
 - When adding a corpus field or calculator, update the relevant `docs/` file (`CORPUS_DESIGN.md`, `TECHNICAL_ARCHITECTURE.md`, `DEVELOPMENT_PLAN.md`) plus tests.
 - The three large research markdown files under `docs/project/` are source material — cite/summarize them, don't overwrite.

@@ -1,15 +1,14 @@
 # Source
 
-Python packages (kept independent of any future web UI):
+Python packages for the knowledge-base tooling (never a request-time dependency
+of the website):
 
 | Package | Responsibility |
 |---|---|
 | `ingestion/` | Chunk + hybrid-embed the corpus and upsert to Qdrant (`scripts/ingest_qdrant.py`). |
 | `retrieval/` | Hybrid search over the knowledge base for grounding/citation (`scripts/search_corpus.py`). |
-| `corpus/` | Validate structured records in `data/` against `schemas/` (`scripts/validate_corpus.py`). |
-| `calc/` | Pure calculation library: formula functions, input validation, unit conversion, formatting, and the record→function registry. |
 
-`calc/registry.py` binds each `data/formulas/**` record id to its function; the
-record-driven test runs every corpus worked example through the library so
-results stay traceable to a cited source. See
+The former `corpus/` (record validation) and `calc/` (calculation library)
+packages were ported to TypeScript and deleted after a parity gate; they now
+live at `web/src/lib/corpus/` and `web/src/lib/calc/`. See
 [../docs/TECHNICAL_ARCHITECTURE.md](../docs/TECHNICAL_ARCHITECTURE.md).

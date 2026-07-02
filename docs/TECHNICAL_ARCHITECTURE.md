@@ -53,13 +53,17 @@ Responsible for:
   and recording `source_file` + `chunk_index` citations.
 - Normalizing formulas, units, terms, reference tables, examples, and warnings.
 - Validating required fields, citations, and grounding levels.
-- Exporting processed JSON or CSV.
 
-Suggested location:
+Location (decided):
 
-- `scripts/` for conversion commands.
-- `schemas/` for record definitions.
-- `data/processed/` for generated artifacts.
+- `schemas/` for record definitions (JSON Schema draft 2020-12).
+- `data/formulas/`, `data/reference_tables/`, `data/calculators/` for the
+  committed, hand-authored records.
+- Validation is TypeScript: `web/src/lib/corpus/` with the CLI
+  `web/scripts/validate-corpus.ts` (`cd web && npm run validate`), run
+  automatically before every production build (`prebuild`). The former Python
+  validator (`src/corpus/`, `scripts/validate_corpus.py`) was ported to TS and
+  deleted after a parity gate.
 
 ### Calculation Engine
 
@@ -71,10 +75,16 @@ Responsible for:
 - Output rounding and formatting.
 - Deterministic examples used by tests and documentation.
 
-Suggested location:
+Location (decided):
 
-- `src/` for Python validation and formula prototypes.
-- Later, a shared TypeScript or generated artifact layer if the frontend executes formulas client-side.
+- `web/src/lib/calc/` — a pure TypeScript library (`inventory.ts`, `freight.ts`,
+  `errors.ts`, `units.ts`, `formatting.ts` with half-to-even rounding) that runs
+  client-side in the calculator islands. It is the **single source of truth** for
+  formula execution; the original Python prototype (`src/calc/`) was ported and
+  deleted after a behavioral/numeric parity gate.
+- `registry.ts` binds each `data/formulas/**` record id to its function
+  (record-driven execution); Vitest runs every record's worked examples through
+  the real library.
 
 ### Public Website
 
@@ -87,15 +97,18 @@ Responsible for:
 - FAQ and schema markup.
 - Result export or copy actions.
 
-Recommended implementation options:
+Implementation (decided, built at `web/`):
 
-| Option | Fit |
-|---|---|
-| Static site with client-side calculators | Best for speed, low hosting cost, and simple formulas |
-| Next.js or similar server-rendered app | Best if tool pages need dynamic routing, CMS-like content, or richer exports |
-| Python web app | Useful for internal tooling, less ideal for static SEO calculators unless needed |
-
-The repo should not lock into a frontend framework until the first data artifacts and formula tests are stable.
+- **Next.js App Router + TypeScript (strict)**, styled with Tailwind v4 +
+  CSS Modules (hybrid: Tailwind for layout/utilities, modules for signature
+  components; design tokens as CSS custom properties from `docs/mockups/`).
+- All pages are **statically generated** (`generateStaticParams` +
+  `dynamicParams = false`, trailing-slash canonicals) with the default Node
+  output — route handlers stay possible for future features.
+- Pages are **record-driven**: the `[slug]` route renders each calculator from
+  its `data/calculators/` record; formula, worked example, FAQ, and JSON-LD are
+  in the server HTML for crawlability. Calculators run as client islands over
+  the shared calc library.
 
 ### Analytics and Feedback
 
@@ -109,7 +122,11 @@ Responsible for:
 
 ## Formula Execution Strategy
 
-Start with pure functions and tests. Avoid API calls for the MVP.
+Decided: formulas execute **client-side** via the pure TypeScript library
+(`web/src/lib/calc/`), addressed by formula record id through the registry.
+No API calls; every calculator produces a result offline. The knowledge base
+remains a build-time/authoring-time Python tool and is never a request-time
+dependency of the site.
 
 Example rule:
 

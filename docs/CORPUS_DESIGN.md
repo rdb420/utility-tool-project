@@ -31,12 +31,21 @@ used for grounding, citation, and research. This layer exists today.
 This layer is what makes "corpus-backed explanations" real: every formula record
 below is grounded in retrieved passages, not invented.
 
-### Layer 2: Structured product records (product layer) — to build
+### Layer 2: Structured product records (product layer) — built
 
 Curated, typed records (Formula, Unit, Calculator, Reference Table) that the
 calculation library and website consume. Each record is authored by querying
 Layer 1, quoting the relevant passage, and recording the citation. Records are
-hand-authored JSON/YAML/CSV under `data/processed/`, validated by tests.
+hand-authored JSON under `data/formulas/`, `data/reference_tables/`, and
+`data/calculators/`, validated against `schemas/` by the TypeScript validator
+(`web/scripts/validate-corpus.ts`; `cd web && npm run validate`) and by the
+record-driven Vitest suites.
+
+Freight formula records (CBM, volumetric weight, chargeable weight) now exist
+under `data/formulas/freight/` with `grounding: external` and named sources
+(carrier service guides, IATA, ISO 668). The freight **reference tables**
+(`data/reference_tables/freight/`) remain `status: needs_sourcing` pending
+verification sign-off — their values are labelled estimates on the site.
 
 The relationship is one-directional: **Layer 1 grounds Layer 2.** The website
 never queries Qdrant at request time; it consumes validated Layer 2 artifacts.
@@ -217,16 +226,20 @@ Freight and packaging (grounding: `concept` unless noted):
 - Any lookup table that can change needs a review frequency.
 - Source notes should distinguish official standards, public references, and internal assumptions.
 
-## Suggested Storage
+## Storage
 
-Start simple:
+As built:
 
 ```text
 data/
-├── raw/          # Original source files, not committed if large or licensed.
-├── interim/      # Normalized intermediate files.
-├── processed/    # Validated JSON or CSV consumed by the app.
-└── exports/      # Generated public artifacts.
+├── formulas/           # Committed: hand-authored formula records (inventory + freight)
+├── reference_tables/   # Committed: lookup tables (z-factors, freight sourcing)
+├── calculators/        # Committed: public tool/page definitions
+├── raw/                # Gitignored: original source files (large or licensed).
+├── interim/            # Gitignored: normalized intermediate files.
+├── processed/          # Gitignored: generated artifacts.
+└── exports/            # Gitignored: generated public artifacts.
 ```
 
-Use JSON or YAML for hand-authored formula records and CSV for tabular lookup data. Add a database only when file-based records become hard to validate or query.
+Hand-authored records are JSON, validated against `schemas/`. Add a database only
+when file-based records become hard to validate or query.

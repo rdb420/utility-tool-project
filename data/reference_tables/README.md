@@ -8,6 +8,7 @@ Lookup data validated against [`schemas/reference_table.schema.json`](../../sche
 | `freight/dimensional_weight_divisors.json` | external | needs_sourcing |
 | `freight/nmfc_freight_classes.json` | external | needs_sourcing |
 | `freight/parcel_girth_limits.json` | external | needs_sourcing |
+| `freight/container_volumes.json` | external | needs_sourcing |
 
 ## Freight sourcing task (open)
 
@@ -23,12 +24,14 @@ For each freight table:
    freight classes).
 2. Replace candidate rows, set each row `verified: true`.
 3. Set `effective_date` (ISO), confirm `review_frequency`, set `status: verified`.
-4. Add a worked example to the corresponding freight formula record and set that
-   formula's `grounding` from `concept`/`external` with the new `sources`.
-5. Re-run `uv run python scripts/validate_corpus.py`.
+4. Update the corresponding freight formula record's `sources` if the
+   authoritative reference changed.
+5. Re-run `cd web && npm run validate`.
 
-Until then, the freight calculators (dimensional weight, CBM, chargeable weight,
-freight class) stay blocked — see `docs/DEVELOPMENT_PLAN.md` Phase 1b task 4.
+The CBM calculator (`/cbm-calculator/`) shipped ahead of this sign-off with its
+divisors and container volumes labelled **unverified estimates**; the remaining
+freight calculators (dimensional weight standalone, freight class) stay blocked
+until verification — see `docs/DEVELOPMENT_PLAN.md` Phase 1b task 4.
 
 ## Disclaimer posture
 

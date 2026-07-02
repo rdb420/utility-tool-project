@@ -18,8 +18,13 @@ Grounding contract enforced by the schemas:
 - A `reference_table` with `status: verified` must have an `effective_date` and
   at least one row; `status: needs_sourcing` marks placeholder tables.
 
-Validate everything with:
+Validate everything with the TypeScript validator (also run automatically before
+every `web` production build):
 
 ```bash
-uv run python scripts/validate_corpus.py
+cd web && npm run validate
 ```
+
+TypeScript types for these schemas are generated into
+`web/src/lib/records/types.gen.ts` via `cd web && npm run typegen` (committed;
+regenerate after any schema change).
