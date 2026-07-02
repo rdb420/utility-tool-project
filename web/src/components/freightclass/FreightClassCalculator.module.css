@@ -1,0 +1,110 @@
+/*
+ * Freight-class island layout — input-mode toggle, dims grid, paired rows
+ * (CBM island pattern; field/readout styling comes from the shared tool
+ * component modules), plus the 13-row NMFC density-scale table rendered
+ * below the tool. Table look: simple bordered mono table on the site's
+ * tokens, horizontally scrollable inside its own wrapper on small screens.
+ */
+
+.groupLbl {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.dims > * {
+  min-width: 0;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--slate);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* NMFC density-scale table below the tool. */
+
+.scaleBlock {
+  padding: 34px 0 4px;
+}
+
+.scaleWrap {
+  overflow-x: auto;
+}
+
+.scale {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+}
+
+.scale caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.scale th,
+.scale td {
+  border: 1px solid var(--line-2);
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.scale th {
+  background: var(--surface);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--slate);
+}
+
+.scale td {
+  color: var(--ink);
+}
+
+/* The band the current result falls in. */
+.active td {
+  background: rgba(238, 90, 28, 0.08);
+  font-weight: 700;
+}
+
+.scaleNote {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 72ch;
+}
