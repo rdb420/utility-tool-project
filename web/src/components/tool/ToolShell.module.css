@@ -1,0 +1,25 @@
+/*
+ * Tool shell — the two-column tool card: inputs left, readout right.
+ * Spec: docs/mockups/opscrunch_cbm_calculator_v0.2.html (.tool / .inputs).
+ * The --shadow token is reserved for this card only.
+ */
+.tool {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 1px 0 var(--line), var(--shadow);
+}
+
+.inputs {
+  padding: 22px 24px 24px;
+}
+
+@media (max-width: 820px) {
+  .tool {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,18 @@
+/*
+ * Formula block — ink panel, mono, amber-highlighted expression.
+ * Spec: opscrunch_cbm_calculator_v0.2.html (.formula / .amber).
+ */
+.formula {
+  font-family: var(--mono);
+  background: var(--ink);
+  color: #e9ece4;
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-size: 0.95rem;
+  overflow-x: auto;
+  margin: 0 0 12px;
+}
+
+.amber {
+  color: var(--amber);
+}

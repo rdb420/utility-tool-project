@@ -1,0 +1,164 @@
+/*
+ * Shared content-section styles for the copy below the tool: section blocks
+ * with mono eyebrows and h2 headings, FAQ, bench tiles, the bulk nudge, and
+ * the disclaimer. Specs: opscrunch_calculator_kit.html (section pattern,
+ * .oc-bench/.oc-tile/.oc-nudge) and opscrunch_cbm_calculator_v0.2.html
+ * (section.block, h2, .assume, .nudge).
+ */
+.block {
+  padding: 34px 0 4px;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.heading {
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+  font-weight: 800;
+}
+
+.copy {
+  margin: 0 0 12px;
+  color: var(--ink);
+  max-width: 72ch;
+}
+
+.lead {
+  margin: 0;
+  color: var(--slate);
+  font-size: 1.02rem;
+  max-width: 72ch;
+}
+
+/* Formula section */
+.assume {
+  margin: 14px 0 0;
+  padding-left: 18px;
+}
+
+.assume li {
+  margin: 0 0 6px;
+  font-size: 0.92rem;
+  color: var(--slate);
+}
+
+/* FAQ */
+.faqItem {
+  margin: 0 0 16px;
+  max-width: 72ch;
+}
+
+.faqQ {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.faqA {
+  margin: 0;
+  color: var(--slate);
+}
+
+/* Bench tiles */
+.bench {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.tile {
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  background: var(--surface);
+  padding: 14px 15px;
+  text-decoration: none;
+  color: var(--ink);
+  display: block;
+}
+
+.tile:hover {
+  border-color: var(--signal);
+  box-shadow: 0 10px 24px -18px rgba(238, 90, 28, 0.5);
+}
+
+.tileLbl {
+  display: block;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tileName {
+  display: block;
+  font-weight: 700;
+  font-size: 0.94rem;
+  margin: 6px 0 3px;
+}
+
+@media (max-width: 760px) {
+  .bench {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Bulk nudge */
+.nudge {
+  margin: 16px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border: 1px dashed var(--line-2);
+  border-radius: 10px;
+  padding: 13px 16px;
+  background: #fbfcfa;
+}
+
+.nudgeLbl {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--signal);
+}
+
+.nudge p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--slate);
+}
+
+.nudgeLink {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Disclaimer */
+.disclaimer {
+  padding: 34px 0 40px;
+}
+
+.disclaimer p {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: var(--slate);
+  max-width: 72ch;
+}

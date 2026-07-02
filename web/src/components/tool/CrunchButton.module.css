@@ -1,0 +1,40 @@
+/*
+ * The one loud button. Spec: opscrunch_cbm_calculator_v0.2.html (.crunch).
+ */
+.crunch {
+  margin-top: 6px;
+  width: 100%;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--signal);
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.crunch:hover {
+  background: var(--signal-press);
+}
+
+.crunch:active {
+  transform: translateY(1px);
+}
+
+.crunch:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.k {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  opacity: 0.8;
+  font-weight: 600;
+}

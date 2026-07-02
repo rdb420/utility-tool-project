@@ -1,0 +1,51 @@
+/*
+ * Advanced disclosure — rotating chevron toggle over a dashed-top panel.
+ * Spec: opscrunch_cbm_calculator_v0.2.html (.adv-toggle / .adv).
+ */
+.toggle {
+  margin-top: 14px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  padding: 13px 0 0;
+  cursor: pointer;
+  color: var(--slate);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.chev {
+  transition: transform 0.2s;
+  color: var(--signal);
+}
+
+.toggle[aria-expanded="true"] .chev {
+  transform: rotate(90deg);
+}
+
+.panel {
+  display: none;
+  margin-top: 14px;
+  padding-top: 2px;
+  border-top: 1px dashed var(--line-2);
+}
+
+.open {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chev {
+    transition: none;
+  }
+}

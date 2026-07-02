@@ -1,0 +1,25 @@
+/*
+ * Generic calculator island — group eyebrow + form-level backstop error.
+ * Field/readout styling lives in the shared tool component modules.
+ */
+.groupLbl {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.groupLbl:not(:first-child) {
+  margin-top: 20px;
+}
+
+.formError {
+  margin: 10px 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--warn);
+}
