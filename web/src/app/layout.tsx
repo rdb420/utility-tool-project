@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
+  // AdSense account association (site-connection meta tag). Verification only —
+  // deliberately NOT the adsbygoogle.js script, which must never load until the
+  // certified CMP is live and ads are consciously enabled (AdSlot A+D rules).
+  // The publisher id is public (it is in ads.txt), so it ships in .env.production.
+  other: process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT
+    ? { "google-adsense-account": process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT }
+    : {},
 };
 
 export default function RootLayout({

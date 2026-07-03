@@ -1,2 +1,1 @@
-# ads.txt placeholder — add 'google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0' after AdSense approval
-# No authorised sellers yet: no ads serve on this domain today.
+google.com, pub-9610958335722543, DIRECT, f08c47fec0942fa0
