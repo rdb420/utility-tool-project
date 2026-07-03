@@ -37,9 +37,10 @@ export default function ConsentBanner() {
   return (
     <div className={styles.banner} role="region" aria-label="Cookie consent">
       <p className={styles.copy}>
-        No ads run here yet. Once they do, our ad partners will set cookies.
-        Analytics stays anonymous counts either way — your numbers never leave
-        the page. Your choice is saved in this browser; details in the{" "}
+        We use one analytics cookie to count visits — decline it and we still
+        count, just without the cookie. Your calculator numbers never leave
+        the page. Ads, when they launch, will ask separately. Your choice is
+        saved in this browser; details in the{" "}
         <Link href="/cookie-policy/">cookie policy</Link>.
       </p>
       <div className={styles.actions}>

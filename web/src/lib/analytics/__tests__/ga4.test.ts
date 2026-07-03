@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AnalyticsEvent } from "@/lib/analytics/events";
 import {
   applyConsentToGa4,
+  EEA_UK_CH,
   ga4Transport,
   loadGa4,
   resetGa4ForTests,
@@ -10,6 +11,46 @@ import {
 } from "@/lib/analytics/ga4";
 
 const MEASUREMENT_ID = "G-TEST12345";
+
+/**
+ * Pinned copy of the region list (EEA 27 EU + IS/LI/NO + UK + CH = 32).
+ * Deliberately a literal, not the import: editing the exported const must
+ * fail this test so region-scope changes are always conscious decisions.
+ */
+const PINNED_EEA_UK_CH = [
+  "AT",
+  "BE",
+  "BG",
+  "CH",
+  "CY",
+  "CZ",
+  "DE",
+  "DK",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GB",
+  "GR",
+  "HR",
+  "HU",
+  "IE",
+  "IS",
+  "IT",
+  "LI",
+  "LT",
+  "LU",
+  "LV",
+  "MT",
+  "NL",
+  "NO",
+  "PL",
+  "PT",
+  "RO",
+  "SE",
+  "SI",
+  "SK",
+];
 
 /** dataLayer entries are `arguments` objects; normalize to plain arrays. */
 function dataLayerCalls(): unknown[][] {
@@ -32,30 +73,52 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe("EEA_UK_CH", () => {
+  it("is the pinned 32-code list (27 EU + IS/LI/NO + GB + CH), alphabetized", () => {
+    expect(EEA_UK_CH).toHaveLength(32);
+    expect([...EEA_UK_CH]).toEqual(PINNED_EEA_UK_CH);
+    expect([...EEA_UK_CH]).toEqual([...EEA_UK_CH].sort());
+  });
+});
+
 describe("loadGa4", () => {
-  it("pushes the all-denied Consent Mode default before the config command", () => {
+  it("pushes exactly two Consent Mode defaults, in order, before the config command", () => {
     loadGa4(MEASUREMENT_ID);
 
     const calls = dataLayerCalls();
-    const consentIndex = calls.findIndex(
+    const defaults = calls.filter(
       (call) => call[0] === "consent" && call[1] === "default",
     );
     const configIndex = calls.findIndex((call) => call[0] === "config");
+    const lastDefaultIndex = calls.reduce(
+      (last, call, index) =>
+        call[0] === "consent" && call[1] === "default" ? index : last,
+      -1,
+    );
 
-    expect(consentIndex).toBeGreaterThanOrEqual(0);
+    expect(defaults).toHaveLength(2);
     expect(configIndex).toBeGreaterThanOrEqual(0);
-    expect(consentIndex).toBeLessThan(configIndex);
-    expect(calls[consentIndex][2]).toEqual({
+    expect(lastDefaultIndex).toBeLessThan(configIndex);
+    // 1st: global default — ads denied, analytics granted, no region key.
+    expect(defaults[0][2]).toEqual({
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "granted",
+    });
+    // 2nd: stricter region-scoped default — everything denied in EEA/UK/CH.
+    expect(defaults[1][2]).toEqual({
       ad_storage: "denied",
       ad_user_data: "denied",
       ad_personalization: "denied",
       analytics_storage: "denied",
+      region: PINNED_EEA_UK_CH,
     });
     expect(calls[configIndex][1]).toBe(MEASUREMENT_ID);
   });
 
-  it("sets the consent default before the gtag.js script tag exists", () => {
-    // appendChild is the injection point: assert the denial is already
+  it("sets both consent defaults before the gtag.js script tag exists", () => {
+    // appendChild is the injection point: assert both defaults are already
     // queued on the dataLayer at the moment the script element arrives.
     const originalAppend = document.head.appendChild.bind(document.head);
     let consentEntriesAtInjection = -1;
@@ -73,7 +136,7 @@ describe("loadGa4", () => {
     loadGa4(MEASUREMENT_ID);
     spy.mockRestore();
 
-    expect(consentEntriesAtInjection).toBe(1);
+    expect(consentEntriesAtInjection).toBe(2);
   });
 
   it("injects one async script tag keyed by the measurement id", () => {
@@ -119,7 +182,7 @@ describe("applyConsentToGa4", () => {
     expect(updates[0][2]).toEqual({ analytics_storage: "granted" });
   });
 
-  it("keeps analytics_storage denied on denied", () => {
+  it("pushes an explicit denied update on decline (overrides the global grant)", () => {
     loadGa4(MEASUREMENT_ID);
     applyConsentToGa4("denied");
 
@@ -130,7 +193,7 @@ describe("applyConsentToGa4", () => {
     expect(updates[0][2]).toEqual({ analytics_storage: "denied" });
   });
 
-  it("pushes nothing while consent is unset (defaults already deny)", () => {
+  it("pushes nothing while consent is unset (region-scoped defaults apply)", () => {
     loadGa4(MEASUREMENT_ID);
     applyConsentToGa4("unset");
 

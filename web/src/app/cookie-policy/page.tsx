@@ -6,19 +6,20 @@ import { CONTACT_EMAIL, SITE_NAME } from "@/config/site";
 export const metadata: Metadata = {
   title: "Cookie policy",
   description:
-    "What OpsCrunch stores in your browser: one localStorage entry for your consent choice today, ad cookies via Google only after ads launch and only with consent.",
+    "What OpsCrunch stores in your browser: one localStorage entry for your consent choice, one Google Analytics cookie to count visits, and ad cookies via Google only after ads launch and only with consent.",
   alternates: { canonical: "/cookie-policy/" },
 };
 
-const EFFECTIVE_DATE = "2 July 2026";
+const EFFECTIVE_DATE = "3 July 2026";
 
 export default function CookiePolicyPage() {
   return (
     <Prose>
       <h1>Cookie policy</h1>
       <p>
-        Effective date: {EFFECTIVE_DATE}. Short version: today {SITE_NAME}{" "}
-        sets no cookies at all and stores exactly one thing in your browser.
+        Effective date: {EFFECTIVE_DATE}. Short version: {SITE_NAME} stores
+        your consent choice in your browser and uses one analytics cookie to
+        count visits — nothing else.
       </p>
 
       <h2>What is stored now</h2>
@@ -27,6 +28,14 @@ export default function CookiePolicyPage() {
           <strong>oc-consent</strong> (localStorage) — your Accept or Decline
           choice from the consent banner, so we don&apos;t ask again on every
           visit. It stays on your device and is never transmitted.
+        </li>
+        <li>
+          <strong>Analytics cookie</strong> (Google Analytics) — counts
+          visits. Outside the EEA, UK, and Switzerland it is set by default;
+          within those regions it is set only after you choose Accept.
+          Choosing Decline disables it everywhere — we still count visits,
+          just without the cookie. Analytics events carry tool identifiers
+          only; your calculator inputs never leave your browser.
         </li>
       </ul>
 

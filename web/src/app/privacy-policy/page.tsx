@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy-policy/" },
 };
 
-const EFFECTIVE_DATE = "2 July 2026";
+const EFFECTIVE_DATE = "3 July 2026";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -37,19 +37,22 @@ export default function PrivacyPolicyPage() {
 
       <h2>Analytics</h2>
       <p>
-        We count anonymous usage events — which tool was opened, that a
-        calculation ran, that a result was copied. These events carry tool
-        identifiers only, never the values you entered. No analytics service is
-        connected yet; if one is added (Google Analytics 4 is the candidate),
-        it will be gated on your consent choice and this policy will be
-        updated.
+        We count usage events with Google Analytics — which tool was opened,
+        that a calculation ran, that a result was copied. These events carry
+        tool identifiers only, never the values you entered. One analytics
+        cookie supports this counting: outside the EEA, UK, and Switzerland it
+        is set by default; within those regions it is set only after you
+        accept on the consent banner. Declining disables the cookie everywhere
+        — events are then counted without cookies and cannot be tied to you.
+        See the <Link href="/cookie-policy/">cookie policy</Link> for details.
       </p>
 
       <h2>Cookies and local storage</h2>
       <p>
         The site stores one entry in your browser&apos;s localStorage
-        (<strong>oc-consent</strong>) to remember your cookie choice. That is
-        the full list today. See the{" "}
+        (<strong>oc-consent</strong>) to remember your cookie choice, plus the
+        Google Analytics cookie described above when it applies. That is the
+        full list today. See the{" "}
         <Link href="/cookie-policy/">cookie policy</Link> for how to change or
         withdraw your choice.
       </p>

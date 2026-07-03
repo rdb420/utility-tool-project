@@ -18,11 +18,15 @@ import { initAnalytics } from "./transports";
  *   1. Wait for hydration, then for `requestIdleCallback` (fallback: the
  *      window `load` event / a 0ms timeout if already complete). Nothing GA4
  *      touches the network until the tool is interactive.
- *   2. `loadGa4` pushes the Consent Mode v2 all-denied defaults BEFORE
- *      injecting the gtag.js script tag (see ga4.ts for the decision record).
+ *   2. `loadGa4` pushes the Consent Mode v2 defaults BEFORE injecting the
+ *      gtag.js script tag: a global default (ads denied, analytics granted)
+ *      plus a stricter all-denied default scoped to the EEA/UK/CH (see
+ *      ga4.ts for the decision record).
  *   3. Once gtag exists, install the GA4 transport and reflect the visitor's
- *      banner choice (`analytics_storage` upgrade on granted; ad signals
- *      stay denied — no ads are served yet).
+ *      stored banner choice as a consent update in BOTH directions — granted
+ *      upgrades `analytics_storage`, denied pins it off even where the
+ *      global default grants it. Ad signals stay denied — no ads are served
+ *      yet. This effect also re-fires on every later banner choice.
  *   4. App Router client navigations don't re-fire gtag's automatic
  *      page_view, so send one per pathname change — skipping the first
  *      render (the `config` hit already counted it). `usePathname()` never

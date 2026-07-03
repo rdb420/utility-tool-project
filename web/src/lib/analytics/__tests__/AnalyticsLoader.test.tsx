@@ -3,7 +3,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AnalyticsLoader from "@/lib/analytics/AnalyticsLoader";
 import { setAnalyticsTransport, track } from "@/lib/analytics";
-import { resetGa4ForTests } from "@/lib/analytics/ga4";
+import { EEA_UK_CH, resetGa4ForTests } from "@/lib/analytics/ga4";
 import { CONSENT_STORAGE_KEY } from "@/lib/consent/useConsent";
 
 const MEASUREMENT_ID = "G-TEST12345";
@@ -107,22 +107,34 @@ describe("AnalyticsLoader with a GA4 id", () => {
     expect(injectedScripts()).toHaveLength(1);
   });
 
-  it("sets the all-denied consent default before the config hit", () => {
+  it("sets both consent defaults (global + EEA/UK/CH) before the config hit", () => {
     render(<AnalyticsLoader />);
     flushIdle();
 
     const calls = dataLayerCalls();
-    const consentIndex = calls.findIndex(
+    const defaults = calls.filter(
       (call) => call[0] === "consent" && call[1] === "default",
     );
     const configIndex = calls.findIndex((call) => call[0] === "config");
-    expect(consentIndex).toBeGreaterThanOrEqual(0);
-    expect(consentIndex).toBeLessThan(configIndex);
-    expect(calls[consentIndex][2]).toEqual({
+    const lastDefaultIndex = calls.reduce(
+      (last, call, index) =>
+        call[0] === "consent" && call[1] === "default" ? index : last,
+      -1,
+    );
+    expect(defaults).toHaveLength(2);
+    expect(lastDefaultIndex).toBeLessThan(configIndex);
+    // Global default: ads denied, analytics granted outside consent regions.
+    expect(defaults[0][2]).toEqual({
       ad_storage: "denied",
       ad_user_data: "denied",
       ad_personalization: "denied",
+      analytics_storage: "granted",
+    });
+    // Region-scoped default: everything denied in the EEA/UK/CH (exact list
+    // is pinned in ga4.test.ts).
+    expect(defaults[1][2]).toMatchObject({
       analytics_storage: "denied",
+      region: [...EEA_UK_CH],
     });
   });
 
@@ -141,7 +153,7 @@ describe("AnalyticsLoader with a GA4 id", () => {
     ]);
   });
 
-  it("upgrades analytics_storage when consent was granted", () => {
+  it("replays a stored granted choice as a consent update on load", () => {
     window.localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
     render(<AnalyticsLoader />);
     flushIdle();
@@ -153,7 +165,7 @@ describe("AnalyticsLoader with a GA4 id", () => {
     ]);
   });
 
-  it("keeps consent denied but still sends events when declined", () => {
+  it("replays a stored denied choice as a consent update, and events still flow", () => {
     window.localStorage.setItem(CONSENT_STORAGE_KEY, "denied");
     render(<AnalyticsLoader />);
     flushIdle();
@@ -165,7 +177,14 @@ describe("AnalyticsLoader with a GA4 id", () => {
       "update",
       { analytics_storage: "granted" },
     ]);
-    // ...but gtag is loaded and events still flow (cookieless pings).
+    // ...and the decline is explicit, so it overrides the global granted
+    // default outside the EEA/UK/CH too.
+    expect(calls).toContainEqual([
+      "consent",
+      "update",
+      { analytics_storage: "denied" },
+    ]);
+    // gtag is loaded and events still flow (cookieless pings).
     expect(injectedScripts()).toHaveLength(1);
     act(() => {
       track({ name: "calculator_start", toolId: "cbm", slug: "/cbm/" });
@@ -175,6 +194,16 @@ describe("AnalyticsLoader with a GA4 id", () => {
       "calculator_start",
       { toolId: "cbm", slug: "/cbm/" },
     ]);
+  });
+
+  it("pushes no consent update while the choice is unset (defaults apply)", () => {
+    render(<AnalyticsLoader />);
+    flushIdle();
+
+    const updates = dataLayerCalls().filter(
+      (call) => call[0] === "consent" && call[1] === "update",
+    );
+    expect(updates).toHaveLength(0);
   });
 
   it("sends page_view on route change but not for the initial render", () => {
