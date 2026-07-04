@@ -6,6 +6,7 @@ import Script from "next/script";
 import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import { BASE_URL, SITE_NAME } from "@/config/site";
+import AnalyticsInit from "@/lib/analytics/AnalyticsInit";
 import "./globals.css";
 
 /**
@@ -91,6 +92,9 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        {/* Points track() at the GTM dataLayer (via sendGTMEvent). GA4 + consent
+            gating live in the GTM container. */}
+        <AnalyticsInit />
         {/* Vercel Web Analytics + Speed Insights (Core Web Vitals) — cookieless,
             no dataLayer, only report when running on Vercel with the feature on. */}
         <Analytics />

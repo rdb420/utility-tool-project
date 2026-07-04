@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/config/site";
+import CookieSettingsButton from "./CookieSettingsButton";
 import styles from "./Footer.module.css";
 
 const LEGAL_LINKS = [
@@ -24,6 +25,9 @@ export default function Footer() {
               {link.label}
             </Link>
           ))}
+          {/* Reopens the consentmanager preference manager (change/withdraw
+              consent) via the consentmanager JS API. */}
+          <CookieSettingsButton className={styles.linklike} />
         </nav>
         <p className={styles.note}>
           Estimates for planning. Confirm against your own data.
