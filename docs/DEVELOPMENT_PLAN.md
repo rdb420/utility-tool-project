@@ -211,14 +211,17 @@ Done and verified live (2026-07-04):
   `G-7XG10CD70E`, baked into the client bundle). `calculator_start` /
   `calculator_result` reach `dataLayer` with only `toolId` + `slug` (no input
   values); events are wired into every calculator via `track()`.
-- Consent: managed by **Google's certified CMP** (AdSense Privacy & messaging,
-  EEA/UK + US), delivered by `adsbygoogle.js` loaded `beforeInteractive` in the
-  root layout. It owns Consent Mode v2 for ads and analytics. The former custom
-  `ConsentBanner` and the code-side consent defaults/updates were removed
-  (2026-07-04) so the CMP is the single source of truth.
+- Consent: managed by **consentmanager** (consentmanager.net, certified TCF
+  v2.2 + GPP CMP, CMP ID 31). A root-layout bootstrap sets the all-denied
+  Consent Mode v2 default, then injects consentmanager, which owns the
+  `consent update`s for ads and analytics (Consent Mode "Advanced" — GA4 fires
+  cookieless until granted). Verified active via Tag Assistant. History: the
+  custom `ConsentBanner` and a brief Google Funding-Choices handoff were both
+  replaced (the latter was dormant until AdSense approval).
 - AdSense account association meta (`NEXT_PUBLIC_ADSENSE_ACCOUNT`) ships in
-  `<head>`, and the same tag loads the CMP; ad units remain gated off
-  (`NEXT_PUBLIC_ADS_ENABLED=false`) until approval + a wired `<ins>` unit.
+  `<head>`; the `adsbygoogle.js` tag loads for ad serving/review only (no longer
+  a CMP). Ad units remain gated off (`NEXT_PUBLIC_ADS_ENABLED=false`) until
+  approval + a wired `<ins>` unit.
 
 Pending (user actions, in runbook order):
 

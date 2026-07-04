@@ -37,10 +37,10 @@ apex→www concern is resolved).
 with trailing slashes, `robots.txt` points at the apex sitemap, `ads.txt`
 serves the **real** AdSense line (no longer a placeholder), home/calculator
 canonicals point at apex, and calculator pages compute correctly.
-- **GA4 runtime** — verified in a real browser: gtag bootstraps, Consent Mode
-v2 defaults + EEA/UK/CH region scoping load in the correct order, the stored
-consent choice is applied, and `calculator_start` / `calculator_result`
-events reach `dataLayer` carrying only `toolId` + `slug` (no input values).
+- **GA4 runtime** — verified via Tag Assistant: the all-denied Consent Mode
+default fires before config, consentmanager (§6c) issues `consent update`, and
+`calculator_start` / `calculator_result` reach `dataLayer` carrying only
+`toolId` + `slug` (no input values).
 
 **Remaining before "launched" is complete:** §5 Search Console (confirm
 verification + submit sitemap), the GA4 **dashboard** config in §6 (custom
@@ -242,17 +242,31 @@ only when a user edits an input, so computing with default values yields a
 result with no start. Expect more results than starts in the funnel; that is by
 design, not a tracking bug.
 
-### 6c. Consent is owned by Google's CMP — do NOT set a dashboard override
+### 6c. Consent is owned by consentmanager (certified TCF v2.2 CMP)
 
-As of 2026-07-04 consent is managed by **Google's certified CMP** (the AdSense
-Privacy & messaging EEA/UK + US messages, delivered by the `adsbygoogle.js` tag
-loaded `beforeInteractive` in the root layout). The former custom `ConsentBanner`
-and the code-side Consent Mode defaults/updates in `web/src/lib/analytics/ga4.ts`
-were **removed** — the CMP is now the single source of truth for Consent Mode v2.
+As of 2026-07-04 consent is managed by **consentmanager** (consentmanager.net,
+CMP ID 31 — a certified IAB TCF v2.2 + GPP CMP). The root layout runs one
+`beforeInteractive` bootstrap that (1) sets the Consent Mode v2 **all-denied**
+default (`ad_storage`/`analytics_storage`/`ad_user_data`/`ad_personalization` =
+denied, `wait_for_update: 500`) + a `default_consent` event, then (2) injects the
+consentmanager loader (`semiautomatic.min.js`, `cdid b6d1255cc2306`). This is
+the Consent Mode v2 **"Advanced"** pattern: GA4 keeps firing but stays cookieless
+until consentmanager issues a `consent update`. The former Google Funding-Choices
+CMP was dropped (it was dormant until AdSense approval); the custom `ConsentBanner`
+and code-side consent updates were removed. History: the Google-CMP handoff
+(`4eeb46a`) was reverted (`cea39f1`) after Tag Assistant showed it never
+initialised; consentmanager replaced it and is verified active.
 
+- [x] Enable **Google Consent Mode** in consentmanager (Menu → CMPs →
+  Integrations → Google Consent Mode) — required, or the CMP won't signal GA4.
+  Verified active: `consent.update` events flow, `gcs`/`pscdl=denied` on hits.
 - [x] Leave GA4 **Admin → Data collection → consent settings** at default — do
-  NOT enable "automatically mark data as consented". The CMP's on-page Consent
-  Mode signals are authoritative; a dashboard override would desync them.
+  NOT enable "automatically mark data as consented". consentmanager's on-page
+  Consent Mode signals are authoritative; a dashboard override would desync them.
+- [ ] Optional (geo policy): if you want non-EEA visitors to be **opt-out**
+  (analytics auto-granted outside the EEA/UK), set that in consentmanager's
+  geo/regulation rules. The code default is all-denied; consentmanager decides
+  the region behaviour.
 - [ ] Optional: link Search Console to the GA4 property (GA4 Admin → Product
   links → Search Console) once section 5 is verified.
 
@@ -270,19 +284,30 @@ CMP are done, so the review can proceed when you apply:
   f08c47fec0942fa0` line.
 - [x] The `google-adsense-account` meta (`ca-pub-9610958335722543`) ships in
   `<head>` via `NEXT_PUBLIC_ADSENSE_ACCOUNT` — the site-association tag.
-- [x] **Certified CMP live:** Google's CMP (AdSense Privacy & messaging, EEA/UK
-  + US) is loaded via `adsbygoogle.js` (`beforeInteractive`, root layout) and
-  owns Consent Mode v2 for ads and analytics. The custom `ConsentBanner` and
-  code-side consent logic were removed. This satisfies the pre-serving CMP gate.
+- [x] **Certified CMP live:** consentmanager (TCF v2.2, CMP ID 31) is loaded via
+  the root-layout bootstrap and owns Consent Mode v2 for ads and analytics
+  (see §6c). This satisfies the pre-serving CMP gate.
 
 Remaining:
 
 - [x] Apply for AdSense with `opscrunch.com` (after indexing + organic traffic).
+- [ ] **Configure consentmanager for Google ad serving** (its dashboard) so
+  AdSense can deliver once approved:
+  - [ ] CMP set to **TCF v2 compliant**.
+  - [ ] Add **"Google Advertising Products"** to the vendor list.
+  - [ ] Enable IAB TCF **purposes 1, 2, 3, 4, 7, 9, 10**.
+  - [ ] Leave **legal basis on default** (do not change it for vendor or
+        purposes).
+  - [ ] **Disable Google Funding Choices** in AdSense (Privacy & messaging) —
+        consentmanager is the CMP, so Google's own message must be off to avoid
+        two banners.
 - [ ] **On approval**, wire the real ad unit: replace the placeholder in
   `web/src/components/ads/AdSlot.tsx` with a real `<ins class="adsbygoogle">`
   unit + a `(adsbygoogle = window.adsbygoogle || []).push({})` call. The
   `adsbygoogle.js` loader already ships from the layout, so no separate loader
-  is needed.
+  is needed. Ads serve only with consent — Google reads consentmanager's TCF
+  string and blocks delivery when consent is absent (this is expected, not a
+  bug; non-personalized ads also require consent).
 - [ ] Then flip `NEXT_PUBLIC_ADS_ENABLED=true` in Vercel and redeploy (it is
   `false` now so no empty placeholder boxes render pre-approval).
 - [ ] When enabling: follow the **A+D-slots-first rule** from the AdSense kit
