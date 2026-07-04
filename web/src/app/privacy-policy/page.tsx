@@ -1,96 +1,121 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Script from "next/script";
 import Prose from "@/components/layout/Prose";
 import { CONTACT_EMAIL, SITE_NAME } from "@/config/site";
+
+/** Static route (SSG); the consentmanager widgets below hydrate client-side. */
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
   description:
-    "How OpsCrunch handles data: calculator inputs never leave your browser, analytics are anonymous counts, and one localStorage entry stores your cookie choice.",
+    "How OpsCrunch handles data: calculator inputs never leave your browser. Cookie, consent, and third-party vendor details are provided by our consent management platform (consentmanager).",
   alternates: { canonical: "/privacy-policy/" },
 };
 
-const EFFECTIVE_DATE = "3 July 2026";
+/** consentmanager CMP 173918. */
+const CMP_CDID = "3ba155ac627e4";
+const VENDOR_LIST_API = `https://c.delivery.consentmanager.net/delivery/vendorlist.php?cdid=${CMP_CDID}&api=json`;
 
-export default function PrivacyPolicyPage() {
+/**
+ * Vendor list, fetched at build time so it ships in the static HTML. The API
+ * returns a JSON array; we defensively pull any vendor names out of it and fall
+ * back to a note + link if it is empty or unreachable at build time.
+ */
+async function getVendorNames(): Promise<string[]> {
+  try {
+    const res = await fetch(VENDOR_LIST_API, {
+      cache: "force-cache",
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    const names: string[] = [];
+    const walk = (node: unknown): void => {
+      if (Array.isArray(node)) {
+        node.forEach(walk);
+      } else if (node && typeof node === "object") {
+        for (const [key, value] of Object.entries(node)) {
+          if ((key === "name" || key === "vendorname") && typeof value === "string") {
+            names.push(value);
+          } else {
+            walk(value);
+          }
+        }
+      }
+    };
+    walk(data);
+    return [...new Set(names)].sort((a, b) => a.localeCompare(b));
+  } catch {
+    return [];
+  }
+}
+
+export default async function PrivacyPolicyPage() {
+  const vendors = await getVendorNames();
+
   return (
     <Prose>
       <h1>Privacy policy</h1>
       <p>
-        Effective date: {EFFECTIVE_DATE}. {SITE_NAME} is operated from
-        Australia. This policy says plainly what we collect, which is very
-        little.
+        {SITE_NAME} is operated from Australia. The essentials: there are no
+        accounts, and <strong>your calculator inputs never leave your
+        browser</strong> — every calculation runs on your device, so the numbers
+        you type are never sent to us, stored on a server, or included in
+        analytics. The cookie, consent, and third-party vendor details below are
+        provided and kept current by our consent management platform,{" "}
+        <strong>consentmanager</strong> (consentmanager.net).
       </p>
 
-      <h2>What we do not collect</h2>
-      <ul>
-        <li>
-          <strong>No accounts, no account data.</strong> There is nothing to
-          sign up for, so we hold no names, passwords, or profiles.
-        </li>
-        <li>
-          <strong>Your calculator inputs never leave your browser.</strong>{" "}
-          Every calculation runs on your device. The numbers you type are not
-          sent to us, not stored on any server, and not included in analytics.
-        </li>
-      </ul>
+      {/* consentmanager — generated privacy policy content (CMP 173918). */}
+      <div className={`cmppolicy${CMP_CDID} cmpstyleroot`} />
+      <Script
+        src={`https://c.delivery.consentmanager.net/delivery/pcpinfo.php?cdid=${CMP_CDID}&format=simple&lang=automatic`}
+        strategy="afterInteractive"
+      />
 
-      <h2>Analytics</h2>
-      <p>
-        We count usage events with Google Analytics — which tool was opened,
-        that a calculation ran, that a result was copied. These events carry
-        tool identifiers only, never the values you entered. One analytics
-        cookie supports this counting and is set according to your consent
-        choice; where consent is denied, Google Consent Mode keeps the counting
-        cookieless, so events cannot be tied to you. See the{" "}
-        <Link href="/cookie-policy/">cookie policy</Link> for details.
-      </p>
+      <h2>Cookies</h2>
+      {/* consentmanager — cookie list. */}
+      <div className={`cmpcookieinfo${CMP_CDID} cmpstyleroot`} />
+      <Script
+        src={`https://c.delivery.consentmanager.net/delivery/cookieinfo.php?cdid=${CMP_CDID}&l=automatic`}
+        strategy="afterInteractive"
+      />
 
-      <h2>Consent</h2>
-      <p>
-        Consent for analytics and (once launched) advertising is managed by
-        <strong> consentmanager</strong> (consentmanager.net), a certified
-        consent management platform — IAB TCF v2.2 and Global Privacy Platform,
-        with Google Consent Mode v2. Visitors in the EEA, UK, and Switzerland are
-        asked before non-essential cookies are set; visitors in applicable US
-        states are shown the corresponding privacy notice. Your choice is
-        recorded in your browser so you are not asked every visit. See the{" "}
-        <Link href="/cookie-policy/">cookie policy</Link> for how to change or
-        withdraw it.
-      </p>
+      <h2>Manage your consent</h2>
+      <p>Review or change the choices you have made:</p>
+      {/* consentmanager — inline preferences box. Populated by the consentmanager
+          CMP loader when it is present on the site. */}
+      <link
+        rel="stylesheet"
+        href="https://c.delivery.consentmanager.net/delivery/cmpinline.min.css"
+      />
+      <div id="cmpinlinepreferencesbox" />
 
-      <h2>Advertising (when it launches)</h2>
-      <p>
-        No ads run on {SITE_NAME} yet. When display advertising launches
-        (Google AdSense is the planned partner), ad partners will use cookies
-        or similar technologies to serve and measure ads, governed by the same
-        consentmanager platform described above. In the EEA, UK, and Switzerland
-        ads serve only after you agree.
-      </p>
-
-      <h2>Your rights (GDPR, CPRA, Australian Privacy Act)</h2>
-      <p>
-        Because we hold no personal data about you, there is normally nothing
-        to access, correct, or delete. If you believe we hold something about
-        you — for example from an email you sent us — write to{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we will
-        answer under the GDPR, the California Privacy Rights Act, or the
-        Australian Privacy Act as applies to you.
-      </p>
-
-      <h2 id="california-privacy-choices">California privacy choices</h2>
-      <p>
-        We do not sell or share personal information as the CPRA defines those
-        terms. A &ldquo;Your California privacy choices&rdquo; control will be
-        added here before advertising launches; until then this section is the
-        placeholder for it. Questions:{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
-      </p>
+      <h2>Third-party vendors</h2>
+      {vendors.length > 0 ? (
+        <ul>
+          {vendors.map((name) => (
+            <li key={name}>{name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>
+          No third-party vendors are currently listed. The current list is
+          available from consentmanager{" "}
+          <a href={VENDOR_LIST_API} rel="nofollow noopener" target="_blank">
+            here
+          </a>
+          .
+        </p>
+      )}
 
       <h2>Contact</h2>
       <p>
         Privacy questions go to{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. We answer under
+        the GDPR, the California Privacy Rights Act, or the Australian Privacy
+        Act as applies to you.
       </p>
     </Prose>
   );
