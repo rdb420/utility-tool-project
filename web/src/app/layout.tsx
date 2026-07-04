@@ -15,6 +15,20 @@ import "./globals.css";
 const cleanId = (v?: string) => (v ?? "").replace(/[^A-Za-z0-9_-]/g, "");
 const ADSENSE_ACCOUNT = cleanId(process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT);
 
+/**
+ * Google Tag Manager — container GTM-NRM7V3BN. This is Google's exact install
+ * snippet. In the Next App Router the `<head>` is framework-managed, so the
+ * loader runs as a synchronous inline <script> at the very top of <body> (the
+ * earliest injection point the framework allows), and the paired `<noscript>`
+ * sits immediately after the opening <body> tag, as Google instructs. The
+ * snippet is non-blocking: it only queues dataLayer and injects gtm.js async.
+ */
+const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NRM7V3BN');`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
@@ -44,6 +58,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* Google Tag Manager (noscript) — immediately after the opening <body>. */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-NRM7V3BN"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {/* Google Tag Manager — Google's exact loader snippet, run as a
+            synchronous inline script at the top of <body> (App Router manages the
+            <head>; this is the earliest injection point available). */}
+        <script dangerouslySetInnerHTML={{ __html: GTM_SNIPPET }} />
         {/* AdSense tag — for ad serving + AdSense account review only. No ad
             units render until ADS_ENABLED is on and a real <ins> is wired.
             NOTE: there is currently NO consent management platform on the site
