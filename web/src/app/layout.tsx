@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import Script from "next/script";
+import ConsentBanner from "@/components/ads/ConsentBanner";
 import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import { BASE_URL, SITE_NAME } from "@/config/site";
@@ -40,19 +41,21 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {/*
-          Google's certified CMP + Consent Mode v2. The AdSense tag delivers
-          the EEA/UK and US privacy messages configured in AdSense and is the
-          single source of truth for consent (see lib/analytics/ga4.ts).
-          `beforeInteractive` loads it into <head> ahead of everything so it
-          sets Consent Mode defaults before GA4 (which loads on idle) fires.
-          No ad units render until ADS_ENABLED is on and a real <ins> is wired
-          post-approval; the tag alone drives the CMP and ad-serving consent.
+          AdSense tag — loaded so the site is present for AdSense review and so
+          Google's certified CMP can activate the moment the site is approved.
+          IMPORTANT: until AdSense approves, this tag is DORMANT — Google does
+          not serve the EEA/UK + US consent messages and does not drive Consent
+          Mode (verified: no `googlefc`/`__tcfapi` at runtime). So consent is
+          currently owned by the code-side Consent Mode defaults + ConsentBanner
+          (see lib/analytics/ga4.ts). Once approval lands and the CMP is
+          confirmed live, hand consent to it and remove the code-side consent.
+          No ad units render until ADS_ENABLED is on and a real <ins> is wired.
         */}
         {ADSENSE_ACCOUNT && (
           <Script
             id="adsense-cmp"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ACCOUNT}`}
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
             crossOrigin="anonymous"
           />
         )}
@@ -61,9 +64,13 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        {/* First-visit consent banner (accept/decline in localStorage),
+            consumed by AdSlot + the analytics transport. Active until Google's
+            CMP is approved and takes over (see the AdSense tag comment above). */}
+        <ConsentBanner />
         {/* GA4 bootstrap: no-op when NEXT_PUBLIC_GA4_ID is empty; otherwise
-            injects gtag.js after the page is idle. Consent is owned by the CMP
-            above, not by this loader. Renders nothing. */}
+            injects gtag.js after the page is idle, behind Consent Mode v2
+            denied-by-default. Renders nothing. */}
         <AnalyticsLoader />
         {/* Vercel Web Analytics + Speed Insights (Core Web Vitals). Both are
             cookieless and only report when the app runs on Vercel with the

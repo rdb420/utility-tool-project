@@ -3,7 +3,8 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AnalyticsLoader from "@/lib/analytics/AnalyticsLoader";
 import { setAnalyticsTransport, track } from "@/lib/analytics";
-import { resetGa4ForTests } from "@/lib/analytics/ga4";
+import { EEA_UK_CH, resetGa4ForTests } from "@/lib/analytics/ga4";
+import { CONSENT_STORAGE_KEY } from "@/lib/consent/useConsent";
 
 const MEASUREMENT_ID = "G-TEST12345";
 
@@ -20,6 +21,15 @@ const navMock = vi.hoisted(() => ({ pathname: "/" }));
 vi.mock("next/navigation", () => ({
   usePathname: () => navMock.pathname,
 }));
+
+// Node >=22 filters jsdom's localStorage off the test global; bridge it back
+// (same workaround as useConsent.test.tsx).
+const jsdomWindow = (globalThis as unknown as { jsdom: { window: Window } })
+  .jsdom.window;
+Object.defineProperty(globalThis, "localStorage", {
+  get: () => jsdomWindow.localStorage,
+  configurable: true,
+});
 
 /** Controllable requestIdleCallback so tests decide when "idle" happens. */
 let idleCallbacks: IdleRequestCallback[] = [];
@@ -52,6 +62,7 @@ beforeEach(() => {
     return idleCallbacks.length;
   };
   window.cancelIdleCallback = () => {};
+  window.localStorage.clear();
 });
 
 afterEach(() => {
@@ -96,16 +107,35 @@ describe("AnalyticsLoader with a GA4 id", () => {
     expect(injectedScripts()).toHaveLength(1);
   });
 
-  it("emits NO consent calls — Google's CMP owns Consent Mode", () => {
+  it("sets both consent defaults (global + EEA/UK/CH) before the config hit", () => {
     render(<AnalyticsLoader />);
     flushIdle();
 
-    const consentCalls = dataLayerCalls().filter(
-      (call) => call[0] === "consent",
+    const calls = dataLayerCalls();
+    const defaults = calls.filter(
+      (call) => call[0] === "consent" && call[1] === "default",
     );
-    expect(consentCalls).toHaveLength(0);
-    // config still fires (initial page_view).
-    expect(dataLayerCalls().some((call) => call[0] === "config")).toBe(true);
+    const configIndex = calls.findIndex((call) => call[0] === "config");
+    const lastDefaultIndex = calls.reduce(
+      (last, call, index) =>
+        call[0] === "consent" && call[1] === "default" ? index : last,
+      -1,
+    );
+    expect(defaults).toHaveLength(2);
+    expect(lastDefaultIndex).toBeLessThan(configIndex);
+    // Global default: ads denied, analytics granted outside consent regions.
+    expect(defaults[0][2]).toEqual({
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "granted",
+    });
+    // Region-scoped default: everything denied in the EEA/UK/CH (exact list
+    // is pinned in ga4.test.ts).
+    expect(defaults[1][2]).toMatchObject({
+      analytics_storage: "denied",
+      region: [...EEA_UK_CH],
+    });
   });
 
   it("installs the GA4 transport once gtag is live", () => {
@@ -121,6 +151,59 @@ describe("AnalyticsLoader with a GA4 id", () => {
       "calculator_result",
       { toolId: "eoq", slug: "/eoq/" },
     ]);
+  });
+
+  it("replays a stored granted choice as a consent update on load", () => {
+    window.localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
+    render(<AnalyticsLoader />);
+    flushIdle();
+
+    expect(dataLayerCalls()).toContainEqual([
+      "consent",
+      "update",
+      { analytics_storage: "granted" },
+    ]);
+  });
+
+  it("replays a stored denied choice as a consent update, and events still flow", () => {
+    window.localStorage.setItem(CONSENT_STORAGE_KEY, "denied");
+    render(<AnalyticsLoader />);
+    flushIdle();
+
+    const calls = dataLayerCalls();
+    // No granted signal anywhere...
+    expect(calls).not.toContainEqual([
+      "consent",
+      "update",
+      { analytics_storage: "granted" },
+    ]);
+    // ...and the decline is explicit, so it overrides the global granted
+    // default outside the EEA/UK/CH too.
+    expect(calls).toContainEqual([
+      "consent",
+      "update",
+      { analytics_storage: "denied" },
+    ]);
+    // gtag is loaded and events still flow (cookieless pings).
+    expect(injectedScripts()).toHaveLength(1);
+    act(() => {
+      track({ name: "calculator_start", toolId: "cbm", slug: "/cbm/" });
+    });
+    expect(dataLayerCalls()).toContainEqual([
+      "event",
+      "calculator_start",
+      { toolId: "cbm", slug: "/cbm/" },
+    ]);
+  });
+
+  it("pushes no consent update while the choice is unset (defaults apply)", () => {
+    render(<AnalyticsLoader />);
+    flushIdle();
+
+    const updates = dataLayerCalls().filter(
+      (call) => call[0] === "consent" && call[1] === "update",
+    );
+    expect(updates).toHaveLength(0);
   });
 
   it("sends page_view on route change but not for the initial render", () => {
