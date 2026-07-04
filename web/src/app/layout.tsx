@@ -9,44 +9,35 @@ import AnalyticsInit from "@/lib/analytics/AnalyticsInit";
 import "./globals.css";
 
 /**
- * Env-injected ids are interpolated into an inline `<script>` (the consent
- * bootstrap) and into script/iframe src attributes, so a stray newline or space
- * — e.g. a copy-paste artifact in a Vercel env var — would be a JS syntax error
- * that silently kills the entire bootstrap. Strip everything but the characters
- * these ids legitimately use.
+ * Env-injected ids are interpolated into inline scripts / src attributes, so a
+ * stray newline or space — e.g. a copy-paste artifact in a Vercel env var —
+ * would be a JS syntax error. Strip everything but the characters these ids use.
  */
 const cleanId = (v?: string) => (v ?? "").replace(/[^A-Za-z0-9_-]/g, "");
 const ADSENSE_ACCOUNT = cleanId(process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT);
 const GTM_ID = cleanId(process.env.NEXT_PUBLIC_GTM_ID);
 
-/** GTM loader, appended to the consent bootstrap so it runs AFTER the default. */
-const GTM_SNIPPET = GTM_ID
-  ? `window.dataLayer.push({'gtm.start':(new Date()).getTime(),event:'gtm.js'});(function(){var g=document.createElement('script');g.async=true;g.src='https://www.googletagmanager.com/gtm.js?id=${GTM_ID}';(document.head||document.documentElement).appendChild(g);})();`
-  : "";
+/**
+ * Consent Mode v2 ALL-DENIED default. Rendered as a plain inline <script> (NOT
+ * next/script) so it executes synchronously at parse time — before the
+ * consentmanager tag that immediately follows it. consentmanager's own guidance
+ * requires the all-denied default be set before its loader; `wait_for_update`
+ * briefly holds tags until the CMP reports a choice, so nothing fires until then.
+ */
+const CONSENT_DEFAULT_JS =
+  `window.dataLayer=window.dataLayer||[];` +
+  `window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};` +
+  `gtag('consent','default',{'ad_storage':'denied','analytics_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','wait_for_update':500});` +
+  `window.dataLayer.push({'event':'default_consent'});`;
 
 /**
- * Consent bootstrap — ONE script so ordering is guaranteed. In order it:
- *   1. sets the Consent Mode v2 ALL-DENIED default (+ `default_consent`),
- *   2. injects consentmanager (certified TCF v2.2 + GPP CMP, cdid b6d1255cc2306),
- *   3. loads GTM (which owns GA4).
- *
- * Google Tag Manager owns GA4 (config + event tags built in the GTM UI). The
- * GA4 tag is gated on consent there — e.g. it fires only when
- * `cmpConsentVendors contains ,s26,` (Google Analytics vendor consented) — which
- * derives directly from consentmanager's vendor-consent list and avoids the
- * Consent Mode signal-mapping pitfalls. The all-denied default is set first so
- * nothing is consented until consentmanager reports a choice (fails safe), and
- * `wait_for_update` holds tags briefly for it. Per consentmanager guidance the
- * default MUST be all-denied. All region logic lives in consentmanager.
+ * Standard GTM loader. Runs AFTER the consentmanager tag so the CMP's
+ * semiautomatic auto-blocker (`data-cmp-ab="1"`) is already armed and can detect
+ * + gate GTM/GA4. Plain inline <script> so ordering is guaranteed by the source.
  */
-const CONSENT_BOOTSTRAP_JS = `
-window.dataLayer=window.dataLayer||[];
-window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};
-gtag('consent','default',{'ad_storage':'denied','analytics_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','wait_for_update':500});
-window.dataLayer.push({'event':'default_consent'});
-(function(){var s=document.createElement('script');s.src='https://cdn.consentmanager.net/delivery/js/semiautomatic.min.js';s.type='text/javascript';s.setAttribute('data-cmp-ab','1');s.setAttribute('data-cmp-cdid','b6d1255cc2306');s.setAttribute('data-cmp-host','b.delivery.consentmanager.net');s.setAttribute('data-cmp-cdn','cdn.consentmanager.net');s.setAttribute('data-cmp-codesrc','0');(document.head||document.documentElement).appendChild(s);})();
-${GTM_SNIPPET}
-`.trim();
+const GTM_LOADER_JS = GTM_ID
+  ? `window.dataLayer=window.dataLayer||[];window.dataLayer.push({'gtm.start':(new Date()).getTime(),event:'gtm.js'});(function(){var g=document.createElement('script');g.async=true;g.src='https://www.googletagmanager.com/gtm.js?id=${GTM_ID}';(document.head||document.documentElement).appendChild(g);})();`
+  : "";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -77,28 +68,52 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* GTM <noscript> — must sit at the very top of <body>. */}
-        {GTM_ID && (
-          <noscript>
-            <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-              height="0"
-              width="0"
-              style={{ display: "none", visibility: "hidden" }}
-              title="Google Tag Manager"
-            />
-          </noscript>
-        )}
-        {/* Consent bootstrap — all-denied Consent Mode default, then
-            consentmanager, then GTM (which owns GA4). See CONSENT_BOOTSTRAP_JS. */}
-        <Script
-          id="consent-bootstrap"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: CONSENT_BOOTSTRAP_JS }}
+        {/* 1. Consent Mode v2 all-denied default — synchronous, before the CMP. */}
+        <script
+          id="consent-default"
+          dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_JS }}
         />
+        {/* 2. consentmanager (certified TCF v2.2 + GPP CMP, CMP 173913) — the
+            EXACT tag from the consentmanager dashboard, rendered as a plain,
+            synchronous <script> at the very beginning of <body>, per their
+            integration instructions. It must load first and synchronously so the
+            semiautomatic auto-blocker arms and can intercept + detect GTM / GA4 /
+            AdSense before they run — which is what populates the vendor list and
+            lets consent gate them. Do NOT wrap this in next/script (that defers
+            it) or move it to <head>. */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts -- consentmanager
+            MUST load synchronously and first so its auto-blocker arms before
+            GTM/GA4/AdSense; this is their required integration, not an oversight. */}
+        <script
+          type="text/javascript"
+          data-cmp-ab="1"
+          src="https://cdn.consentmanager.net/delivery/js/semiautomatic.min.js"
+          data-cmp-cdid="b6d1255cc2306"
+          data-cmp-host="b.delivery.consentmanager.net"
+          data-cmp-cdn="cdn.consentmanager.net"
+          data-cmp-codesrc="0"
+        />
+        {/* 3. GTM (owns GA4) — after consentmanager so the CMP can gate it. */}
+        {GTM_ID && (
+          <>
+            <noscript>
+              <iframe
+                src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+                height="0"
+                width="0"
+                style={{ display: "none", visibility: "hidden" }}
+                title="Google Tag Manager"
+              />
+            </noscript>
+            <script
+              id="gtm-loader"
+              dangerouslySetInnerHTML={{ __html: GTM_LOADER_JS }}
+            />
+          </>
+        )}
         {/* AdSense tag — for ad serving + AdSense review only (afterInteractive,
-            not a CMP). Reads consentmanager's TCF consent once ads are live. No
-            ad units render until ADS_ENABLED is on and a real <ins> is wired. */}
+            not a CMP). consentmanager's auto-blocker gates it. No ad units render
+            until ADS_ENABLED is on and a real <ins> is wired. */}
         {ADSENSE_ACCOUNT && (
           <Script
             id="adsense"
@@ -115,9 +130,7 @@ export default function RootLayout({
         {/* Points track() at the dataLayer so GTM routes events to GA4.
             GA4/page_views/consent gating all live in the GTM container. */}
         <AnalyticsInit />
-        {/* Vercel Web Analytics + Speed Insights (Core Web Vitals). Both are
-            cookieless and only report when the app runs on Vercel with the
-            respective feature enabled in the project dashboard. */}
+        {/* Vercel Web Analytics + Speed Insights (Core Web Vitals) — cookieless. */}
         <Analytics />
         <SpeedInsights />
       </body>
