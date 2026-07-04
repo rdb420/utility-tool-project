@@ -20,12 +20,5 @@ export type AdSlotId = (typeof ENABLED_AD_SLOTS)[number];
 /** Google Analytics 4 measurement id; empty string disables analytics. */
 export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? "";
 
-/**
- * Google Tag Manager container id. When set, GTM loads and owns GA4 (config +
- * event tags built in the GTM UI); the app only pushes typed events to the
- * dataLayer. Empty string disables GTM.
- */
-export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
-
 /** Contact address used on the contact page and in the footer. */
 export const CONTACT_EMAIL = "hello@opscrunch.com"; // TODO: confirm mailbox before launch
