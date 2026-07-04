@@ -1,3 +1,4 @@
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -14,20 +15,6 @@ import "./globals.css";
  */
 const cleanId = (v?: string) => (v ?? "").replace(/[^A-Za-z0-9_-]/g, "");
 const ADSENSE_ACCOUNT = cleanId(process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT);
-
-/**
- * Google Tag Manager — container GTM-NRM7V3BN. This is Google's exact install
- * snippet. In the Next App Router the `<head>` is framework-managed, so the
- * loader runs as a synchronous inline <script> at the very top of <body> (the
- * earliest injection point the framework allows), and the paired `<noscript>`
- * sits immediately after the opening <body> tag, as Google instructs. The
- * snippet is non-blocking: it only queues dataLayer and injects gtm.js async.
- */
-const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NRM7V3BN');`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -57,8 +44,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* Google Tag Manager — via @next/third-parties (the Next-recommended
+          integration). Injects the GTM-NRM7V3BN container + dataLayer using
+          next/script under the hood. */}
+      <GoogleTagManager gtmId="GTM-NRM7V3BN" />
       <body>
-        {/* Google Tag Manager (noscript) — immediately after the opening <body>. */}
+        {/* Google Tag Manager (noscript) — immediately after the opening <body>.
+            GoogleTagManager does not emit the <noscript> fallback, so keep it. */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-NRM7V3BN"
@@ -67,10 +59,6 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        {/* Google Tag Manager — Google's exact loader snippet, run as a
-            synchronous inline script at the top of <body> (App Router manages the
-            <head>; this is the earliest injection point available). */}
-        <script dangerouslySetInnerHTML={{ __html: GTM_SNIPPET }} />
         {/* consentmanager CMP (173918) — semi-automatic blocking, EXTERNAL code,
             installed per consentmanager's official Next.js SSR guidance:
             next/script with strategy="afterInteractive". Loads the CMP site-wide
