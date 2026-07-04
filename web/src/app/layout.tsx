@@ -8,8 +8,16 @@ import { BASE_URL, SITE_NAME } from "@/config/site";
 import AnalyticsInit from "@/lib/analytics/AnalyticsInit";
 import "./globals.css";
 
-const ADSENSE_ACCOUNT = process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT;
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+/**
+ * Env-injected ids are interpolated into an inline `<script>` (the consent
+ * bootstrap) and into script/iframe src attributes, so a stray newline or space
+ * — e.g. a copy-paste artifact in a Vercel env var — would be a JS syntax error
+ * that silently kills the entire bootstrap. Strip everything but the characters
+ * these ids legitimately use.
+ */
+const cleanId = (v?: string) => (v ?? "").replace(/[^A-Za-z0-9_-]/g, "");
+const ADSENSE_ACCOUNT = cleanId(process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT);
+const GTM_ID = cleanId(process.env.NEXT_PUBLIC_GTM_ID);
 
 /** GTM loader, appended to the consent bootstrap so it runs AFTER the default. */
 const GTM_SNIPPET = GTM_ID
