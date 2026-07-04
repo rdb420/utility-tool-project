@@ -11,39 +11,32 @@ import "./globals.css";
 const ADSENSE_ACCOUNT = process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT;
 
 /**
- * EEA (27 EU) + Iceland/Liechtenstein/Norway + UK + Switzerland — the regions
- * that get the stricter all-denied Consent Mode default until the CMP records
- * a choice. ISO 3166-1 alpha-2, alphabetized (32 codes).
- */
-const EEA_UK_CH = [
-  "AT", "BE", "BG", "CH", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR",
-  "GB", "GR", "HR", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "MT",
-  "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK",
-];
-
-/**
  * Consent bootstrap — ONE script so ordering is guaranteed: it (1) sets the
- * Consent Mode v2 default (the SAFETY NET), then (2) injects consentmanager.
+ * Consent Mode v2 default, then (2) injects consentmanager.
  *
  * consentmanager (the certified TCF v2.2 + GPP CMP) is the source of truth for
  * consent: it shows the banner and, with Google Consent Mode enabled in its
- * dashboard, issues the `consent update` calls. Those updates only override a
- * *default*, so we establish a conservative default FIRST (ads denied
- * everywhere; analytics granted outside the EEA/UK/CH, denied within), then
- * load the CMP in the same script so it can never run before the default.
- * `wait_for_update` holds tags briefly for the CMP's update. If the CMP's
- * Consent Mode is ever misconfigured, the default still keeps EEA/UK/CH
- * visitors cookieless — the site fails safe, never open.
+ * dashboard, issues the `consent update` calls that grant/deny per the user's
+ * choice and region.
  *
- * consentmanager reads its config from the data-cmp-* attributes on its own
- * script element (by query selector), so injecting them here is equivalent to
- * the static tag from the consentmanager dashboard.
+ * Per consentmanager's own guidance, the default must be ALL DENIED: a granted
+ * default is not valid under GDPR for the EEA/UK (Google would count
+ * non-consenting users), so we deny everything first and let the CMP's update
+ * grant where allowed. All region logic lives in consentmanager, not here.
+ * `wait_for_update` holds tags briefly for that update, and the `default_consent`
+ * dataLayer event matches the vendor's documented snippet. This is the Consent
+ * Mode v2 "Advanced" pattern — GA4 still fires, but cookieless until consent is
+ * granted.
+ *
+ * The CMP is injected in the SAME script, after the default, so it can never
+ * run first. consentmanager reads its config from the data-cmp-* attributes on
+ * its own script element, so injecting them here equals the dashboard tag.
  */
 const CONSENT_BOOTSTRAP_JS = `
 window.dataLayer=window.dataLayer||[];
 window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};
-gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted','wait_for_update':500});
-gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':${JSON.stringify(EEA_UK_CH)}});
+gtag('consent','default',{'ad_storage':'denied','analytics_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','wait_for_update':500});
+window.dataLayer.push({'event':'default_consent'});
 (function(){var s=document.createElement('script');s.src='https://cdn.consentmanager.net/delivery/js/semiautomatic.min.js';s.type='text/javascript';s.setAttribute('data-cmp-ab','1');s.setAttribute('data-cmp-cdid','b6d1255cc2306');s.setAttribute('data-cmp-host','b.delivery.consentmanager.net');s.setAttribute('data-cmp-cdn','cdn.consentmanager.net');s.setAttribute('data-cmp-codesrc','0');(document.head||document.documentElement).appendChild(s);})();
 `.trim();
 
@@ -76,11 +69,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* 1. Consent bootstrap — sets the Consent Mode v2 safety-net default,
+        {/* 1. Consent bootstrap — sets the all-denied Consent Mode v2 default,
               then injects consentmanager (the certified TCF v2.2 + GPP CMP), in
-              that order, so no tag fires unconsented in the EEA/UK/CH and the CMP
-              can never run before the default. beforeInteractive = runs before
-              GA4 (which loads on idle). */}
+              that order, so nothing is consented until the CMP's update and the
+              CMP can never run before the default. beforeInteractive = runs
+              before GA4 (which loads on idle). */}
         <Script
           id="consent-bootstrap"
           strategy="beforeInteractive"
