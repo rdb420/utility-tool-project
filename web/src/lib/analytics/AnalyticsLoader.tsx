@@ -3,37 +3,30 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GA4_ID } from "@/config/site";
-import { useConsent } from "@/lib/consent/useConsent";
-import { applyConsentToGa4, loadGa4, sendGa4PageView } from "./ga4";
+import { loadGa4, sendGa4PageView } from "./ga4";
 import { initAnalytics } from "./transports";
 
 /**
  * Client-side GA4 bootstrap, mounted once in the root layout.
  *
  * Renders nothing and does nothing at all when GA4_ID is empty (local dev
- * default) — the existing dev console transport installed by ConsentBanner
- * stays untouched.
+ * default) — the dev console transport stays untouched.
  *
- * Loading strategy (kit rule: calculator first, third parties last):
- *   1. Wait for hydration, then for `requestIdleCallback` (fallback: the
- *      window `load` event / a 0ms timeout if already complete). Nothing GA4
- *      touches the network until the tool is interactive.
- *   2. `loadGa4` pushes the Consent Mode v2 defaults BEFORE injecting the
- *      gtag.js script tag: a global default (ads denied, analytics granted)
- *      plus a stricter all-denied default scoped to the EEA/UK/CH (see
- *      ga4.ts for the decision record).
- *   3. Once gtag exists, install the GA4 transport and reflect the visitor's
- *      stored banner choice as a consent update in BOTH directions — granted
- *      upgrades `analytics_storage`, denied pins it off even where the
- *      global default grants it. Ad signals stay denied — no ads are served
- *      yet. This effect also re-fires on every later banner choice.
- *   4. App Router client navigations don't re-fire gtag's automatic
- *      page_view, so send one per pathname change — skipping the first
- *      render (the `config` hit already counted it). `usePathname()` never
- *      includes query strings, so no operational values can leak into URLs.
+ * Consent is owned by Google's certified CMP (see ga4.ts), which loads
+ * `beforeInteractive` and sets Consent Mode defaults before this runs. This
+ * component only:
+ *   1. Waits for hydration, then for `requestIdleCallback` (fallback: the
+ *      window `load` event / a 0ms timeout). Nothing GA4 touches the network
+ *      until the tool is interactive — and by then the CMP has settled consent.
+ *   2. `loadGa4` injects gtag.js (no consent calls of its own); gtag honours
+ *      the consent state the CMP already established.
+ *   3. Installs the GA4 transport once gtag exists.
+ *   4. App Router client navigations don't re-fire gtag's automatic page_view,
+ *      so send one per pathname change — skipping the first render (the
+ *      `config` hit already counted it). `usePathname()` never includes query
+ *      strings, so no operational values can leak into URLs.
  */
 export default function AnalyticsLoader() {
-  const { consent, ready } = useConsent();
   const pathname = usePathname();
   const [gtagReady, setGtagReady] = useState(false);
 
@@ -67,12 +60,11 @@ export default function AnalyticsLoader() {
     };
   }, []);
 
-  // 3: transport + consent, re-applied whenever the banner choice changes.
+  // 3: install the transport once gtag is live.
   useEffect(() => {
-    if (!gtagReady || !ready) return;
-    initAnalytics(consent);
-    applyConsentToGa4(consent);
-  }, [gtagReady, ready, consent]);
+    if (!gtagReady) return;
+    initAnalytics();
+  }, [gtagReady]);
 
   // 4: page_view on client-side route changes (skip the initial pathname —
   // the gtag config call already reported it).

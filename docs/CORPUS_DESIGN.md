@@ -50,7 +50,8 @@ named external sources. Pricing (`data/formulas/pricing/`) and the extra
 inventory formulas are corpus/concept-grounded with citations. Among the
 freight **reference tables** (`data/reference_tables/freight/`),
 `dimensional_weight_divisors.json` is `status: verified` (effective 2026-07-02;
-the USPS row needs re-verification on 2026-07-12) and
+the USPS 166 → 139 change effective 2026-07-12 is staged on branch
+`usps-dim-139-2026-07-12`, ready to merge on that date) and
 `nmfc_freight_classes.json` is `status: verified` on the 13-subprovision FCDC
 scale (effective 2025-07-19, NMFTA sources). Girth limits are partially
 verified (UPS + AusPost rows); container volumes remain `status:

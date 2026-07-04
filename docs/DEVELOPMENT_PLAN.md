@@ -173,7 +173,7 @@ at `web/` (design spec:
   (WebApplication, FAQPage, BreadcrumbList).
 - Formula execution client-side via the TS calc library; corpus validation in
   TS wired into the build; ad, consent, and analytics scaffolds (GA4 wiring
-  pending — Phase 5).
+  landed and was verified in Phase 5).
 
 Goal:
 
@@ -198,28 +198,41 @@ Exit criteria:
 
 ## Phase 5: Launch and Measurement
 
-Status: in progress (2026-07-03). The ordered launch checklist is
-`docs/LAUNCH_RUNBOOK.md`.
+Status: live (deployed 2026-07-03; production state re-verified 2026-07-04). The
+ordered launch checklist is `docs/LAUNCH_RUNBOOK.md`.
 
-Done (in code):
+Done and verified live (2026-07-04):
 
-- GA4 wiring: consent-aware GA4 transport in `web/src/lib/analytics/` reading
-  `NEXT_PUBLIC_GA4_ID` (measurement ID `G-7XG10CD70E` on file in
-  `docs/google-analytics/`), events gated on consent.
-- Search Console verification meta tag, env-driven via
-  `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
-- Domain registered (`opscrunch.com`, DNS on Cloudflare) and Vercel project
-  created from the GitHub repo (`docs/vercel/project.txt`).
-- Launch runbook written (`docs/LAUNCH_RUNBOOK.md`).
+- Deployed to Vercel (push-to-`main`); apex `opscrunch.com` primary, `www`
+  308-redirects to apex, HTTPS valid.
+- SEO plumbing serving correctly: `sitemap.xml`, `robots.txt`, apex canonicals,
+  and the real `ads.txt` line (`pub-9610958335722543`).
+- GA4 wiring: transport in `web/src/lib/analytics/` (measurement ID
+  `G-7XG10CD70E`, baked into the client bundle). `calculator_start` /
+  `calculator_result` reach `dataLayer` with only `toolId` + `slug` (no input
+  values); events are wired into every calculator via `track()`.
+- Consent: managed by **Google's certified CMP** (AdSense Privacy & messaging,
+  EEA/UK + US), delivered by `adsbygoogle.js` loaded `beforeInteractive` in the
+  root layout. It owns Consent Mode v2 for ads and analytics. The former custom
+  `ConsentBanner` and the code-side consent defaults/updates were removed
+  (2026-07-04) so the CMP is the single source of truth.
+- AdSense account association meta (`NEXT_PUBLIC_ADSENSE_ACCOUNT`) ships in
+  `<head>`, and the same tag loads the CMP; ad units remain gated off
+  (`NEXT_PUBLIC_ADS_ENABLED=false`) until approval + a wired `<ins>` unit.
 
 Pending (user actions, in runbook order):
 
-- Set Vercel Root Directory to `web` + production env vars (runbook §1).
-- Push/deploy and attach `opscrunch.com` via Cloudflare DNS (runbook §2–4).
-- Search Console property, sitemap submission, indexing requests (runbook §5).
-- GA4 Realtime sanity check (runbook §6).
+- Search Console: verification is DONE (DNS TXT `google-site-verification` on
+  the Cloudflare zone, confirmed 2026-07-04). Remaining: submit the sitemap and
+  request indexing (runbook §5).
+- GA4 **dashboard** config — the code side is done; register `toolId`/`slug`
+  (etc.) as custom dimensions and mark `calculator_result` a key event so the
+  custom data is usable in reports (runbook §6b). Confirm hits in Realtime/
+  DebugView.
 - AdSense application — last, only after indexing and traffic, and ads stay off
   until a certified IAB TCF v2.2 CMP replaces the consent banner (runbook §7).
+- USPS DIM divisor 166→139 change staged on branch `usps-dim-139-2026-07-12`;
+  merge on/after 2026-07-12 (runbook §8).
 
 Goal:
 
@@ -310,7 +323,7 @@ Resolved (2026-07-02, Phase 4):
 - Analytics event taxonomy: typed event union scaffolded in
   `web/src/lib/analytics/` (calculator_start, calculator_result,
   calculator_validation_error, result_copy, result_export,
-  related_tool_click); GA4 transport wiring pending (Phase 5).
+  related_tool_click); GA4 transport wired and verified end-to-end in Phase 5.
 - Exports: copy-to-clipboard shipped; CSV/PDF downloads deferred.
 
 Still open:
@@ -320,13 +333,18 @@ Still open:
 
 ## Near-Term Next Step
 
-Phase 5 launch tasks: connect the production domain, submit the sitemap to
-Search Console, wire GA4 into the analytics scaffold, and apply for AdSense
-once the trust pages are live.
+The site is live; GA4 is wired and verified in code. The near-term work is
+operational, not code: (1) confirm Search Console verification + submit the
+sitemap; (2) finish the GA4 dashboard config (custom dimensions + key events)
+so the custom event data is reportable; (3) merge the staged USPS divisor
+change on 2026-07-12; (4) monitor Search Console/GA4 for a few weeks and fix
+technical SEO/UX before adding tools. AdSense stays deferred until there is
+indexed organic traffic and a certified IAB TCF v2.2 CMP.
 
 The freight sourcing task (`data/reference_tables/freight/`) is largely closed:
 carrier DIM divisors and NMFC classes are verified (divisors 2026-07-02, NMFC
 13-sub scale effective 2025-07-19), and parcel girth limits are partially
 verified (UPS and Australia Post rows only). Still open: container volumes and
-the remaining girth rows need sourcing, and the USPS divisor row needs
-re-verification on 2026-07-12.
+the remaining girth rows need sourcing. The USPS divisor 166→139 change
+(effective 2026-07-12) is **staged** on branch `usps-dim-139-2026-07-12`,
+ready to merge on the effective date.

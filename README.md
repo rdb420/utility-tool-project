@@ -1,6 +1,6 @@
 # Operations Utility Toolkit
 
-An SEO-driven utility website (OpsCrunch) focused on logistics, inventory planning, packaging, dimensional weight, freight, and operations calculators. The public site lives at `web/` (Next.js + TypeScript); Python tooling maintains the grounding knowledge base.
+An SEO-driven utility website (OpsCrunch) focused on logistics, inventory planning, packaging, dimensional weight, freight, and operations calculators. The public site lives at `web/` (Next.js + TypeScript) and is **live at <https://opscrunch.com>**; Python tooling maintains the grounding knowledge base. For current build state jump to [Current Status](#current-status).
 
 The source research under `docs/project/` points to a clear first-build direction: avoid generic utility-site competition and start with a focused B2B operations cluster. The recommended wedge is an inventory replenishment calculator suite, followed by freight and dimensional weight tools.
 
@@ -17,9 +17,11 @@ Build a practical web toolkit for operators who need fast answers to common plan
 
 The project should prioritize accurate formulas, transparent assumptions, fast page loads, clean mobile UX, and corpus-backed explanations over thin calculator pages.
 
-## First Product Cluster
+## Original Build Plan
 
-Phase 1 should focus on inventory planning:
+This was the original phased plan; all three clusters have since shipped (24
+calculators live — see [Current Status](#current-status) for what actually
+launched). Phase 1 led with inventory planning:
 
 - Reorder point calculator
 - Safety stock calculator
@@ -31,7 +33,7 @@ Phase 1 should focus on inventory planning:
 - Inventory audit checklist
 - CSV or spreadsheet export for entered scenarios
 
-Phase 2 should expand into logistics and packaging:
+Phase 2 expanded into logistics and packaging:
 
 - Dimensional weight calculator
 - Volumetric weight calculator
@@ -50,7 +52,8 @@ Phase 2 should expand into logistics and packaging:
 ├── CONTRIBUTING.md
 ├── CLAUDE.md                      # Guidance for AI coding agents
 ├── pyproject.toml
-├── .env.example                  # Template for .env.local (placeholders only)
+├── .env.example                  # Template for .env.local — PYTHON tooling only
+│                                  # (website/Vercel env lives in web/.env.example)
 ├── corpus-logistics-supply-chain/ # 18 source books (markdown) — the raw corpus
 ├── docs/
 │   ├── PROJECT_BRIEF.md
@@ -142,32 +145,46 @@ The split of responsibilities:
 - [Corpus Design](docs/CORPUS_DESIGN.md): proposed data model for logistics, inventory, formulas, dimensions, and assumptions.
 - [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md): suggested system boundaries and implementation approach.
 - [Development Plan](docs/DEVELOPMENT_PLAN.md): staged plan from repo setup through launch.
+- [Launch Runbook](docs/LAUNCH_RUNBOOK.md): ordered go-live checklist and current launch/verification state.
 - [MVP Page Specs](docs/MVP_PAGE_SPECS.md): the implementation contract for the first inventory calculator cluster.
 - [Google Setup](docs/GOOGLE_SETUP.md): Google Cloud, Workspace API, Search Console, GA4, Ads, and AdSense setup checklist.
 - [Google Connections](docs/GOOGLE_CONNECTIONS.md): actual project IDs, Drive/Sheets links, and local verification workflow.
 
 ## Current Status
 
-Phase 4 (website MVP) and the Phase 6 cluster expansion are built. The site at
-`web/` serves 24 calculator pages across inventory, freight, and pricing
-clusters, record-driven from validated calculator records in
+**Live in production at <https://opscrunch.com>** (deployed on Vercel from
+`main`; DNS on Cloudflare, apex primary with `www` → apex). Phase 4 (website
+MVP) and the Phase 6 cluster expansion are built; Phase 5 (launch and
+measurement) is essentially done — see [Development Plan](docs/DEVELOPMENT_PLAN.md)
+and the [Launch Runbook](docs/LAUNCH_RUNBOOK.md).
+
+The site at `web/` serves 24 calculator pages across inventory, freight, and
+pricing clusters, record-driven from validated calculator records in
 `data/calculators/`. Formula execution and corpus validation are TypeScript
 (`web/src/lib/calc/`, `web/src/lib/corpus/`); the former Python calc library and
 validator were deleted after a parity gate. Four tools use custom islands
 (CBM, freight class, dimensional/volumetric weight, ABC analysis); the rest
 use the generic record-driven tool.
 
+Launch state (verified live 2026-07-04): SEO plumbing (sitemap, robots,
+canonicals, real `ads.txt`) is correct; GA4 (`G-7XG10CD70E`) is wired and
+verified end-to-end with consent-aware Consent Mode v2 and custom calculator
+events carrying no user input; Search Console is verified via a Cloudflare DNS
+TXT record; the AdSense account association meta ships but ad serving stays off
+(`NEXT_PUBLIC_ADS_ENABLED=false`) pending approval + a certified IAB TCF v2.2 CMP.
+
 The knowledge base is built and searchable, and grounded formula records exist
 for all 24 formulas — inventory and pricing cited to source passages, freight
 grounded via the ingested sourced-reference pack or named carrier/IATA/NMFTA
 sources.
 
-Reference-table status: carrier DIM divisors (verified 2026-07-02; USPS row
-re-check due 2026-07-12) and NMFC freight classes (13-subprovision FCDC scale,
-effective 2025-07-19) are verified; parcel girth limits are partially verified
-(UPS and Australia Post rows); container volumes remain `needs_sourcing`.
+Reference-table status: carrier DIM divisors (verified 2026-07-02) and NMFC
+freight classes (13-subprovision FCDC scale, effective 2025-07-19) are verified;
+parcel girth limits are partially verified (UPS and Australia Post rows);
+container volumes remain `needs_sourcing`. The USPS DIM divisor change
+(166 → 139, effective 2026-07-12) is staged on branch
+`usps-dim-139-2026-07-12`, ready to merge on the effective date.
 
-Next milestones (Phase 5): deploy to the registered domain (opscrunch.com via
-Cloudflare/Vercel), Search Console, GA4 wiring, and AdSense application. See
-[Development Plan](docs/DEVELOPMENT_PLAN.md). Packaging cost and cycle count
-planner were deliberately skipped — no defined method yet.
+Remaining / deliberately deferred: submit the sitemap and register GA4 custom
+dimensions (dashboard-only); AdSense application after organic traffic;
+packaging cost and cycle count planner were skipped — no defined method yet.
