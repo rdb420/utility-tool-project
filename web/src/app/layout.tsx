@@ -17,6 +17,20 @@ import "./globals.css";
 const cleanId = (v?: string) => (v ?? "").replace(/[^A-Za-z0-9_-]/g, "");
 const ADSENSE_ACCOUNT = cleanId(process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT);
 
+/**
+ * consentmanager client-side config — MUST run before the CMP script. It only
+ * points the CMP's legal links at our own pages. Two deliberate non-settings:
+ *   - `cmp_nogam` is NOT set, so consentmanager keeps pushing consent
+ *     (cmpConsentVendors / cmpEvent) to the default `dataLayer` — the signal GTM
+ *     reads to gate GA4 (vendor s26). Setting it would break analytics gating.
+ *   - `cmp_datalayername` is left default ("dataLayer") to match GTM.
+ * Regulation geo-targeting, company/DPO details, and texts live in the
+ * consentmanager backend, not here.
+ */
+const CMP_CONFIG_JS =
+  `window.cmp_privacyurl=${JSON.stringify(`${BASE_URL}/privacy-policy/`)};` +
+  `window.cmp_tacurl=${JSON.stringify(`${BASE_URL}/terms/`)};`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
@@ -60,6 +74,8 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        {/* consentmanager client-side config — set before the CMP loads. */}
+        <script dangerouslySetInnerHTML={{ __html: CMP_CONFIG_JS }} />
         {/* consentmanager CMP (173918) — semi-automatic blocking, EXTERNAL code,
             installed per consentmanager's official Next.js SSR guidance:
             next/script with strategy="afterInteractive". Loads the CMP site-wide
