@@ -1,0 +1,18 @@
+opscrunch.com
+
+Cloudflare Protection Enabled
+
+- Your web traffic is routed and secured via Cloudflare.
+- Website/app performance is enhanced with caching, speed, and traffic optimization.
+- Attacks and bots are mitigated by security measures.
+- Data is encrypted using SSL/TLS.
+- HTTP traffic handling can be customized with rules and Worker Routes.
+
+Analytics & Logs will display your traffic data when available.
+
+Next Steps:
+1. Visit DNS to review and configure your DNS records and proxy settings.
+2. Use SSL/TLS to manage certificates.
+   - A free universal SSL certificate will cover your root domain (example.com) and first-level subdomains (www.example.com, blog.example.com, etc.).
+   - Automatic SSL/TLS scans regularly update your encryption mode if you upload a new certificate or change TLS settings. 
+   - Next scheduled scan: Jul 31, 2026.
