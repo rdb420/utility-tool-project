@@ -144,7 +144,21 @@ or the consentmanager GTM template.
   simple event+consent group in §4, and Part G (YouTube/Maps embeds) doesn't
   apply — this site has no third-party embeds.
 
-## 6. Verify (GTM Preview + Tag Assistant)
+## 6. Verify (GTM Preview + Tag Assistant + API audit)
+
+**API audit (read-only, no browser needed after first consent):**
+
+```bash
+uv run python scripts/check_gtm.py   # is GA4 config + event tags + ,s26, trigger published?
+uv run python scripts/check_ga4.py   # toolId/slug custom dimensions + calculator_result key event?
+```
+
+The first run opens a Google consent screen to add the `tagmanager.readonly` +
+`analytics.readonly` scopes; after that both run non-interactively. `check_gtm`
+reads the **live/published** container, so it tells you plainly whether GA4 will
+fire on the site yet.
+
+**Manual (GTM Preview):**
 
 1. GTM **Preview** → open the site. Before accepting: GA4 tags **not fired**.
 2. Accept in the consentmanager banner → `cmpEvent` fires with
