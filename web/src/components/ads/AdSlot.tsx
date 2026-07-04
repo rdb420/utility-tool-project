@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ADS_ENABLED, ENABLED_AD_SLOTS } from "@/config/site";
-import { useConsent } from "@/lib/consent/useConsent";
 import styles from "./AdSlot.module.css";
 
 export type AdSlotId = "A" | "B" | "C" | "D";
@@ -17,25 +16,24 @@ const HAS_INTERSECTION_OBSERVER = typeof IntersectionObserver !== "undefined";
 /**
  * The one reusable ad slot (docs/mockups/opscrunch_adsense_kit.html §09).
  *
- * A slot renders only when ALL of these hold:
- *   1. `ADS_ENABLED` (NEXT_PUBLIC_ADS_ENABLED) is true,
+ * A slot renders only when BOTH hold:
+ *   1. `ADS_ENABLED` (NEXT_PUBLIC_ADS_ENABLED) is true, and
  *   2. the slot id is in `ENABLED_AD_SLOTS` (A + D for MVP; B/C are accepted
- *      by type so pages can place them now, but render null until earned),
- *   3. the visitor granted consent.
+ *      by type so pages can place them now, but render null until earned).
  *
- * Otherwise it renders NOTHING — zero DOM, zero height. Reserved-height CLS
- * protection only matters once an ad can actually load into the box; while
- * ads are off, an empty reserved box would just be a hole in the page.
+ * Consent is NOT gated here anymore: Google's certified CMP owns consent, and
+ * AdSense/Consent Mode decide per visitor whether a personalised or
+ * non-personalised ad serves. Otherwise the slot renders NOTHING — zero DOM,
+ * zero height. Reserved-height CLS protection only matters once an ad can
+ * actually load into the box.
  *
  * When it does render, the container reserves the kit's minimum heights
  * (A: 280px mobile / 250px ≥760px, eager; D: 250px, lazy via
  * IntersectionObserver) so the page never shifts when an ad arrives, and the
  * mono "Advertisement" micro-label marks it as an ad. Styling is deliberately
- * plain — no signal, no amber, no readout styling — an ad must never look
- * like a result.
+ * plain — an ad must never look like a result.
  */
 export default function AdSlot({ slot }: { slot: AdSlotId }) {
-  const { consent } = useConsent();
   const ref = useRef<HTMLElement>(null);
 
   // Slot A sits right below the tool (first screen) and loads eagerly; the
@@ -44,9 +42,8 @@ export default function AdSlot({ slot }: { slot: AdSlotId }) {
   const [inView, setInView] = useState(false);
   const visible = !lazy || !HAS_INTERSECTION_OBSERVER || inView;
 
-  const enabled =
+  const show =
     ADS_ENABLED && (ENABLED_AD_SLOTS as readonly string[]).includes(slot);
-  const show = enabled && consent === "granted";
 
   useEffect(() => {
     if (!show || !lazy || !HAS_INTERSECTION_OBSERVER || inView) return;
@@ -85,15 +82,15 @@ export default function AdSlot({ slot }: { slot: AdSlotId }) {
               <ins
                 className="adsbygoogle"
                 style={{ display: "block" }}
-                data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                data-ad-client="ca-pub-9610958335722543"
                 data-ad-slot="…"
                 data-ad-format="auto"
                 data-full-width-responsive="true"
               />
 
-            plus a one-time async adsbygoogle.js loader that runs only after
-            the tool is interactive and consent is resolved (kit §09 order of
-            operations: calculator → interactive → consent → ads). Auto-ads
+            The adsbygoogle.js loader already ships from the root layout (it
+            also delivers the CMP), so wiring a unit is just the <ins> plus a
+            `(adsbygoogle = window.adsbygoogle || []).push({})` call. Auto-ads
             must exclude the tool region.
           */}
         </>

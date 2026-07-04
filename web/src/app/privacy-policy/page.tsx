@@ -40,31 +40,32 @@ export default function PrivacyPolicyPage() {
         We count usage events with Google Analytics — which tool was opened,
         that a calculation ran, that a result was copied. These events carry
         tool identifiers only, never the values you entered. One analytics
-        cookie supports this counting: outside the EEA, UK, and Switzerland it
-        is set by default; within those regions it is set only after you
-        accept on the consent banner. Declining disables the cookie everywhere
-        — events are then counted without cookies and cannot be tied to you.
-        See the <Link href="/cookie-policy/">cookie policy</Link> for details.
+        cookie supports this counting and is set according to your consent
+        choice; where consent is denied, Google Consent Mode keeps the counting
+        cookieless, so events cannot be tied to you. See the{" "}
+        <Link href="/cookie-policy/">cookie policy</Link> for details.
       </p>
 
-      <h2>Cookies and local storage</h2>
+      <h2>Consent</h2>
       <p>
-        The site stores one entry in your browser&apos;s localStorage
-        (<strong>oc-consent</strong>) to remember your cookie choice, plus the
-        Google Analytics cookie described above when it applies. That is the
-        full list today. See the{" "}
+        Consent for analytics and (once launched) advertising is managed by
+        <strong> consentmanager</strong> (consentmanager.net), a certified
+        consent management platform — IAB TCF v2.2 and Global Privacy Platform,
+        with Google Consent Mode v2. Visitors in the EEA, UK, and Switzerland are
+        asked before non-essential cookies are set; visitors in applicable US
+        states are shown the corresponding privacy notice. Your choice is
+        recorded in your browser so you are not asked every visit. See the{" "}
         <Link href="/cookie-policy/">cookie policy</Link> for how to change or
-        withdraw your choice.
+        withdraw it.
       </p>
 
       <h2>Advertising (when it launches)</h2>
       <p>
         No ads run on {SITE_NAME} yet. When display advertising launches
         (Google AdSense is the planned partner), ad partners will use cookies
-        or similar technologies to serve and measure ads, and in the EEA, UK,
-        and Switzerland ads will only serve through a Google-certified consent
-        platform. This policy and the cookie policy will be updated before that
-        happens.
+        or similar technologies to serve and measure ads, governed by the same
+        consentmanager platform described above. In the EEA, UK, and Switzerland
+        ads serve only after you agree.
       </p>
 
       <h2>Your rights (GDPR, CPRA, Australian Privacy Act)</h2>
