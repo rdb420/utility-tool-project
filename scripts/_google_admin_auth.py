@@ -24,10 +24,13 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCOPES = [
     "https://www.googleapis.com/auth/drive.readonly",
     "https://www.googleapis.com/auth/spreadsheets.readonly",
-    # Tag Manager: read + edit containers + publish (setup scripts create/modify
-    # and publish tags/triggers/variables in GTM-NRM7V3BN).
+    # Tag Manager: read + edit containers + edit versions + delete + publish
+    # (setup scripts create/modify tags/triggers/variables, create + publish
+    # container versions, and delete stale workspaces in GTM-NRM7V3BN).
     "https://www.googleapis.com/auth/tagmanager.readonly",
     "https://www.googleapis.com/auth/tagmanager.edit.containers",
+    "https://www.googleapis.com/auth/tagmanager.edit.containerversions",
+    "https://www.googleapis.com/auth/tagmanager.delete.containers",
     "https://www.googleapis.com/auth/tagmanager.publish",
     # GA4 Admin: read + edit (custom dimensions, key events, data streams, etc.).
     "https://www.googleapis.com/auth/analytics.readonly",
