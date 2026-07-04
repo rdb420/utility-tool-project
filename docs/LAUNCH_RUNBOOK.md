@@ -117,7 +117,7 @@ Run after DNS has propagated (minutes to a few hours):
 - [x] `https://opscrunch.com/ads.txt` is reachable and serves the real
   AdSense line (`google.com, pub-9610958335722543, DIRECT, f08c47fec0942fa0`) — verified 2026-07-04.
 - [x] View source on the home page and two calculator pages: `<link
-  rel="canonical">`points at`[[https://opscrunch.com/...`]](<https://opscrunch.com/...`])([https://opscrunch.com/...`>](<https://opscrunch.com/...`>)) (not
+  rel="canonical">`points at`[[[[https://opscrunch.com/...`]]](<https://opscrunch.com/...`]])([https://opscrunch.com/...`])([https://opscrunch.com/...`>](<https://opscrunch.com/...`])([https://opscrunch.com/...`>)]([https://opscrunch.com/...`](https://opscrunch.com/...`)](https://opscrunch.com/...`]]](https://opscrunch.com/...`]])([https://opscrunch.com/...`])([https://opscrunch.com/...`](https://opscrunch.com/...`])([https://opscrunch.com/...`)]([https://opscrunch.com/...`](https://opscrunch.com/...`)))) (not
   `*.vercel.app`, not `localhost`).
 - [x] Spot-check three calculator pages end-to-end (suggested:
   `/freight-class-calculator/`, `/cbm-calculator/`,
@@ -257,6 +257,17 @@ and code-side consent updates were removed. History: the Google-CMP handoff
 (`4eeb46a`) was reverted (`cea39f1`) after Tag Assistant showed it never
 initialised; consentmanager replaced it and is verified active.
 
+**Update — GA4 moved into Google Tag Manager.** consentmanager's Consent Mode
+never granted `analytics_storage` (Google Analytics is a non-TCF vendor, so
+"Read from IAB TCF" can't set it — Tag Assistant showed `gcd` stuck at `q` after
+Accept). GA4 was therefore moved into GTM (`GTM-NRM7V3BN`), where the GA4 tag is
+hard-blocked on `cmpConsentVendors contains ,s26,` (the Google Analytics vendor),
+sidestepping the signal-mapping problem. The page still loads the all-denied
+default → consentmanager → GTM in that order. **The GTM container tags (GA4
+config + event tags + consent trigger) are built in the GTM UI — full
+step-by-step in [`docs/GTM_SETUP.md`](GTM_SETUP.md).** Publish the GTM container
+before deploying the site, or GA4 won't fire.
+
 - [x] Enable **Google Consent Mode** in consentmanager (Menu → CMPs →
   Integrations → Google Consent Mode) — required, or the CMP won't signal GA4.
   Verified active: `consent.update` events flow, `gcs`/`pscdl=denied` on hits.
@@ -267,7 +278,7 @@ initialised; consentmanager replaced it and is verified active.
   (analytics auto-granted outside the EEA/UK), set that in consentmanager's
   geo/regulation rules. The code default is all-denied; consentmanager decides
   the region behaviour.
-- [ ] Optional: link Search Console to the GA4 property (GA4 Admin → Product
+- [x] Optional: link Search Console to the GA4 property (GA4 Admin → Product
   links → Search Console) once section 5 is verified.
 
 ## 7. AdSense — [user, LAST — only after indexing and real traffic]
@@ -293,14 +304,22 @@ Remaining:
 - [x] Apply for AdSense with `opscrunch.com` (after indexing + organic traffic).
 - [ ] **Configure consentmanager for Google ad serving** (its dashboard) so
   AdSense can deliver once approved:
-  - [ ] CMP set to **TCF v2 compliant**.
-  - [ ] Add **"Google Advertising Products"** to the vendor list.
-  - [ ] Enable IAB TCF **purposes 1, 2, 3, 4, 7, 9, 10**.
-  - [ ] Leave **legal basis on default** (do not change it for vendor or
-        purposes).
+  - [x] CMP set to **TCF v2 compliant**.
+  - [x] Add **"Google Advertising Products"** to the vendor list.
+  - [x] Enable IAB TCF **purposes 1, 2, 3, 4, 7, 9, 10**.
+  - [x] Leave **legal basis on default** (do not change it for vendor or
+
+    ```
+    purposes).
+    ```
+
   - [ ] **Disable Google Funding Choices** in AdSense (Privacy & messaging) —
-        consentmanager is the CMP, so Google's own message must be off to avoid
-        two banners.
+
+    ```
+    consentmanager is the CMP, so Google's own message must be off to avoid
+    two banners.
+    ```
+
 - [ ] **On approval**, wire the real ad unit: replace the placeholder in
   `web/src/components/ads/AdSlot.tsx` with a real `<ins class="adsbygoogle">`
   unit + a `(adsbygoogle = window.adsbygoogle || []).push({})` call. The
