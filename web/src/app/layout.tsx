@@ -71,11 +71,25 @@ export default function RootLayout({
             synchronous inline script at the top of <body> (App Router manages the
             <head>; this is the earliest injection point available). */}
         <script dangerouslySetInnerHTML={{ __html: GTM_SNIPPET }} />
+        {/* consentmanager CMP (173918) — semi-automatic blocking, EXTERNAL code,
+            installed per consentmanager's official Next.js SSR guidance:
+            next/script with strategy="afterInteractive". Loads the CMP site-wide
+            (the consent banner + the inline preferences box on /privacy-policy/). */}
+        <Script
+          id="consentmanager"
+          strategy="afterInteractive"
+          type="text/javascript"
+          data-cmp-ab="1"
+          src="https://cdn.consentmanager.net/delivery/js/semiautomatic.min.js"
+          data-cmp-cdid="3ba155ac627e4"
+          data-cmp-host="c.delivery.consentmanager.net"
+          data-cmp-cdn="cdn.consentmanager.net"
+          data-cmp-codesrc="0"
+        />
         {/* AdSense tag — for ad serving + AdSense account review only. No ad
             units render until ADS_ENABLED is on and a real <ins> is wired.
-            NOTE: there is currently NO consent management platform on the site
-            (removed pending a rebuild); revisit consent gating before enabling
-            ads or before this script sets any non-essential cookies. */}
+            Consent is managed by consentmanager (above); revisit ad-consent
+            gating before enabling ad units. */}
         {ADSENSE_ACCOUNT && (
           <Script
             id="adsense"
