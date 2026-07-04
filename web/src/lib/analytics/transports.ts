@@ -1,14 +1,15 @@
-import { GA4_ID } from "@/config/site";
-import { ga4Transport } from "./ga4";
+import { GTM_ID } from "@/config/site";
+import { gtmTransport } from "./gtm";
 import { setAnalyticsTransport, type AnalyticsTransport } from "./index";
 
 /**
  * Analytics transports. The event union (`events.ts`) and `track()`
- * (`index.ts`) are the stable contract other code depends on; this module
- * only decides where events go. The real GA4 transport lives in `ga4.ts`.
+ * (`index.ts`) are the stable contract other code depends on; this module only
+ * decides where events go. With GTM owning GA4, the real transport pushes to
+ * the dataLayer (`gtm.ts`).
  */
 
-export { ga4Transport } from "./ga4";
+export { gtmTransport } from "./gtm";
 
 /** Dev-only transport: logs event name + payload to the console. */
 export const consoleTransport: AnalyticsTransport = (event) => {
@@ -19,20 +20,14 @@ export const consoleTransport: AnalyticsTransport = (event) => {
 /**
  * Install the transport appropriate for the environment.
  *
- * Consent is no longer decided here — Google's certified CMP owns Consent
- * Mode (see ga4.ts). Once gtag.js exists (AnalyticsLoader injected it), events
- * go to GA4 and Consent Mode turns them into cookieless pings whenever the CMP
- * has consent denied. Until gtag loads (or when GA4_ID is empty), production
- * keeps the no-op transport; development gets a console transport so events
- * are visible while building.
+ * When GTM is configured, events go to the dataLayer for GTM to route to GA4
+ * (consent is enforced by the GTM tag's trigger). Without GTM, development gets
+ * a console transport so events are visible while building; production stays a
+ * no-op.
  */
 export function initAnalytics(): void {
-  if (
-    GA4_ID &&
-    typeof window !== "undefined" &&
-    typeof window.gtag === "function"
-  ) {
-    setAnalyticsTransport(ga4Transport);
+  if (GTM_ID && typeof window !== "undefined") {
+    setAnalyticsTransport(gtmTransport);
   } else if (process.env.NODE_ENV === "development") {
     setAnalyticsTransport(consoleTransport);
   } else {
