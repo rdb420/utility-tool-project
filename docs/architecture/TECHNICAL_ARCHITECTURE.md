@@ -33,7 +33,8 @@ layer. This component exists today.
   `uuid5` point IDs.
 - Embeddings sidecar: an external FastAPI service (`fastembed`) exposing MiniLM
   dense, ColBERTv2 late-interaction, and SPLADE sparse endpoints. Configured via
-  `EMBEDDINGS_URL`. Not part of this repo; see the sidecar README in `docs/`.
+  `EMBEDDINGS_URL`. Not part of this repo; see the sidecar README in
+  `docs/architecture/qdrant-docs/`.
 - Vector store: Qdrant Cloud collection `logistics_supply_chain_hybrid_v1`
   (~5,056 chunks) with named vectors `dense` (384-dim, cosine), `multi` (128-dim
   ColBERT, MAX_SIM), and `sparse` (SPLADE, IDF). Configured via `QDRANT_URL`,
@@ -43,7 +44,7 @@ layer. This component exists today.
   with `source_file` and `chunk_index` for citation.
 
 Boundary rule: retrieval feeds the corpus-authoring workflow (Layer 2 records in
-`docs/CORPUS_DESIGN.md`). The website does not call Qdrant or the sidecar.
+`docs/architecture/CORPUS_DESIGN.md`). The website does not call Qdrant or the sidecar.
 
 ### Corpus Tooling
 

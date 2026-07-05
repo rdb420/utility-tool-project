@@ -103,7 +103,7 @@ Content components (`web/src/components/content/`, server): `CopyBlocks`, `Formu
 
 ## Phase 8 — Docs + final verification
 
-**Update docs** (all reference `src/calc`/`validate_corpus.py`): `CLAUDE.md` (web/ commands + architecture, repoint calc/validation), `README.md`, `CONTRIBUTING.md`, `docs/{CORPUS_DESIGN,TECHNICAL_ARCHITECTURE,DEVELOPMENT_PLAN,MVP_PAGE_SPECS}.md`, `data/README.md`, `data/reference_tables/README.md`, `schemas/README.md`, `scripts/README.md`, `src/README.md`, `tests/README.md`. Also save this plan as the design spec at `docs/superpowers/specs/2026-07-02-phase4-website-mvp-design.md`.
+**Update docs** (all reference `src/calc`/`validate_corpus.py`): `CLAUDE.md` (web/ commands + architecture, repoint calc/validation), `README.md`, `CONTRIBUTING.md`, `docs/{CORPUS_DESIGN,TECHNICAL_ARCHITECTURE,DEVELOPMENT_PLAN,MVP_PAGE_SPECS}.md`, `data/README.md`, `data/reference_tables/README.md`, `schemas/README.md`, `scripts/README.md`, `src/README.md`, `tests/README.md`. Also save this plan as the design spec at `docs/planning/superpowers/specs/2026-07-02-phase4-website-mvp-design.md`.
 
 **Verification (in order):**
 1. `npm run typegen` (no diff), `npm run lint`, `npm run typecheck`.

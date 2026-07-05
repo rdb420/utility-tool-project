@@ -1,5 +1,5 @@
 /**
- * Typed analytics events (docs/GOOGLE_SETUP.md + docs/MVP_PAGE_SPECS.md).
+ * Typed analytics events (docs/launch/GOOGLE_SETUP.md + docs/planning/MVP_PAGE_SPECS.md).
  *
  * Payloads carry tool ids, slugs, and field names only — never user input
  * values. Keep it that way: the union below is the privacy contract.

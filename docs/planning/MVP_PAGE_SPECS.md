@@ -12,7 +12,7 @@ cluster — see the addendum at the end of this document. The full freight and
 pricing clusters shipped later (2026-07-03) with carrier DIM divisors and the
 NMFC 13-subprovision class table verified against dated sources; parcel girth
 limits are partially verified and container volumes remain `needs_sourcing`
-(`data/reference_tables/freight/`). See `docs/DEVELOPMENT_PLAN.md` Phase 6.
+(`data/reference_tables/freight/`). See `docs/planning/DEVELOPMENT_PLAN.md` Phase 6.
 
 ## The six pages
 
@@ -76,7 +76,7 @@ never disagree:
 - Offer copy-to-clipboard for each result; CSV export of the entered scenario is
   a nice-to-have, not required for launch.
 - Emit `calculator_start`, `calculator_result`, and `result_copy` events (see
-  `docs/GOOGLE_SETUP.md`); never send raw operational values, only that the event
+  `docs/launch/GOOGLE_SETUP.md`); never send raw operational values, only that the event
   occurred.
 
 ## Disclaimer copy
@@ -117,7 +117,7 @@ FAQ markup must match the visible FAQ text exactly.
 
 Independent of the calculators, the site needs privacy policy, terms, contact,
 and about pages, plus sitemap, robots, and canonical handling (see
-`docs/DEVELOPMENT_PLAN.md` Phase 4 and `docs/GOOGLE_SETUP.md` before AdSense).
+`docs/planning/DEVELOPMENT_PLAN.md` Phase 4 and `docs/launch/GOOGLE_SETUP.md` before AdSense).
 
 ## Exit criteria (Phase 3)
 

@@ -4,7 +4,7 @@
  * Generic record-driven calculator island.
  *
  * String state per input symbol; validation mirrors the calc library's
- * guards exactly (docs/MVP_PAGE_SPECS.md "Input validation behavior");
+ * guards exactly (docs/planning/MVP_PAGE_SPECS.md "Input validation behavior");
  * crunch runs every formula in `formula_ids` through FORMULA_REGISTRY in
  * order, chaining RAW outputs into the input pool (never rounding between
  * formulas); display goes through formatResult. Analytics events carry ids,

@@ -1,5 +1,5 @@
 /**
- * Schema.org JSON-LD builders (docs/MVP_PAGE_SPECS.md "Schema.org (JSON-LD)").
+ * Schema.org JSON-LD builders (docs/planning/MVP_PAGE_SPECS.md "Schema.org (JSON-LD)").
  *
  * Only the types listed in a record's `schema_types` are emitted, and the
  * FAQPage entity is built from the exact `copy_blocks.faq` array the visible

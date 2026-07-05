@@ -2,7 +2,7 @@ import type { CalculatorRecord } from "@/lib/records/types.gen";
 import styles from "./content.module.css";
 
 /**
- * Disclaimer keyed to the record's disclaimer_level (docs/MVP_PAGE_SPECS.md
+ * Disclaimer keyed to the record's disclaimer_level (docs/planning/MVP_PAGE_SPECS.md
  * "Disclaimer copy"): `none` renders nothing; `estimate` states the planning
  * caveat plus the formula records' assumptions; `regional` and
  * `professional_review` are reserved for freight/landed-cost pages.

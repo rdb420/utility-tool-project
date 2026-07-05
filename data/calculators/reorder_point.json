@@ -28,7 +28,7 @@
     "intro": "The reorder point tells you the on-hand quantity at which to place a new order so stock arrives before you run out. It is the demand you expect during the lead time, plus a safety buffer for variability.",
     "how_it_works": "Multiply your average daily demand by the lead time to get expected demand during replenishment, then add safety stock. Keep demand and lead time in the same time unit.",
     "formula_explanation": "Reorder point = (average daily demand x lead time) + safety stock. With no safety stock, you reorder exactly when expected lead-time demand is left on the shelf.",
-    "worked_example": "At 10 units/day with a 15-day lead time and 19 units of safety stock, the reorder point is 10 x 15 + 19 = 169 units.",
+    "worked_example": "At 10 units/day with a 4-day lead time and no safety stock, the reorder point is 10 x 4 + 0 = 40 units.",
     "faq": [
       { "q": "What is a reorder point?", "a": "It is the inventory level that triggers a new purchase or production order, set so replenishment arrives roughly as you sell the last of your buffer." },
       { "q": "How much safety stock should I add?", "a": "Size it to a target service level from demand variability. Use the safety stock calculator, then feed the result into this tool." },

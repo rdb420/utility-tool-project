@@ -10,11 +10,11 @@ Facts this runbook relies on:
 sitemap, and robots all derive from `NEXT_PUBLIC_SITE_URL`).
 - Hosting: Vercel project `utility-tool-project` (team `rdb420s-projects`,
 project id `prj_eVDHVCA1yAsLo3PijQ82ATxQbNB1`), imported from the GitHub repo
-`rdb420/utility-tool-project`. Non-secret project notes: `docs/vercel/project.txt`.
+`rdb420/utility-tool-project`. Non-secret project notes: `docs/integrations/vercel/project.txt`.
 - DNS: registered domain `opscrunch.com` on Cloudflare. Credentials/records live
 in `docs/cloudflare/` (gitignored — never commit or paste their contents).
 - GA4 measurement ID: `G-7XG10CD70E` (tag snippet on file in
-`docs/google-analytics/google-tag-G-7XG10CD70E.txt`).
+`docs/integrations/google-analytics/google-tag-G-7XG10CD70E.txt`).
 - AdSense verification code on file at `docs/google-adsense/verication-code.txt`
 (gitignored — reference by path only).
 
@@ -37,15 +37,19 @@ apex→www concern is resolved).
 with trailing slashes, `robots.txt` points at the apex sitemap, `ads.txt`
 serves the **real** AdSense line (no longer a placeholder), home/calculator
 canonicals point at apex, and calculator pages compute correctly.
-- **GA4 runtime** — verified via Tag Assistant: the all-denied Consent Mode
-default fires before config, consentmanager (§6c) issues `consent update`, and
-`calculator_start` / `calculator_result` reach `dataLayer` carrying only
-`toolId` + `slug` (no input values).
+- **Analytics/consent stack (rebuilt 2026-07-05, see §6c)** — GTM container
+`GTM-NRM7V3BN` (published **v11**) loads via `@next/third-parties`; GA4 config
+and all five event tags are hard-blocked on consent to the Google Analytics
+vendor `s26` in consentmanager CMP **173918**. `calculator_start` /
+`calculator_result` etc. reach `dataLayer` carrying only `toolId` + `slug`
+(no input values). **Blocked:** consentmanager currently delivers an empty
+vendor list for this account (support ticket sent 2026-07-05), so GA4 stays
+dark — the safe state — until they fix it (§6c post-fix checklist).
 
-**Remaining before "launched" is complete:** §5 Search Console (confirm
-verification + submit sitemap), the GA4 **dashboard** config in §6 (custom
-dimensions + key events — the code side is done), and §7 AdSense (deferred by
-design). See §8 for the dated USPS divisor task.
+**Remaining before "launched" is complete:** the consentmanager vendor-list fix
+(§6c blocker), §5 Search Console (confirm verification + submit sitemap), the
+GA4 **dashboard** config in §6 (done — verified via the API audit scripts), and
+§7 AdSense (deferred by design). See §8 for the dated USPS divisor task.
 
 ---
 
@@ -73,8 +77,11 @@ first or every build will fail.
 
 Note: `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_GA4_ID` also ship as fallbacks in
 the committed `web/.env.production`, so a build without dashboard env vars still
-produces correct canonicals and analytics. The Search Console verification token
-is **env-only** (no committed fallback) — it must be set in Vercel.
+produces correct canonicals. (`NEXT_PUBLIC_GA4_ID` is now vestigial — GA4 loads
+via GTM with the measurement id inside the container, and the GTM container id
+is in code, so `NEXT_PUBLIC_GTM_ID` in the Vercel dashboard is unused and can be
+deleted; see §6c.) The Search Console verification token is **env-only** (no
+committed fallback) — it must be set in Vercel.
 
 ## 2. Deploy — [user or agent]
 
@@ -144,26 +151,26 @@ correct — no action needed here.
   - [x] `https://opscrunch.com/margin-calculator/`
   - [x] `https://opscrunch.com/break-even-calculator/`
 
-## 6. GA4 — runtime verified; dashboard config outstanding — [user]
+## 6. GA4 — via GTM, consent-gated; runtime check blocked on the CMP fix
 
-The consent-aware GA4 transport reads `NEXT_PUBLIC_GA4_ID`. Note on behaviour:
-once gtag.js loads, events are **always** sent — Consent Mode v2 downgrades them
-to cookieless, unattributable pings when analytics consent is denied (outside
-the EEA the global default already grants analytics; inside the EEA/UK/CH they
-stay cookieless until the visitor accepts). So you will see hits in Realtime
-even before accepting the banner.
+GA4 lives inside GTM (`GTM-NRM7V3BN`, see §6c and
+[`docs/launch/GTM_SETUP.md`](GTM_SETUP.md)); nothing on the page calls gtag
+directly and `NEXT_PUBLIC_GA4_ID` no longer drives the transport. Behaviour:
+GA4 is **hard-blocked on vendor consent** — no config, no page_view, no event
+hits (not even cookieless pings) until the visitor consents to the Google
+Analytics vendor `s26` in consentmanager. Zero GA4 traffic before consent is
+correct, not a bug.
 
-### 6a. Runtime check — DONE (verified 2026-07-04)
+### 6a. Runtime check — BLOCKED on the consentmanager vendor-list fix
 
-Verified in a real browser against production: gtag bootstraps in the correct
-order (global default → EEA/UK/CH region default → `js` → `config`), the stored
-consent choice is applied as a `consent update`, and `calculator_start` /
-`calculator_result` push to `dataLayer` carrying only `toolId` + `slug`. Confirm
-the same in GA4 itself:
+The pre-GTM stack was verified in-browser on 2026-07-04 (historical). The
+rebuilt stack cannot complete its runtime check yet: consentmanager delivers an
+empty vendor list (§6c blocker), so consent to `s26` can never be granted and
+GA4 stays dark. Once support fixes it, run the §6c post-fix checklist, then:
 
-- [x] In GA4 (property `G-7XG10CD70E`) → **Realtime**, or **Admin → DebugView**,
-  browse two pages and run a calculator; confirm `page_view` and
-  `calculator_result` arrive and that **no input values** (dimensions,
+- [ ] In GA4 (property `G-7XG10CD70E`) → **Realtime**, or **Admin → DebugView**,
+  accept the banner, browse two pages and run a calculator; confirm `page_view`
+  and `calculator_result` arrive and that **no input values** (dimensions,
   costs, quantities) appear in the parameters — only ids/slugs.
   (If you use an ad/tracking blocker, GA hits are dropped locally — test in
   a clean profile or use GA's DebugView with the GA Debugger extension.)
@@ -244,47 +251,61 @@ design, not a tracking bug.
 
 ### 6c. Consent is owned by consentmanager (certified TCF v2.2 CMP)
 
-As of 2026-07-04 consent is managed by **consentmanager** (consentmanager.net,
-CMP ID 31 — a certified IAB TCF v2.2 + GPP CMP). The root layout runs one
-`beforeInteractive` bootstrap that (1) sets the Consent Mode v2 **all-denied**
-default (`ad_storage`/`analytics_storage`/`ad_user_data`/`ad_personalization` =
-denied, `wait_for_update: 500`) + a `default_consent` event, then (2) injects the
-consentmanager loader (`semiautomatic.min.js`, `cdid b6d1255cc2306`). This is
-the Consent Mode v2 **"Advanced"** pattern: GA4 keeps firing but stays cookieless
-until consentmanager issues a `consent update`. The former Google Funding-Choices
-CMP was dropped (it was dormant until AdSense approval); the custom `ConsentBanner`
-and code-side consent updates were removed. History: the Google-CMP handoff
-(`4eeb46a`) was reverted (`cea39f1`) after Tag Assistant showed it never
-initialised; consentmanager replaced it and is verified active.
+As of 2026-07-05 the consent/analytics stack was **rebuilt**. Current state:
 
-**Update — GA4 moved into Google Tag Manager.** consentmanager's Consent Mode
-never granted `analytics_storage` (Google Analytics is a non-TCF vendor, so
-"Read from IAB TCF" can't set it — Tag Assistant showed `gcd` stuck at `q` after
-Accept). GA4 was therefore moved into GTM (`GTM-NRM7V3BN`), where the GA4 tag is
-hard-blocked on `cmpConsentVendors contains ,s26,` (the Google Analytics vendor),
-sidestepping the signal-mapping problem. The page still loads the all-denied
-default → consentmanager → GTM in that order. **The GTM container tags (GA4
-config + event tags + consent trigger) are built in the GTM UI — full
-step-by-step in [`docs/GTM_SETUP.md`](GTM_SETUP.md).** Publish the GTM container
-before deploying the site, or GA4 won't fire.
+- **CMP:** consentmanager CMP **173918** (cdid `3ba155ac627e4`, host
+  `c.delivery.consentmanager.net`). The old CMP 173913 was **deleted** and
+  rebuilt. Loaded site-wide in `web/src/app/layout.tsx` via `next/script`
+  `strategy="afterInteractive"` — consentmanager's official Next.js SSR method
+  (`docs/integrations/consentmanager/nextjs-server-side-rendering.md`). An
+  inline config script before it sets `cmp_privacyurl` → `/privacy-policy/`
+  and `cmp_tacurl` → `/terms/`; `cmp_nogam` is deliberately NOT set so the CMP
+  keeps pushing `cmpConsentVendors`/`cmpEvent` to the `dataLayer`. Dashboard
+  vendors: `s23`, `s1498` (Google Advertising, Marketing), `s26` (Google
+  Analytics, Measurement), `s905` (GTM), `c86929`.
+- **GTM:** container `GTM-NRM7V3BN` loads via `@next/third-parties`
+  `<GoogleTagManager>` + a manual `<noscript>` in the layout. The id is in
+  code; `NEXT_PUBLIC_GTM_ID` is **no longer read**. Live container = **v11**:
+  the Google Tag (config, `G-7XG10CD70E`) fires only on the trigger
+  `cmpEvent - GA consented` (`cmpConsentVendors contains ,s26,`), and all 5
+  GA4 event tags fire on trigger groups (own custom event AND the consent
+  trigger) — every GA4 hit is consent-gated. Full container shape and consent
+  architecture: [`docs/launch/GTM_SETUP.md`](GTM_SETUP.md).
+- **App side:** `track()` → `sendGTMEvent` → `dataLayer` (installed by
+  `<AnalyticsInit/>`); JS-API wrapper `web/src/lib/consent/cmp.ts`; the Footer
+  "Cookie settings" button opens the CMP preference manager. The
+  privacy-policy page is static with consentmanager 173918 widgets (policy
+  content, cookie list, inline preferences box, build-time vendor list).
 
-- [x] Enable **Google Consent Mode** in consentmanager (Menu → CMPs →
-  Integrations → Google Consent Mode) — required, or the CMP won't signal GA4.
-  Verified active: `consent.update` events flow, `gcs`/`pscdl=denied` on hits.
+**⚠️ OPEN BLOCKER (support ticket sent 2026-07-05):** consentmanager's
+delivery pipeline compiles an **empty vendor/purpose list** for this account —
+the delivered config has `vendors:[]` / `custvendors:0`, and their own
+`vendorlist.php` API returns `[]`; reproduced on both CMPs. Until fixed, the
+banner shows 0 vendors, `cmpConsentVendors` never contains `,s26,`, and GA4
+stays dark (the safe state). Post-fix checklist:
+
+- [ ] Verify vendors render at `opscrunch.com/?cmpconsole`.
+- [ ] Set **"Read from IAB TCF" = OFF** on CMP 173918 (currently `gm_tcf:1` —
+  Google Analytics is a non-TCF vendor, so TCF can never grant it).
+- [ ] Accept the banner → `cmpConsentVendors` contains `,s26,` → GA4 fires.
+- [ ] Confirm events in GA4 DebugView (§6a).
+
+Housekeeping / open items:
+
+- [ ] Delete the stale `NEXT_PUBLIC_GTM_ID` var from the Vercel dashboard —
+  the code no longer reads it (the GTM id is in the layout component).
+- [ ] `/cookie-policy/` page copy is still the older hand-written text — it
+  predates the consentmanager widgets on `/privacy-policy/`; refresh or
+  replace it with CMP-driven content.
 - [x] Leave GA4 **Admin → Data collection → consent settings** at default — do
-  NOT enable "automatically mark data as consented". consentmanager's on-page
-  Consent Mode signals are authoritative; a dashboard override would desync them.
-- [ ] Optional (geo policy): if you want non-EEA visitors to be **opt-out**
-  (analytics auto-granted outside the EEA/UK), set that in consentmanager's
-  geo/regulation rules. The code default is all-denied; consentmanager decides
-  the region behaviour.
+  NOT enable "automatically mark data as consented".
 - [x] Optional: link Search Console to the GA4 property (GA4 Admin → Product
   links → Search Console) once section 5 is verified.
 
 ## 7. AdSense — [user, LAST — only after indexing and real traffic]
 
 Do **not** apply at launch. Apply only after Search Console shows the site
-indexed and it is receiving organic traffic, per `docs/GOOGLE_SETUP.md`
+indexed and it is receiving organic traffic, per `docs/launch/GOOGLE_SETUP.md`
 (AdSense section: trust pages, no placeholders, ads must not interfere with
 calculator usability).
 
@@ -295,9 +316,11 @@ CMP are done, so the review can proceed when you apply:
   f08c47fec0942fa0` line.
 - [x] The `google-adsense-account` meta (`ca-pub-9610958335722543`) ships in
   `<head>` via `NEXT_PUBLIC_ADSENSE_ACCOUNT` — the site-association tag.
-- [x] **Certified CMP live:** consentmanager (TCF v2.2, CMP ID 31) is loaded via
-  the root-layout bootstrap and owns Consent Mode v2 for ads and analytics
-  (see §6c). This satisfies the pre-serving CMP gate.
+- [x] **Certified CMP live:** consentmanager (TCF v2.2, CMP ID 31 — our CMP
+  173918) is loaded from the root layout and owns consent for ads and
+  analytics (see §6c). This satisfies the pre-serving CMP gate — though ad
+  vendor consent (`s1498`) is also affected by the §6c empty-vendor-list
+  blocker until consentmanager fixes it.
 
 Remaining:
 
@@ -305,20 +328,15 @@ Remaining:
 - [ ] **Configure consentmanager for Google ad serving** (its dashboard) so
   AdSense can deliver once approved:
   - [x] CMP set to **TCF v2 compliant**.
-  - [x] Add **"Google Advertising Products"** to the vendor list.
+  - [x] Add **"Google Advertising Products"** to the vendor list (`s23`/`s1498`
+    are configured on CMP 173918; they render once the §6c vendor-list
+    blocker is fixed).
   - [x] Enable IAB TCF **purposes 1, 2, 3, 4, 7, 9, 10**.
   - [x] Leave **legal basis on default** (do not change it for vendor or
-
-    ```
     purposes).
-    ```
-
   - [ ] **Disable Google Funding Choices** in AdSense (Privacy & messaging) —
-
-    ```
     consentmanager is the CMP, so Google's own message must be off to avoid
     two banners.
-    ```
 
 - [ ] **On approval**, wire the real ad unit: replace the placeholder in
   `web/src/components/ads/AdSlot.tsx` with a real `<ins class="adsbygoogle">`
@@ -351,4 +369,4 @@ Remaining:
 - [x] **2026-07-31:** Cloudflare SSL/certificate scan follow-up noted in
   `docs/cloudflare/` — re-check the domain's SSL status on that date.
 - [ ] Fix technical SEO/UX issues found in the first weeks **before** adding
-  more tools (Phase 5 exit criterion in `docs/DEVELOPMENT_PLAN.md`).
+  more tools (Phase 5 exit criterion in `docs/planning/DEVELOPMENT_PLAN.md`).

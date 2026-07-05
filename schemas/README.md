@@ -1,7 +1,7 @@
 # Schemas
 
 JSON Schema (draft 2020-12) definitions for the structured corpus records
-described in [../docs/CORPUS_DESIGN.md](../docs/CORPUS_DESIGN.md).
+described in [../docs/architecture/CORPUS_DESIGN.md](../docs/architecture/CORPUS_DESIGN.md).
 
 | Schema | Validates | Records live in |
 |---|---|---|

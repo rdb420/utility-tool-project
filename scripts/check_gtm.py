@@ -127,7 +127,7 @@ def main() -> None:
     if not any(checks.values()):
         print(
             "\n  -> The published container has no GA4 tags — GA4 will NOT fire on"
-            "\n     the site yet. Build + publish per docs/GTM_SETUP.md."
+            "\n     the site yet. Build + publish per docs/launch/GTM_SETUP.md."
         )
 
 

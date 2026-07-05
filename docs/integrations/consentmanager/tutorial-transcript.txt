@@ -1,0 +1,389 @@
+Hello everyone, and welcome to today’s webinar.
+
+Today’s topic is using consentmanager together with Google Tag Manager, Google Analytics, and Google Consent Mode — in other words, the Google tools.
+
+Today we will make things a little more practical. I will actually open the browser later and not just show slides. For example, we will go directly into Google Tag Manager and look at the setup there.
+
+So, today is about the interaction between consentmanager, Google Tag Manager, and Google Consent Mode.
+
+As a quick overview: we will need roughly 30 minutes. If you have questions, there is a chat function and a Q&A function in Zoom. Please feel free to put your questions in there as they come up. We will then go through them after the presentation and see what we can answer.
+
+The webinar is being recorded. You will find the recording later on our website under consentmanager / knowledge. There is a video section where you can watch this webinar again, as well as all the older videos.
+
+On that point, I should mention that we have already had webinars on similar topics in the past. So if you are interested in Google Analytics, Google Tag Manager, and related subjects, you will probably also find something useful among the other videos.
+
+The video from yesterday’s webinar will also be uploaded today. Yesterday’s topic was TTDSG and technical/legal background, so it was less practical. You will also find that video on our website.
+
+That is enough by way of introduction. Let us begin directly with Google Tag Manager.
+
+I do not think I need to explain in great detail what Google Tag Manager is. Most of you will probably have joined this webinar, or are watching the video, because you already use Google Tag Manager and want to know how to use it — or at least how to use it together with consentmanager.
+
+If you use consentmanager and also have Google Tag Manager on your website, there are basically two different ways they can work together.
+
+The first option is to place the CMP code — that is, the consentmanager code — inside Google Tag Manager, and then deliver our code through Google Tag Manager.
+
+The other option is to place the consentmanager code directly into the website and also place Google Tag Manager directly into the website, so that both run in parallel.
+
+Both options have advantages and disadvantages.
+
+If the consentmanager code is stored in Google Tag Manager as a tag, it is of course easier to manage, especially if you have large websites. You put the code into the Tag Manager once, and you can handle placement more easily than if you had to edit the website source code directly.
+
+In addition, we have a Google Community Template available in Tag Manager. This template automatically manages the code that consentmanager needs. That means if we ever need to make a change to the code — which does not happen often — we can provide that through Google, and you do not need to replace anything directly on your website. Google Tag Manager can update it automatically.
+
+The disadvantage of placing consentmanager inside Google Tag Manager is that it may not be fully GDPR-compliant in the strictest sense. I will return to that briefly later.
+
+There is also no automatic blocking. This means that if you manually insert the code into the page, our system offers two different code versions: automatic blocking and semi-automatic blocking. In Google Tag Manager, it is always semi-automatic blocking.
+
+That means everything that should be blocked — Facebook Pixel, YouTube videos, or whatever else — must be manually adjusted. Some adjustments are easier, because you can simply configure a tag in Tag Manager. We will look at that later. But some changes, for example anything embedded directly in the website such as a YouTube video, must really be adjusted in the website code itself.
+
+So it ultimately depends on your website which route is easier and more convenient. In general, both routes can lead to the same result. The consent layer will work, or can be made to work. The display will be the same. Blocking can also be achieved in the same way. The route is simply easier in one case or the other depending on how your website is structured, how many tags you have in Tag Manager, and how many tags are not in Tag Manager.
+
+Now let us look at how to implement it. I will open Tag Manager directly.
+
+I have created a small container here. I hope you can now see my browser and not still the presentation. Perhaps my colleagues can quickly confirm whether the browser is visible.
+
+Okay, the browser is visible. Very good.
+
+So, this is Google Tag Manager. I have simply created a test container. There is basically nothing in it yet. I have added a few examples, but nothing more.
+
+The first step to bring consentmanager and Tag Manager together — in the case where consentmanager is supposed to be delivered through Tag Manager — is simply to create a new tag.
+
+We go to “Tags,” click “New,” give it a name, for example “consentmanager,” and select the tag type. Under the tag types there is an option for “Featured Community CMP Templates.” If I click on that, it opens a side panel, and you can see consentmanager there.
+
+You select the consentmanager workspace and accept it. What happens in the background is that, on the one hand, a template is created, and on the other hand, a tag is created. The template is the model or blueprint, and the tag uses that template.
+
+Now you need to enter three pieces of data. You will find these in your account.
+
+I have also created a test account here. If you go to your account and click “Get Code,” you will find the code there. Under the code there is a box with all the shop systems and similar integrations. There is also a box for Google Tag Manager. The exact steps we are going through now are described there again.
+
+In the third step, you will find the data we need: the CMP ID, the host name, and the CDN. Those are the values we now enter here.
+
+I will copy them from the test account: the ID, the host name, and the CDN. The rest can remain as it is. The checkboxes relate to Consent Mode settings. We will look at those more closely later. For now, we leave them as they are.
+
+In addition to the tag configuration, we naturally also need a trigger. A trigger is the logic that defines when the tag is triggered. Since we are a CMP, a consent tool, we need the event “Consent Initialization — All Pages.” Select that, click Save, and that is it.
+
+As mentioned, the template was created in the background. You can see it here. A tag was also created, and the tag has the trigger attached to it.
+
+So, in three or four steps, we have placed consentmanager into Google Tag Manager. If I now submitted and published this container on a website, Google Tag Manager would deliver my consentmanager code. Consentmanager would then show the consent layer and ask the user for consent.
+
+At this point, nothing else has happened yet apart from the display of the layer. The layer appears, but currently nothing is blocked. This step is only about displaying the layer.
+
+Now back to the PowerPoint.
+
+The next thing we want to do is block different tags in Google Tag Manager. For example, we may have Google Analytics, Microsoft tags, Facebook Pixel, or anything else in Tag Manager. Naturally, we want to block these. If there is no consent for Analytics, then Analytics should not be fired by Tag Manager, or it should only fire once consent exists.
+
+For this, we need variables — more precisely, data layer variables.
+
+The data layer is essentially the interface between the website, or what happens on the website, and Google Tag Manager. The CMP places information into the data layer. Tag Manager can then reuse that information and notices when something happens there.
+
+There are several important CMP variables. Our variables start with “cmp,” with a capital P in some places. One of them is “cmpGDPR.” This variable contains a 1 if GDPR applies to the user.
+
+That does not mean whether the user has consented or refused. It only means whether the user is located in the GDPR area, so whether it is a European user. If it is a Chinese user, for example, the value would be 0, depending on your CMP settings.
+
+The default setting for most consentmanager customers is that all website visitors are asked, including visitors from China, for example. In that case, this variable is always 1, because GDPR is applied to all end users.
+
+The two other relevant variables are “cmpConsentVendors” and “cmpConsentPurposes.” Vendors are providers. Purposes are purposes. So these variables contain the list of providers and purposes for which consent has been given.
+
+If I want to apply this to Google Analytics, for example, I only want Analytics to fire if the provider Google Analytics has consent. That means I need to say: when this variable from consentmanager is set and contains the provider Google Analytics, then I know Analytics has consent and I can start Analytics.
+
+Back in Google Tag Manager, we will create those variables.
+
+I go to “Variables.” I have already created two of them here: cmpConsentVendors and cmpGDPR. I will now create the third one, cmpConsentPurposes.
+
+Click “New,” then choose “Variable Configuration,” select “Data Layer Variable,” and give it the name. You could also set a default value. That would mean: if nothing is present yet, what should the value of the variable be? Since this variable is empty by default anyway, we do not need to enter anything else. Just save it. I created the other two variables in the same way.
+
+We can now use these variables in the next step to adjust our triggers.
+
+Back to PowerPoint.
+
+A trigger is the trigger mechanism for a tag. It decides why or when a tag is inserted into the website.
+
+What consentmanager does is this: when there is a decision, or when the consent status is already known, it fires an event. The internal name of that event is “cmpEvent.” This event tells Tag Manager that something has happened and that it can now check whether there are tags that can be activated.
+
+Together with the event, we send the data layer variables so that Tag Manager can respond accordingly.
+
+Back to Tag Manager.
+
+Let us take one of the tags as an example. I will use my Google Analytics tag. It currently has a trigger called “All Pages — Page View.” That means my Google Analytics code would currently fire on every page view, regardless of whether consent exists or not.
+
+Of course, I do not want that. I want Analytics to fire only when there is consent.
+
+So what do I need to do? I remove the old trigger and create a new one. I might call it “Analytics has consent.” It is a custom event. The custom event is called “cmpEvent.” Then I add a condition.
+
+The condition is based on the variables. In the provider variable, the value must contain the provider ID of Google Analytics.
+
+You can find the provider ID in your account. In the provider list, each provider has an ID. In this case, Google Analytics has the ID “s26.”
+
+So I configure the trigger as follows: cmpConsentVendors contains “,s26,”. The commas before and after are important because the variable we write is ultimately just a string. It might look something like this: “,s1,s2,s3,” and so on.
+
+If I were to search only for “s26” without commas, then “s260” or “s2599” could also match. That is why we use commas before and after it, so we can clearly identify this exact provider.
+
+Then I save it. The Analytics code now has this new trigger. Save again.
+
+In the overview, you can already see that the trigger “Analytics has consent” is attached. In the trigger list, I can open it again and see more detail: custom event cmpEvent, cmpConsentVendors contains “,s26,”.
+
+You would do the same thing for other tags. If you have a shopping cart code or Facebook Pixel, the procedure is exactly the same. For Facebook, you would not use “s26,” but the provider ID for Facebook — I think it is something like “s9,” or similar. You would go into your provider list, find the provider, and use that ID.
+
+That works well for simple tags.
+
+However, you need to be aware that the consent event can sometimes fire relatively late. Imagine the user arrives on the website. The layer is displayed. It may happen that the user first looks at the layer for three minutes and only then clicks Accept.
+
+There may be certain tags where the sequence matters, or which should not fire on every page view but only on certain events. For example, imagine a shopping cart event. You have a tag that should fire whenever someone clicks “Add to cart” in your shop. The page does not reload; the user simply goes from three items in the cart to four items.
+
+This event may happen before the consentmanager event. If you have a layer that does not cover the whole page, the user can still use the page without making a decision. So the user might first click “Add to cart” and only then click “Accept.” Or the other way around: the user may already have accepted and only then adds something to the cart.
+
+You do not know the order. It is an event that can occur significantly later than the page load.
+
+To catch such events, you can either pre-filter the event. For example, you could take the original “Add to cart” trigger and add a condition to it: fire only if the provider, for example Google Analytics with ID s26, has consent. But that only works if consent already exists at the moment the user clicks “Add to cart.”
+
+The other case — where the user first clicks “Add to cart” and then gives consent — would not be covered.
+
+That is why, in most cases, it is more practical to replace the original trigger with a trigger group.
+
+Google Tag Manager has had so-called trigger groups for a while now. I create a new trigger and choose “Trigger Group.” As the name suggests, it is simply a group of different triggers.
+
+The advantage is that I can add multiple triggers, for example “Add to cart” and “Analytics has consent.” A trigger group works so that Tag Manager fires the tag connected to this trigger only when both triggers have been activated. The order does not matter.
+
+So it does not matter whether the user first clicked “Add to cart” and then accepted Analytics, or whether the user first accepted Analytics and then clicked “Add to cart.” As soon as both have occurred, the tag will fire.
+
+I save that and connect it to my shopping cart Analytics event. In this example, Analytics would only count once consent exists and the user has clicked “Add to cart.”
+
+That sounds nice, but there is one thing to be aware of: trigger groups only fire once. In this example, if the user clicks “Add to cart” five times and then clicks Accept once, the tag would still only fire once for that page view. If you have more complex event structures, you need to work with more complex trigger groups and events. It is all possible, but going into that would exceed the scope of this webinar.
+
+So, that was essentially the Google Tag Manager part in brief.
+
+We will also make the PowerPoint PDF available next to the video on the website afterwards. I will also post the links to our help articles there. They explain everything in more detail, so you can go through it again. Otherwise, you can pause the video and look at the settings.
+
+That is enough for Google Tag Manager for now.
+
+Now we will move on to Google Consent Mode.
+
+Many of you have probably already heard of Google Consent Mode. Google is also trying to push this topic.
+
+What is Google Consent Mode? In simple terms, it is a mechanism originally designed for Google Analytics and Google Ads — the Google tracking products — to soften the tracking when there is no consent.
+
+Without Consent Mode, there are basically only two legal variants: if there is consent, I activate Google Analytics and Google counts everything. If there is refusal, I block Google Analytics and Google Analytics counts nothing.
+
+Google Consent Mode creates something in between. The idea is not that refusal means you are allowed to count nothing at all. Rather, personal data must be handled more sensitively. We will leave the legal aspects aside for a moment, but if you want to create a grey area between acceptance and rejection, this is where Google Consent Mode comes in.
+
+As mentioned, it was designed for Google Ads, Floodlight, and Analytics. These are the products. It is also integrated into Google Tag Manager to simplify control.
+
+When enabled, Analytics automatically detects that Consent Mode is on and that only basic information may be measured. For example, IP addresses are no longer processed in the same way; they are only used to determine the country. Browser information is reduced. Advertising cookies and similar advertising-related things are not set, and existing ones are not read.
+
+So everything relating to ePrivacy and TTDSG legislation is reduced. Only when consent is given does consentmanager tell Google Analytics that consent now exists. Google then knows it can start processing the rest.
+
+The legal risk remains. We went into that in yesterday’s webinar, so please watch that video if you want more detail. I will touch on it briefly again later. But the legal risk remains, and the implementation, especially in Google Tag Manager, is still a little shaky in some places. It is not yet where one would ideally like it to be.
+
+That said, there are very good approaches. I have already mentioned the Google Tag Manager integrations. The ideas behind them are very good and creative. At the moment, however, there are still some limitations.
+
+To use Consent Mode, the first thing you need to do is log in to consentmanager, go to your CMP settings, edit the CMP, and go to “Other settings.” At the bottom there is a checkbox for Google Consent Mode. Tick that box. This activates the logic on the consentmanager side, so consentmanager can send the consent signal.
+
+Second, a code snippet must be inserted into the website. These are the lines shown in the slide, roughly lines 4 to 11. You can also find the snippet in our help documentation. These lines need to be inserted into the code you have on the website for Analytics, Google Ads, or Google Tag Manager.
+
+It is not enough to simply tick the box in our system and then be done. These lines must be integrated into the website code. The lines make sure that Analytics, Google Ads, or Google Tag Manager have a default status. The default status for data processing is set to denied. That is what activates Google Consent Mode.
+
+Third, optionally, there is a view in Google Tag Manager that you can activate. I can show that quickly.
+
+In the admin area, under container settings, there is an option to activate the “Consent Overview” beta. This is only a view. It does not activate any functionality. It is just an overview. Even if it is switched off, the functionality can still work in the background. It simply makes things easier to see.
+
+I will switch it on here.
+
+So much for activation.
+
+When Consent Mode is enabled, we automatically send the data for Analytics, Ads, and advertising products. In addition, Consent Mode is moving toward sending a consent status to Tag Manager for every provider in your provider list and every purpose in your purpose list. This means you can also use it for non-Analytics or non-Google products.
+
+I can show that again in a moment.
+
+If I only have Analytics directly on the website without Google Tag Manager, then that is basically it. I activate Consent Mode, and Analytics then knows whether there is consent or not. Until consent is given, Analytics measures less. Once consent is given, consentmanager tells Analytics that it can now track more.
+
+If I use Google Tag Manager, I may want to add filtering to my tags. There are several settings for that.
+
+Back in Tag Manager, I open an example tag. At the bottom, under “Advanced settings,” there is a section called “Consent settings.” There are three options: “Not set,” “No additional consent required,” and “Require additional consent for tag to fire.”
+
+“Not set” is the default. Nothing happens. “No additional consent required” also does not change the trigger logic. The difference between “Not set” and “No additional consent required” is simply for overview purposes.
+
+Because we activated the consent overview in the admin settings earlier, we now have this icon at the top. If I click on it, I can see which tags are configured and which are not configured. The tag I just adjusted is now listed as configured, because it says it does not need consent. The other tags are still listed as not configured.
+
+So this is mainly for organization and visibility.
+
+If I now set a tag to “Require additional consent,” then the settings expand. I can define the consent types here. Google provides several built-in consent types: ad storage, analytics storage, functionality storage, personalization storage, and security storage.
+
+For Analytics, I would select analytics storage. That means this Analytics tag would only fire if the Consent Mode signal says that Analytics has consent. In that case, I do not need to adjust the trigger. This can make things easier in some cases.
+
+What we also send are custom providers. As mentioned earlier, we send all custom providers as consent types. If I go into my provider list and I want, for example, LinkedIn — let us say the provider ID is s2 — and I have a LinkedIn tag here, then I want this tag to fire only if s2 has consent.
+
+The provider consent types are named “cmp_” followed by the provider ID. So in this example, “cmp_s2.” Tag Manager will then check on the page view whether consentmanager has sent “cmp_s2” through Consent Mode. Only then will the tag fire. Otherwise, the tag will not fire.
+
+The disadvantage is that it is not fired afterwards retroactively. If the page view event is over and the user only then decides to give consent for Analytics, LinkedIn, or another provider, the previous event is not checked again. So the tag would only fire on the next page view.
+
+I can then see this again in the consent overview. It shows that this tag requires “cmp_s2.”
+
+You can do this for the other tags as well and manage them through consent settings rather than adjusting triggers.
+
+The goal is to make things easier. But, as mentioned, there are still some limitations, especially around the sequence of events.
+
+Now, briefly, the legal framework.
+
+I do not want to go too deeply into this here, but in short: Google Analytics is a tracking tool. That is very clear. Under ePrivacy and the TTDSG, it requires consent.
+
+This is intensified by the connection to Google Ads and remarketing. I would definitely recommend checking the Analytics settings and making sure those links are disabled where appropriate. By default, that setting in Analytics is often enabled. Analytics can automatically place a Google Ads or Google remarketing cookie and send data to Google remarketing. So it is not only analytics, but immediately also marketing.
+
+Therefore, I recommend deactivating that connection.
+
+Analytics is generally legally sensitive because it creates profiles and partly enriches data with user data such as age, gender, and similar information. For that reason, it is at least legally questionable.
+
+There may be cases and ways to argue that Analytics does not require consent, but that is becoming increasingly difficult, especially if you look at the position of the authorities and their statements. To be safe, Analytics should really only fire with consent.
+
+Google Tag Manager is also an ongoing issue. Is it functional or not? In theory, it is purely functional. It does not itself set cookies or process data in the same way.
+
+But there is still a third-party provider behind it. The question is whether this third-party service is a service expressly requested by the user. That is how TTDSG words it: a service expressly requested by the user does not require consent. But does the user explicitly want Google Tag Manager? Probably not.
+
+Are there things inside Tag Manager that the user necessarily wants? In many cases also not. In many cases, Tag Manager contains tracking-related things. So one can ask why it is technically on the page at all.
+
+If I only have Analytics inside Tag Manager, then the simple question is: why is Analytics not directly on the website? Why is Tag Manager needed in between?
+
+So there are enough arguments against treating Tag Manager as purely functional. But there are also customers who say that Tag Manager is genuinely functional for them, and they argue that position.
+
+To be safe, I would recommend not treating Tag Manager as functional, but rather declaring it as a tool for Analytics and obtaining consent.
+
+Consent Mode can help a bit legally. It prevents certain cookies and switches off certain Analytics tracking mechanisms. It also makes working with Tag Manager a little easier. From a legal point of view, turning Consent Mode on does not hurt; it improves things a little. But Google remains Google, and Google remains a US provider.
+
+That means even if Analytics tracks less through Consent Mode and does not set cookies, we still have the Schrems II issue: a US provider cannot necessarily process European data with sufficient protection. So legal problems remain.
+
+At least regarding Tag Manager, as mentioned, there are still some technical limitations. It is not yet fully convenient. But I am confident Google is working on it. More functionality will probably come in the future, making Consent Mode in Tag Manager more comfortable.
+
+That is the legal framework.
+
+We are doing well on time, so I will now move to the questions. I see you have been very active in the chat. Wonderful. I will go through them. Please feel free to continue using the chat or the Q&A tool for your questions.
+
+First question: What happens if a user uses an ad blocker and Google Tag Manager is blocked? If Google Tag Manager is blocked, consentmanager would not be displayed, correct?
+
+Yes, exactly. If your setup is that Tag Manager is on the website and consentmanager is inside Tag Manager, and the user visits the website with an ad blocker that blocks Tag Manager, then of course everything connected to Tag Manager is gone or blocked — including consentmanager.
+
+In the best case, if you have configured everything correctly according to our recommendations, the user is still protected. Ideally, all settings or tools should only be activated when consentmanager explicitly activates them.
+
+This returns us to the earlier point: all codes that are not in Tag Manager — such as a YouTube video embedded directly in the website — need to be adjusted. For YouTube, for example, around 20 characters need to be added to the code. We have shown this in one of our earlier videos.
+
+Without that adjustment, YouTube would play automatically. With the adjustment, YouTube only starts when consentmanager explicitly activates YouTube. If consentmanager is blocked, it cannot activate YouTube, so the user remains protected.
+
+The only disadvantage from a legal point of view is that the user may not be able to inform themselves about things they cannot see. That means some information obligations may not be fulfilled. From a practical perspective, certain functionality is missing and cannot be restored. Marketing functionality may also be affected.
+
+Next question: What happens if a vendor has an additional IAB ID? Should both IDs be checked for the trigger, or can the IAB ID be ignored?
+
+There are some providers that have IDs for both IAB and Google, for example. The IAB providers are special in that their IDs appear in the data. If you have such a provider in your list, the provider ID may not be “s...” but rather something like “iab...”. So the IDs for IAB providers are slightly different.
+
+In case of doubt, either include both IDs or check exactly which one is the correct one. This is a small source of confusion.
+
+Next question: The crawler reports “Google General.” What is the provider Google General and how do I configure it?
+
+Very good question. This comes up often.
+
+It is not only Google; other providers have the same issue. Some providers have many products. Google has many products: Google Maps, reCAPTCHA, Translate, Analytics, Tag Manager, and so on. Amazon has several products. Microsoft has several products.
+
+So we decided that it does not make sense to have Google as just one provider and then block everything together. Sometimes you want to differentiate. For example, Google reCAPTCHA may be functional, Translate may also be functional, Maps may be marketing, Analytics may be analytics, and so on.
+
+That is why there are multiple Google providers, or multiple providers with the same parent name.
+
+In addition, Google has many things that cannot clearly be assigned to one specific product. For example, Google Fonts or various Google APIs. There are many things used by several Google tools. reCAPTCHA, for example, may use font domains as well. Some domains are not specific to a single Google service.
+
+That is why Google General exists. It collects everything that does not belong clearly to one of the other services.
+
+How should you configure it in your provider list? Look at which other Google services you use. If you use Analytics, then Google General probably belongs in the Analytics area. If you use Google Ads, then it probably belongs there. If only Google General appears in your provider list because the crawler found it, then the reason may be that you use Google Fonts, for example.
+
+In that case, you need to look carefully at why Google appeared. You can also create your own providers to classify things more precisely. But in most cases, it is possible to distinguish reasonably well.
+
+Also worth noting: fonts are probably not essential in most cases. Many Google products are probably not essential, because you could say: why must the font be loaded from Google? Download it and host it on your own server. Then there is no third-party provider involved, and the data protection issue becomes much less severe.
+
+Next question: Do you need the user’s consent if Google Tag Manager is used on the website because data is transferred to Google in the USA? Would Google Tag Manager be a technically necessary service?
+
+We touched on this earlier. With Tag Manager, you can certainly provide an argument. Authorities will not simply say yes or no without listening to your reasoning. They do consider how something is justified.
+
+But with some services it is much harder to find a good justification. Tag Manager can be such a case, because many things can work without Tag Manager, and many things inside Tag Manager are not things expressly requested by the user.
+
+Then there is the issue of the USA and Google. So, if you want to be legally safe, you should also make Tag Manager subject to consent.
+
+If you do not want to do that, definitely speak to a lawyer and possibly also your data protection officer. Use the options available to you to reduce risk.
+
+Next question relates to yesterday’s webinar: Where should I sensibly place the macro “vendor count” in the text on the start page?
+
+In the texts, there is a standard German text such as “This website uses cookies...” In the second line, for example, it says something like: “We process data from external services...” Here you could use the macro “vendor count.” The macro would insert the number of providers.
+
+So on the website, when delivered, it might say: “We use services from X external providers...” or similar. You would need to look at the exact wording, but essentially it makes sense to place the vendor count macro on the first page of the layer text.
+
+Next question: Which implementation or trigger variant do you recommend in order to measure as many page views as possible?
+
+That is difficult. The question is whether you are asking from a legal perspective, or whether the goal is simply to measure as much as possible.
+
+If it has to be Google Analytics, the recommendation would basically be not to put Google Analytics into Tag Manager, if possible, to avoid having an additional tag in between. Place Analytics directly in the website, load consentmanager before Analytics, and definitely pay attention to the sequence. Enable Consent Mode so that Analytics tracks as little as possible before consent.
+
+That at least gives you a somewhat more protected setup.
+
+If Analytics must be placed in Tag Manager, then because of the current limitations of Consent Mode, it is often more sensible to build trigger groups — for example, page view plus Analytics has consent — rather than relying only on Consent Mode at that point.
+
+But if the question is really about measuring as many page views as possible, then direct implementation in the website is usually best.
+
+Next question: I inserted the semi-automatic blocking code as custom HTML in older integrations before the template existed. Can it stay that way, or do I need to move to the template?
+
+The old codes still work. Even with our existing codes, there are occasionally updates. The codes you find in the account change slightly from time to time. A few months ago, for example, there was an update where domains changed, or the order in the semi-automatic code changed.
+
+So it does make sense to update the codes occasionally. But in most cases, the functionality continues to work. If a change from old code to new code would really break functionality, we would announce that in advance through newsletters or similar. You would be informed months ahead of time.
+
+The advantage of the Community Templates is that updates are easier. If there is an update, you can go to Templates in Tag Manager. The consentmanager template will appear there, and there will be an Update button. You click it, and you are done. You do not need to deal with code snippets.
+
+So the template makes things easier, but it is not mandatory to switch immediately.
+
+Next question: What is the difference between Page View and Consent Initialization?
+
+In Tag Manager, the typical built-in events are Page View, Consent Initialization, and Initialization. Page View is simply when the page has loaded or is loading. Consent Initialization comes before Page View. Initialization is even earlier.
+
+The order is: Initialization, Consent Initialization, Page View.
+
+The purpose is that when the Community Template is used, the default status and certain settings can be set during the Consent Initialization phase before everything else starts. If I were to tell consentmanager to load on Page View, it would not be completely clear in which order tags load. It could happen that Analytics fires first and then consentmanager loads, which means Analytics would not yet have the information.
+
+So it makes sense to use Consent Initialization, so that consentmanager is clearly before Page View.
+
+Next question: Do I not also need to include the condition “cmpGDPR equals 1” in the trigger?
+
+In principle, yes.
+
+As shown earlier, there are several variables: purposes, vendors, GDPR, and a few more. In most cases, it is enough to check only the provider, because for most customers the setting is that GDPR applies to all users.
+
+That is especially the case if you are a European company. As a European company, you must apply the GDPR to all users, regardless of where they come from. If you are a non-European company, you could change the CMP settings so that, for example, only EU visitors are asked.
+
+In the CMP settings there is an option under GDPR settings: “Ask all visitors for consent.” That is the default. Or you could choose only EU visitors.
+
+Only if you use such a setting does it make sense to add a second condition: cmpGDPR equals 1. In that case, Analytics would only fire if the provider has consent and GDPR applies.
+
+However, you would then also need a second trigger for the case where cmpGDPR equals 0. If GDPR does not apply, then the layer would not be shown. An American user, for example, would come to the website, the layer would not be displayed, and the user could not click Accept. So if GDPR does not apply, Analytics could fire immediately. That would require a separate trigger.
+
+For most customers, especially European customers, the default setting is that all visitors are asked. In that case, this second branch is not necessary.
+
+Next question: Where do I insert the code? Does it also work via the WordPress plugin?
+
+The WordPress plugin has become quite extensive and now has many features. If you have a WordPress website, it is worth looking at the plugin.
+
+If you use the WordPress plugin, you usually do not need the Community Template anymore. You do not need to deliver consentmanager through Tag Manager. The recommendation would actually be to deliver consentmanager via the WordPress plugin and configure everything else through Tag Manager.
+
+The WordPress plugin itself can also adjust code on the website. For example, with the YouTube video example from earlier, the WordPress plugin can automatically adjust YouTube videos on your website, depending on the settings you choose.
+
+So if you use WordPress, the recommendation is usually to use the plugin rather than the Community Template. But there are of course cases where the reverse makes more sense.
+
+If you do not use WordPress, there are also plugins for other shop systems and CMS systems. Unfortunately, some of those are not as comfortable as the WordPress plugin. In those cases, it may make more sense to work through Tag Manager.
+
+Next question: If I have to include consentmanager in Tag Manager, do I need to classify Tag Manager as functional, otherwise the cookie banner will not be displayed?
+
+If Tag Manager is on the website and consentmanager is inside Tag Manager, then it is basically irrelevant how you define Tag Manager inside consentmanager, because the sequence already determines the logic.
+
+Tag Manager is already loaded before consentmanager can load. That means any blocking that might happen would already be too late, because Tag Manager is already there.
+
+In that case, it basically only makes sense to mark Tag Manager as functional. All other settings would only confuse users. However, as mentioned earlier, this is not our recommended setup from a legal perspective. But if you do it that way, then yes, it only makes sense to mark Tag Manager as functional.
+
+That brings us to the end of the questions.
+
+We are also very good on time. If there are no more questions — and it looks like there are not — I would like to thank you for your time.
+
+As always, please visit our website. The videos will be uploaded there afterwards, along with the presentation and PDF.
+
+If you have any questions, you can always contact support at consentmanager.net or speak to your account manager.
+
+Thank you very much, and goodbye.

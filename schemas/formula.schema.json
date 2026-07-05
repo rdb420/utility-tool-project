@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://operations-utility-toolkit/schemas/formula.schema.json",
   "title": "Formula",
-  "description": "A reusable calculation record grounded in the knowledge base (see docs/CORPUS_DESIGN.md).",
+  "description": "A reusable calculation record grounded in the knowledge base (see docs/architecture/CORPUS_DESIGN.md).",
   "type": "object",
   "additionalProperties": false,
   "required": [

@@ -96,7 +96,7 @@ export interface ResultCard {
 }
 
 /**
- * A reusable calculation record grounded in the knowledge base (see docs/CORPUS_DESIGN.md).
+ * A reusable calculation record grounded in the knowledge base (see docs/architecture/CORPUS_DESIGN.md).
  */
 export interface FormulaRecord {
   /**

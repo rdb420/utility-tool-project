@@ -25,8 +25,8 @@ Exit criteria:
 Status: completed.
 
 The source books are ingested into a hybrid-vector knowledge base used to ground
-and cite formula records. See `docs/CORPUS_DESIGN.md` (Two Corpus Layers) and
-`docs/TECHNICAL_ARCHITECTURE.md` (Knowledge Base and Retrieval).
+and cite formula records. See `docs/architecture/CORPUS_DESIGN.md` (Two Corpus Layers) and
+`docs/architecture/TECHNICAL_ARCHITECTURE.md` (Knowledge Base and Retrieval).
 
 Deliverables:
 
@@ -38,7 +38,7 @@ Deliverables:
 Exit criteria:
 
 - Hybrid search returns relevant, citable passages for the inventory and pricing
-  formula backlog. Verified — see the coverage note in `docs/CORPUS_DESIGN.md`.
+  formula backlog. Verified — see the coverage note in `docs/architecture/CORPUS_DESIGN.md`.
 
 ## Phase 1b: Corpus Schema and Grounded Records
 
@@ -63,7 +63,7 @@ Tasks:
    disclaimer levels.
 6. Add a command that validates the processed corpus.
 
-Google Drive/Sheets (verified in `docs/GOOGLE_CONNECTIONS.md`) remain the
+Google Drive/Sheets (verified in `docs/launch/GOOGLE_CONNECTIONS.md`) remain the
 collaborative surface for formula inventories and keyword matrices; validated
 records are synced into `data/processed/`.
 
@@ -149,7 +149,7 @@ MVP pages (each defined as a validated record in `data/calculators/`):
 Each page specification includes inputs, outputs, validation behavior, formula
 explanation, worked example, FAQ, related tools, disclaimer copy, and metadata /
 schema requirements. Per-page detail lives in the calculator records; the
-cross-cutting standards are in `docs/MVP_PAGE_SPECS.md`.
+cross-cutting standards are in `docs/planning/MVP_PAGE_SPECS.md`.
 
 Exit criteria:
 
@@ -163,7 +163,7 @@ Exit criteria:
 
 Status: delivered (2026-07-02). Built as a Next.js App Router + TypeScript app
 at `web/` (design spec:
-`docs/superpowers/specs/2026-07-02-phase4-website-mvp-design.md`). Shipped:
+`docs/planning/superpowers/specs/2026-07-02-phase4-website-mvp-design.md`). Shipped:
 
 - The six inventory calculator pages plus `/cbm-calculator/` (CBM, volumetric
   weight, chargeable weight, container fill), with carrier DIM divisors
@@ -199,7 +199,7 @@ Exit criteria:
 ## Phase 5: Launch and Measurement
 
 Status: live (deployed 2026-07-03; production state re-verified 2026-07-04). The
-ordered launch checklist is `docs/LAUNCH_RUNBOOK.md`.
+ordered launch checklist is `docs/launch/LAUNCH_RUNBOOK.md`.
 
 Done and verified live (2026-07-04):
 
@@ -207,33 +207,52 @@ Done and verified live (2026-07-04):
   308-redirects to apex, HTTPS valid.
 - SEO plumbing serving correctly: `sitemap.xml`, `robots.txt`, apex canonicals,
   and the real `ads.txt` line (`pub-9610958335722543`).
-- GA4 wiring: transport in `web/src/lib/analytics/` (measurement ID
-  `G-7XG10CD70E`, baked into the client bundle). `calculator_start` /
-  `calculator_result` reach `dataLayer` with only `toolId` + `slug` (no input
-  values); events are wired into every calculator via `track()`.
-- Consent: managed by **consentmanager** (consentmanager.net, certified TCF
-  v2.2 + GPP CMP, CMP ID 31). A root-layout bootstrap sets the all-denied
-  Consent Mode v2 default, then injects consentmanager, which owns the
-  `consent update`s for ads and analytics (Consent Mode "Advanced" — GA4 fires
-  cookieless until granted). Verified active via Tag Assistant. History: the
-  custom `ConsentBanner` and a brief Google Funding-Choices handoff were both
-  replaced (the latter was dormant until AdSense approval).
+- Analytics events: typed `track()` union in `web/src/lib/analytics/` —
+  `calculator_start` / `calculator_result` etc. reach `dataLayer` with only
+  `toolId` + `slug` (no input values); events are wired into every calculator.
 - AdSense account association meta (`NEXT_PUBLIC_ADSENSE_ACCOUNT`) ships in
   `<head>`; the `adsbygoogle.js` tag loads for ad serving/review only (no longer
   a CMP). Ad units remain gated off (`NEXT_PUBLIC_ADS_ENABLED=false`) until
   approval + a wired `<ins>` unit.
 
+Shipped 2026-07-05 — consent/analytics rebuild + calculator UX:
+
+- **Consent/analytics stack rebuilt**: consentmanager CMP **173918** (the old
+  173913 was deleted and rebuilt) loads site-wide from the root layout via
+  `next/script` `afterInteractive` (consentmanager's official Next.js SSR
+  method); GTM `GTM-NRM7V3BN` loads via `@next/third-parties`
+  `<GoogleTagManager>` (container id in code — `NEXT_PUBLIC_GTM_ID` retired);
+  GTM container **v11 published** with GA4 (`G-7XG10CD70E`) fully
+  consent-gated — the config tag fires only on `cmpConsentVendors contains
+  ,s26,` and all 5 event tags fire on trigger groups (event AND consent). GA4
+  dashboard config is done (6 custom dimensions, key events); built/verified
+  via the admin API scripts. See `docs/launch/GTM_SETUP.md`.
+- **Privacy-policy page** rebuilt as a static page with consentmanager 173918
+  widgets (policy content, cookie list, inline preferences box, build-time
+  vendor list).
+- **JS-API wrapper** `web/src/lib/consent/cmp.ts` + a Footer "Cookie settings"
+  button that opens the CMP preference manager.
+- **Calculator UX**: all 24 tools now prefill worked-example defaults
+  (inventory records gained defaults; freight/pricing already had them) and
+  every tool has a shared analytics-silent "Clear inputs" button.
+
+**Single open blocker:** consentmanager's delivery pipeline compiles an empty
+vendor/purpose list for this account (banner shows 0 vendors, so `,s26,` is
+never granted and GA4 stays dark — the safe state). Support ticket sent
+2026-07-05; post-fix checklist in runbook §6c.
+
 Pending (user actions, in runbook order):
 
+- consentmanager support fix + post-fix checklist (verify vendors at
+  `?cmpconsole`, set "Read from IAB TCF" OFF on 173918, confirm GA4 fires in
+  DebugView) — runbook §6c.
 - Search Console: verification is DONE (DNS TXT `google-site-verification` on
   the Cloudflare zone, confirmed 2026-07-04). Remaining: submit the sitemap and
   request indexing (runbook §5).
-- GA4 **dashboard** config — the code side is done; register `toolId`/`slug`
-  (etc.) as custom dimensions and mark `calculator_result` a key event so the
-  custom data is usable in reports (runbook §6b). Confirm hits in Realtime/
-  DebugView.
-- AdSense application — last, only after indexing and traffic, and ads stay off
-  until a certified IAB TCF v2.2 CMP replaces the consent banner (runbook §7).
+- `/cookie-policy/` page copy is still the older hand-written text — refresh
+  once the CMP vendor list delivers (runbook §6c).
+- AdSense application — last, only after indexing and traffic (the certified
+  TCF v2.2 CMP requirement is met by consentmanager 173918) — runbook §7.
 - USPS DIM divisor 166→139 change staged on branch `usps-dim-139-2026-07-12`;
   merge on/after 2026-07-12 (runbook §8).
 
@@ -326,23 +345,29 @@ Resolved (2026-07-02, Phase 4):
 - Analytics event taxonomy: typed event union scaffolded in
   `web/src/lib/analytics/` (calculator_start, calculator_result,
   calculator_validation_error, result_copy, result_export,
-  related_tool_click); GA4 transport wired and verified end-to-end in Phase 5.
+  related_tool_click); delivered to GA4 via GTM (`sendGTMEvent` → `dataLayer`
+  → consent-gated GA4 tags in container v11).
+- Analytics provider + consent: **GA4 via GTM, gated by consentmanager CMP
+  173918** (certified IAB TCF v2.2) — resolved 2026-07-05; only the
+  consentmanager vendor-list delivery bug remains open (support ticket).
 - Exports: copy-to-clipboard shipped; CSV/PDF downloads deferred.
 
 Still open:
 
-- Analytics provider confirmation (GA4 assumed) and consent-mode upgrade
-  (IAB TCF v2.2 CMP) before AdSense.
+- None architectural; operationally, the consentmanager vendor-list fix
+  (see Phase 5).
 
 ## Near-Term Next Step
 
-The site is live; GA4 is wired and verified in code. The near-term work is
-operational, not code: (1) confirm Search Console verification + submit the
-sitemap; (2) finish the GA4 dashboard config (custom dimensions + key events)
-so the custom event data is reportable; (3) merge the staged USPS divisor
+The site is live; the consent/analytics stack (consentmanager 173918 + GTM
+v11, fully consent-gated GA4) shipped 2026-07-05. The near-term work is
+operational, not code: (1) get consentmanager to fix the empty vendor-list
+delivery, then run the runbook §6c post-fix checklist (vendors at
+`?cmpconsole`, "Read from IAB TCF" OFF, GA4 DebugView); (2) confirm Search
+Console verification + submit the sitemap; (3) merge the staged USPS divisor
 change on 2026-07-12; (4) monitor Search Console/GA4 for a few weeks and fix
 technical SEO/UX before adding tools. AdSense stays deferred until there is
-indexed organic traffic and a certified IAB TCF v2.2 CMP.
+indexed organic traffic (the certified TCF v2.2 CMP requirement is met).
 
 The freight sourcing task (`data/reference_tables/freight/`) is largely closed:
 carrier DIM divisors and NMFC classes are verified (divisors 2026-07-02, NMFC

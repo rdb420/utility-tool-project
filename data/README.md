@@ -28,4 +28,4 @@ cd web && npm run validate
 
 Every formula/reference record with `grounding: corpus` cites the knowledge-base
 passages it was derived from (`source_file` + `chunk_index`); see
-[../docs/CORPUS_DESIGN.md](../docs/CORPUS_DESIGN.md).
+[../docs/architecture/CORPUS_DESIGN.md](../docs/architecture/CORPUS_DESIGN.md).

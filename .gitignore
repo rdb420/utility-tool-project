@@ -40,3 +40,7 @@ Thumbs.db
 docs/cloudflare/api.txt
 docs/google-adsense/verication-code.txt
 docs/cloudflare/opscrunch.com.txt
+
+# Debug artifacts (browser dumps, HAR captures, tag-assistant exports — may contain session data)
+docs/debug/
+*.har

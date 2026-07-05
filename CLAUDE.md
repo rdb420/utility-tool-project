@@ -74,16 +74,16 @@ Key design points to preserve:
 - **Hybrid Qdrant collection** with three named vectors: `dense` (384-dim MiniLM, cosine), `multi` (128-dim ColBERT multivector, MAX_SIM, `hnsw_config m=0`), and a `sparse` vector (SPLADE, IDF modifier). `ensure_collection` creates this exact shape; changing dimensions/names is a breaking schema change.
 - **Idempotent IDs**: `stable_point_id` = `uuid5(NAMESPACE_URL, "{collection}:{relative_path}:{chunk_index}")`. Re-ingesting the same corpus overwrites points rather than duplicating. Do not switch to random IDs.
 - **Batch size**: CLI default is 8, but the embeddings sidecar / payload limits mean **keep batches small (≤6)** — the sidecar has a ~33MB payload cap and ~20 chunks/min throughput. Prefer `--batch-size 6` (or lower) for real runs.
-- **Embeddings sidecar** (`EMBEDDINGS_URL`, default the HF Space `cng420-embedding.hf.space`) is an external FastAPI service (`fastembed`) exposing `/embed/dense`, `/embed/colbert`, `/embed/sparse`, `/health`. It is NOT in this repo — see `docs/Embeddings-Sidecar-huggingface-spaces-README.md`. Response parsers accept multiple key names (`vectors`/`dense`/`colbert`/`multi`/`sparse`), so preserve that flexibility when editing them.
+- **Embeddings sidecar** (`EMBEDDINGS_URL`, default the HF Space `cng420-embedding.hf.space`) is an external FastAPI service (`fastembed`) exposing `/embed/dense`, `/embed/colbert`, `/embed/sparse`, `/health`. It is NOT in this repo — see `docs/architecture/qdrant-docs/Embeddings-Sidecar-huggingface-spaces-README.md`. Response parsers accept multiple key names (`vectors`/`dense`/`colbert`/`multi`/`sparse`), so preserve that flexibility when editing them.
 - **Payload** (`build_payload`) carries `corpus`, `source_path`, `source_file`, `content_sha256`, `chunk_index`, `start_char`, `end_char`, `text` — this is the retrieval contract; keep fields stable.
 
 ### Retrieval (`src/retrieval/qdrant_search.py`)
 
-Query-side counterpart to the ingestion pipeline; CLI wrapper `scripts/search_corpus.py`. Embeds the query with the sidecar's query endpoints (`/embed/dense`, `/embed/sparse/query`, `/embed/colbert/query`), runs fused **dense + sparse prefetch reranked by the ColBERT multivector** (`query_points` with `prefetch`), and returns `SearchHit`s carrying `source_file` + `chunk_index` for citation. Reuses `load_env` and the `parse_*` response helpers from `ingestion.qdrant_pipeline` so query and ingest stay in lockstep. `build_prefetch`/`hit_from_point` are pure and unit-tested (no network). This is the grounding tool for authoring corpus formula records — see `docs/CORPUS_DESIGN.md` (Two Corpus Layers).
+Query-side counterpart to the ingestion pipeline; CLI wrapper `scripts/search_corpus.py`. Embeds the query with the sidecar's query endpoints (`/embed/dense`, `/embed/sparse/query`, `/embed/colbert/query`), runs fused **dense + sparse prefetch reranked by the ColBERT multivector** (`query_points` with `prefetch`), and returns `SearchHit`s carrying `source_file` + `chunk_index` for citation. Reuses `load_env` and the `parse_*` response helpers from `ingestion.qdrant_pipeline` so query and ingest stay in lockstep. `build_prefetch`/`hit_from_point` are pure and unit-tested (no network). This is the grounding tool for authoring corpus formula records — see `docs/architecture/CORPUS_DESIGN.md` (Two Corpus Layers).
 
 ### Corpus records and calculation library
 
-Two-layer corpus (see `docs/CORPUS_DESIGN.md`): the Qdrant KB is the grounding
+Two-layer corpus (see `docs/architecture/CORPUS_DESIGN.md`): the Qdrant KB is the grounding
 layer; hand-authored records under `data/` are the product layer.
 
 - **Records** (committed): `data/formulas/**`, `data/reference_tables/**`, and
@@ -102,7 +102,7 @@ layer; hand-authored records under `data/` are the product layer.
   result cards must be formula outputs, and `related_tools` must resolve.
 - **Page specs**: `data/calculators/*.json` define the seven pages
   (inputs/results/copy/FAQ/related tools/schema). Cross-cutting page standards
-  (layout, validation, disclaimers, SEO/schema) are in `docs/MVP_PAGE_SPECS.md`.
+  (layout, validation, disclaimers, SEO/schema) are in `docs/planning/MVP_PAGE_SPECS.md`.
   Pages compute via the calc registry, never by reimplementing a formula.
 - **Calc library** `web/src/lib/calc/` (TypeScript — the single source of truth
   for formula execution): pure functions per formula (`inventory.ts`,
@@ -126,7 +126,7 @@ Standalone OAuth (installed-app flow) script that verifies Drive + Sheets read a
 
 ## Conventions
 
-- Formula/calculation logic lives in TypeScript (`web/src/lib/calc/`) as pure, testable functions with example-based Vitest tests, kept separate from UI/content rendering (see `CONTRIBUTING.md` and `docs/TECHNICAL_ARCHITECTURE.md`).
+- Formula/calculation logic lives in TypeScript (`web/src/lib/calc/`) as pure, testable functions with example-based Vitest tests, kept separate from UI/content rendering (see `CONTRIBUTING.md` and `docs/architecture/TECHNICAL_ARCHITECTURE.md`).
 - Avoid regulated/compliance claims, freight-rate guarantees, or definitive duty/tax advice in any calculator content.
 - When adding a corpus field or calculator, update the relevant `docs/` file (`CORPUS_DESIGN.md`, `TECHNICAL_ARCHITECTURE.md`, `DEVELOPMENT_PLAN.md`) plus tests.
 - The three large research markdown files under `docs/project/` are source material — cite/summarize them, don't overwrite.

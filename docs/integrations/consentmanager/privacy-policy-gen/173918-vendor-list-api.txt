@@ -1,0 +1,1 @@
+https://c.delivery.consentmanager.net/delivery/vendorlist.php?cdid=3ba155ac627e4&api=json

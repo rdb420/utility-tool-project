@@ -23,7 +23,7 @@ This project will use several Google products, but they should not all be connec
 
 ## Current Configuration
 
-The active project and Workspace artifact IDs are documented in `docs/GOOGLE_CONNECTIONS.md`. Local credential paths and token cache paths are stored in `.env.local`, which is ignored by git.
+The active project and Workspace artifact IDs are documented in `docs/launch/GOOGLE_CONNECTIONS.md`. Local credential paths and token cache paths are stored in `.env.local`, which is ignored by git.
 
 ## Google Cloud Project
 
@@ -108,7 +108,7 @@ Do not hard-code Drive file IDs in public code until access and ownership are st
 ## Search Console
 
 Status (2026-07-03): **next action** — the domain (`opscrunch.com`) and website
-build now exist. Follow `docs/LAUNCH_RUNBOOK.md` section 5 (property creation,
+build now exist. Follow `docs/launch/LAUNCH_RUNBOOK.md` section 5 (property creation,
 sitemap submission, indexing requests). The site emits an env-driven
 verification meta tag (`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`) for the
 URL-prefix/HTML-tag method.
@@ -136,11 +136,15 @@ Official reference: <https://support.google.com/webmasters/answer/34592>
 
 ## Google Analytics 4
 
-Status (2026-07-03): **created**. The GA4 property and web data stream exist;
-measurement ID `G-7XG10CD70E` is on file in `docs/google-analytics/` and wired
-into the site via `NEXT_PUBLIC_GA4_ID` (consent-gated transport in
-`web/src/lib/analytics/`). Remaining: the post-deploy Realtime sanity check —
-`docs/LAUNCH_RUNBOOK.md` section 6.
+Status (2026-07-05): **created and consent-gated via GTM**. The GA4 property
+and web data stream exist; measurement ID `G-7XG10CD70E` is on file in
+`docs/integrations/google-analytics/`. GA4 now loads through Google Tag
+Manager (`GTM-NRM7V3BN`, published v11), where every GA4 tag is hard-blocked
+on consent to the Google Analytics vendor (`s26`) in consentmanager CMP
+173918 — see `docs/launch/GTM_SETUP.md`. The app pushes typed events from
+`web/src/lib/analytics/` to the `dataLayer`. Remaining: the DebugView check,
+blocked on the consentmanager vendor-list fix —
+`docs/launch/LAUNCH_RUNBOOK.md` section 6.
 
 Set up GA4 during website implementation, not during corpus work.
 
@@ -181,11 +185,12 @@ Official reference: <https://support.google.com/google-ads/answer/7337243>
 
 ## AdSense
 
-Status (2026-07-03): **next action, deliberately last** — apply only after the
-site is live on `opscrunch.com` and Search Console shows pages indexed with
-real traffic. Follow `docs/LAUNCH_RUNBOOK.md` section 7 (verification code is
-on file at `docs/google-adsense/verication-code.txt`, gitignored; ads stay
-disabled until a certified IAB TCF v2.2 CMP replaces the consent banner).
+Status (2026-07-05): **deliberately last** — apply only after the site is live
+on `opscrunch.com` and Search Console shows pages indexed with real traffic.
+Follow `docs/launch/LAUNCH_RUNBOOK.md` section 7 (verification code is on file
+at `docs/google-adsense/verication-code.txt`, gitignored). The certified IAB
+TCF v2.2 CMP requirement is met: consentmanager CMP 173918 is live site-wide;
+ad units stay disabled (`NEXT_PUBLIC_ADS_ENABLED=false`) until approval.
 
 Do not apply for AdSense until the MVP site has useful public content and trust pages.
 
@@ -215,7 +220,7 @@ GOOGLE_SHEETS_FORMULA_WORKBOOK_ID=
 GA4_MEASUREMENT_ID=
 GA4_API_SECRET=
 SEARCH_CONSOLE_SITE_URL=
-# Knowledge base (non-Google) — see docs/GOOGLE_CONNECTIONS.md
+# Knowledge base (non-Google) — see docs/launch/GOOGLE_CONNECTIONS.md
 QDRANT_URL=
 QDRANT_API_KEY=
 QDRANT_COLLECTION=
@@ -237,4 +242,4 @@ way: never put real IDs or secrets in `.env.example`.
 7. Record non-secret IDs in a private setup note.
 8. Add local secrets to ignored files only.
 9. Build a small local script later to prove Drive/Sheets read access.
-10. ~~Defer Search Console, GA4, Tag Manager, and AdSense until a domain and website build exist.~~ Done deferring: the domain and website build now exist. GA4 is created and wired; Search Console and AdSense are sequenced in `docs/LAUNCH_RUNBOOK.md` (sections 5 and 7). Tag Manager remains optional/deferred.
+10. ~~Defer Search Console, GA4, Tag Manager, and AdSense until a domain and website build exist.~~ Done deferring: the domain and website build now exist. GA4 is created and delivered through Tag Manager (`GTM-NRM7V3BN`, consent-gated — see `docs/launch/GTM_SETUP.md`); Search Console and AdSense are sequenced in `docs/launch/LAUNCH_RUNBOOK.md` (sections 5 and 7).

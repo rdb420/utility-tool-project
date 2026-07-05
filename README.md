@@ -55,17 +55,13 @@ Phase 2 expanded into logistics and packaging:
 ├── .env.example                  # Template for .env.local — PYTHON tooling only
 │                                  # (website/Vercel env lives in web/.env.example)
 ├── corpus-logistics-supply-chain/ # 18 source books (markdown) — the raw corpus
-├── docs/
-│   ├── PROJECT_BRIEF.md
-│   ├── RESEARCH_SYNTHESIS.md
-│   ├── CORPUS_DESIGN.md
-│   ├── TECHNICAL_ARCHITECTURE.md
-│   ├── DEVELOPMENT_PLAN.md
-│   ├── MVP_PAGE_SPECS.md
-│   ├── GOOGLE_SETUP.md
-│   ├── GOOGLE_CONNECTIONS.md
+├── docs/                         # See docs/README.md for the full index
+│   ├── architecture/             # TECHNICAL_ARCHITECTURE.md, CORPUS_DESIGN.md, KB reference docs
+│   ├── planning/                 # PROJECT_BRIEF.md, RESEARCH_SYNTHESIS.md, DEVELOPMENT_PLAN.md, MVP_PAGE_SPECS.md
+│   ├── launch/                   # LAUNCH_RUNBOOK.md, GOOGLE_SETUP.md, GOOGLE_CONNECTIONS.md, GTM_SETUP.md
+│   ├── integrations/             # Vendor reference material (consentmanager, GA4, GTM, Vercel)
 │   ├── project/                  # Source research reports (input material)
-│   └── qdrant-docs/              # Reference docs for the KB / embeddings stack
+│   └── mockups/                  # HTML mockups — the visual source of truth
 ├── schemas/                      # JSON Schema for corpus records
 ├── src/
 │   ├── ingestion/                # Corpus -> Qdrant hybrid-vector pipeline
@@ -92,7 +88,7 @@ collection `logistics_supply_chain_hybrid_v1`, ~5,056 chunks) using MiniLM dense
 ColBERTv2 late-interaction, and SPLADE sparse embeddings served by an external
 Hugging Face sidecar. This knowledge base is the grounding layer: every formula
 record cites the source passages it was derived from. See
-[Corpus Design](docs/CORPUS_DESIGN.md) for the two-layer corpus model.
+[Corpus Design](docs/architecture/CORPUS_DESIGN.md) for the two-layer corpus model.
 
 ## Local Workflow
 
@@ -140,23 +136,23 @@ The split of responsibilities:
 
 ## Documentation Map
 
-- [Project Brief](docs/PROJECT_BRIEF.md): product positioning, audience, goals, and scope.
-- [Research Synthesis](docs/RESEARCH_SYNTHESIS.md): decisions extracted from the three source reports under `docs/project/`.
-- [Corpus Design](docs/CORPUS_DESIGN.md): proposed data model for logistics, inventory, formulas, dimensions, and assumptions.
-- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md): suggested system boundaries and implementation approach.
-- [Development Plan](docs/DEVELOPMENT_PLAN.md): staged plan from repo setup through launch.
-- [Launch Runbook](docs/LAUNCH_RUNBOOK.md): ordered go-live checklist and current launch/verification state.
-- [MVP Page Specs](docs/MVP_PAGE_SPECS.md): the implementation contract for the first inventory calculator cluster.
-- [Google Setup](docs/GOOGLE_SETUP.md): Google Cloud, Workspace API, Search Console, GA4, Ads, and AdSense setup checklist.
-- [Google Connections](docs/GOOGLE_CONNECTIONS.md): actual project IDs, Drive/Sheets links, and local verification workflow.
+- [Project Brief](docs/planning/PROJECT_BRIEF.md): product positioning, audience, goals, and scope.
+- [Research Synthesis](docs/planning/RESEARCH_SYNTHESIS.md): decisions extracted from the three source reports under `docs/project/`.
+- [Corpus Design](docs/architecture/CORPUS_DESIGN.md): proposed data model for logistics, inventory, formulas, dimensions, and assumptions.
+- [Technical Architecture](docs/architecture/TECHNICAL_ARCHITECTURE.md): suggested system boundaries and implementation approach.
+- [Development Plan](docs/planning/DEVELOPMENT_PLAN.md): staged plan from repo setup through launch.
+- [Launch Runbook](docs/launch/LAUNCH_RUNBOOK.md): ordered go-live checklist and current launch/verification state.
+- [MVP Page Specs](docs/planning/MVP_PAGE_SPECS.md): the implementation contract for the first inventory calculator cluster.
+- [Google Setup](docs/launch/GOOGLE_SETUP.md): Google Cloud, Workspace API, Search Console, GA4, Ads, and AdSense setup checklist.
+- [Google Connections](docs/launch/GOOGLE_CONNECTIONS.md): actual project IDs, Drive/Sheets links, and local verification workflow.
 
 ## Current Status
 
 **Live in production at <https://opscrunch.com>** (deployed on Vercel from
 `main`; DNS on Cloudflare, apex primary with `www` → apex). Phase 4 (website
 MVP) and the Phase 6 cluster expansion are built; Phase 5 (launch and
-measurement) is essentially done — see [Development Plan](docs/DEVELOPMENT_PLAN.md)
-and the [Launch Runbook](docs/LAUNCH_RUNBOOK.md).
+measurement) is essentially done — see [Development Plan](docs/planning/DEVELOPMENT_PLAN.md)
+and the [Launch Runbook](docs/launch/LAUNCH_RUNBOOK.md).
 
 The site at `web/` serves 24 calculator pages across inventory, freight, and
 pricing clusters, record-driven from validated calculator records in
@@ -166,12 +162,17 @@ validator were deleted after a parity gate. Four tools use custom islands
 (CBM, freight class, dimensional/volumetric weight, ABC analysis); the rest
 use the generic record-driven tool.
 
-Launch state (verified live 2026-07-04): SEO plumbing (sitemap, robots,
-canonicals, real `ads.txt`) is correct; GA4 (`G-7XG10CD70E`) is wired and
-verified end-to-end with consent-aware Consent Mode v2 and custom calculator
-events carrying no user input; Search Console is verified via a Cloudflare DNS
-TXT record; the AdSense account association meta ships but ad serving stays off
-(`NEXT_PUBLIC_ADS_ENABLED=false`) pending approval + a certified IAB TCF v2.2 CMP.
+Launch state: SEO plumbing (sitemap, robots, canonicals, real `ads.txt`) is
+correct (verified live 2026-07-04). Analytics/consent (rebuilt 2026-07-05):
+GA4 (`G-7XG10CD70E`) runs inside GTM (`GTM-NRM7V3BN`, published v11) and every
+GA4 tag is hard-gated on consent to the Google Analytics vendor in
+consentmanager CMP 173918 (certified IAB TCF v2.2); calculator events carry
+ids/slugs only, never user input. One open blocker: consentmanager currently
+delivers an empty vendor list for the account (support ticket sent), so GA4
+stays dark until fixed — see `docs/launch/LAUNCH_RUNBOOK.md` §6c. Search
+Console is verified via a Cloudflare DNS TXT record; the AdSense account
+association meta ships but ad serving stays off
+(`NEXT_PUBLIC_ADS_ENABLED=false`) pending approval.
 
 The knowledge base is built and searchable, and grounded formula records exist
 for all 24 formulas — inventory and pricing cited to source passages, freight
@@ -185,6 +186,6 @@ container volumes remain `needs_sourcing`. The USPS DIM divisor change
 (166 → 139, effective 2026-07-12) is staged on branch
 `usps-dim-139-2026-07-12`, ready to merge on the effective date.
 
-Remaining / deliberately deferred: submit the sitemap and register GA4 custom
-dimensions (dashboard-only); AdSense application after organic traffic;
-packaging cost and cycle count planner were skipped — no defined method yet.
+Remaining / deliberately deferred: the consentmanager vendor-list fix (above);
+submit the sitemap; AdSense application after organic traffic; packaging cost
+and cycle count planner were skipped — no defined method yet.

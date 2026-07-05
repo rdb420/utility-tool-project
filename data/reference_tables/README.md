@@ -46,7 +46,7 @@ presets **carrier-published figures (checked July 2026)** with a
 confirm-with-your-carrier caveat; container volumes remain labelled nominal
 estimates. The freight-class calculator renders the 13-row density chart with
 its effective date and an NMFTA ClassIT+ confirmation caveat — see
-`docs/DEVELOPMENT_PLAN.md` Phase 6.
+`docs/planning/DEVELOPMENT_PLAN.md` Phase 6.
 
 ## Disclaimer posture
 

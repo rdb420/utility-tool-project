@@ -11,4 +11,4 @@ of the website):
 The former `corpus/` (record validation) and `calc/` (calculation library)
 packages were ported to TypeScript and deleted after a parity gate; they now
 live at `web/src/lib/corpus/` and `web/src/lib/calc/`. See
-[../docs/TECHNICAL_ARCHITECTURE.md](../docs/TECHNICAL_ARCHITECTURE.md).
+[../docs/architecture/TECHNICAL_ARCHITECTURE.md](../docs/architecture/TECHNICAL_ARCHITECTURE.md).

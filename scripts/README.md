@@ -23,4 +23,4 @@ uv run python scripts/check_google_workspace.py             # first run opens OA
 
 `ingest_qdrant.py`, `search_corpus.py`, and `check_google_workspace.py` load
 `.env.local` automatically. The Qdrant scripts need `QDRANT_URL` / `QDRANT_API_KEY`
-and a reachable `EMBEDDINGS_URL`; see [`../docs/GOOGLE_CONNECTIONS.md`](../docs/GOOGLE_CONNECTIONS.md).
+and a reachable `EMBEDDINGS_URL`; see [`../docs/launch/GOOGLE_CONNECTIONS.md`](../docs/launch/GOOGLE_CONNECTIONS.md).

@@ -2,7 +2,7 @@
  * Record-driven calculator page (one route for every calculator record).
  *
  * All pages are prerendered from CALCULATORS (dynamicParams = false). The
- * anatomy follows docs/MVP_PAGE_SPECS.md and the calculator kit exactly:
+ * anatomy follows docs/planning/MVP_PAGE_SPECS.md and the calculator kit exactly:
  * breadcrumb -> h1 + one-liner -> tool island -> nudge -> copy blocks ->
  * ad A -> FAQ -> ad D -> bench tiles -> disclaimer -> JSON-LD. The formula,
  * worked example, and FAQ are server-rendered HTML so crawlers and AI

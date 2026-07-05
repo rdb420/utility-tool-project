@@ -58,7 +58,7 @@ In scope:
 
 - Formula-based calculators.
 - Structured corpus conversion, grounded in the hybrid-search knowledge base
-  (see `docs/CORPUS_DESIGN.md`). "Corpus-backed" means every formula and
+  (see `docs/architecture/CORPUS_DESIGN.md`). "Corpus-backed" means every formula and
   explanation cites a retrieved source passage.
 - Tool pages with supporting explanations and examples.
 - Exportable results where useful.

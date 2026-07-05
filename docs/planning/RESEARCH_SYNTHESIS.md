@@ -73,7 +73,7 @@ Required copy pattern:
 ### 5. Ground Everything in the Knowledge Base
 
 The source books are now ingested into a hybrid-search knowledge base (see
-`docs/CORPUS_DESIGN.md`). Every formula, explanation, and worked example should be
+`docs/architecture/CORPUS_DESIGN.md`). Every formula, explanation, and worked example should be
 grounded in and cited from a retrieved passage rather than invented. This is what
 makes the "corpus-backed" positioning defensible.
 
