@@ -162,4 +162,23 @@ describe("CbmCalculator", () => {
     fireEvent.click(screen.getByRole("button", { name: /crunch it/i }));
     expect(screen.getByTestId("result-CBM").textContent).toBe("9.600m³");
   });
+
+  it("clear inputs restores the default field values and result", () => {
+    setField("Length", "60");
+    setField("Cartons", "5");
+    // 60 x 80 x 100 cm x 5 = 2.4 m³ — the edit took effect.
+    expect(screen.getByTestId("result-CBM").textContent).toBe("2.400m³");
+
+    fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+    expect(
+      (screen.getByLabelText("Length", { exact: false }) as HTMLInputElement)
+        .value,
+    ).toBe("120");
+    expect(
+      (screen.getByLabelText("Cartons", { exact: false }) as HTMLInputElement)
+        .value,
+    ).toBe("10");
+    expect(screen.getByTestId("result-CBM").textContent).toBe("9.600m³");
+    expect(screen.getByTestId("result-VW").textContent).toBe("1,600.0 kg");
+  });
 });

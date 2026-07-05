@@ -158,6 +158,11 @@ export interface UseAbc {
   setACutoffText(value: string): void;
   setBCutoffText(value: string): void;
   crunch(): void;
+  /**
+   * Clear-inputs action: back to the initial empty rows and default
+   * cut-offs. Deliberately does NOT touch startedRef and fires no analytics.
+   */
+  reset(): void;
   /** True the first time any control changes (drives calculator_start). */
   markStart(): boolean;
 }
@@ -224,6 +229,13 @@ export function useAbc(): UseAbc {
     setACutoffText,
     setBCutoffText,
     crunch: () => setCrunchCount((count) => count + 1),
+    reset: () => {
+      setRows(emptyRows(INITIAL_ROWS));
+      nextIdRef.current = INITIAL_ROWS;
+      setACutoffText(DEFAULT_A_CUTOFF);
+      setBCutoffText(DEFAULT_B_CUTOFF);
+      setCrunchCount(0);
+    },
     markStart: () => {
       if (startedRef.current) return false;
       startedRef.current = true;

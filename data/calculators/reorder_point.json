@@ -15,8 +15,8 @@
     {
       "label": "Demand and lead time",
       "inputs": [
-        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
-        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Days from placing a replenishment order to receiving it." },
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 10, "help": "Average units sold or consumed per day." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "default": 4, "help": "Days from placing a replenishment order to receiving it." },
         { "symbol": "SS", "label": "Safety stock", "unit": "units", "type": "number", "min": 0, "required": false, "default": 0, "help": "Buffer stock. Leave 0 or size it with the safety stock calculator." }
       ]
     }

@@ -216,6 +216,23 @@ function nativeUnitOf(mode: ModeKey): WeightUnit {
   return MODES[mode].system === "imperial" ? "lb" : "kg";
 }
 
+/** Initial hook state — also the target of reset() (the Clear-inputs action). */
+export const INITIAL_SNAPSHOT: CbmSnapshot = {
+  length: "120",
+  width: "80",
+  height: "100",
+  unit: "cm",
+  qty: "10",
+  mode: "air",
+  divisorText: String(MODES.air.divisor),
+  actualWeight: "",
+  actualWeightUnit: "kg",
+  container: "none",
+  carrierRounding: false,
+  weightUnit: "kg",
+  manualWeightUnit: false,
+};
+
 export interface UseCbm {
   snapshot: CbmSnapshot;
   computed: CbmComputed;
@@ -232,26 +249,17 @@ export interface UseCbm {
   setCarrierRounding(on: boolean): void;
   setWeightUnit(unit: WeightUnit): void;
   crunch(): void;
+  /**
+   * Clear-inputs action: back to INITIAL_SNAPSHOT with the coupling flags
+   * re-armed. Deliberately does NOT touch startedRef and fires no analytics.
+   */
+  reset(): void;
   /** True the first time any control changes (drives calculator_start). */
   markStart(): boolean;
 }
 
 export function useCbm(): UseCbm {
-  const [snapshot, setSnapshot] = useState<CbmSnapshot>({
-    length: "120",
-    width: "80",
-    height: "100",
-    unit: "cm",
-    qty: "10",
-    mode: "air",
-    divisorText: String(MODES.air.divisor),
-    actualWeight: "",
-    actualWeightUnit: "kg",
-    container: "none",
-    carrierRounding: false,
-    weightUnit: "kg",
-    manualWeightUnit: false,
-  });
+  const [snapshot, setSnapshot] = useState<CbmSnapshot>(INITIAL_SNAPSHOT);
   const [manualMode, setManualMode] = useState(false);
   const [crunchCount, setCrunchCount] = useState(0);
   const startedRef = useRef(false);
@@ -323,6 +331,11 @@ export function useCbm(): UseCbm {
     setWeightUnit: (unit) =>
       patch({ weightUnit: unit, manualWeightUnit: true }),
     crunch: () => setCrunchCount((count) => count + 1),
+    reset: () => {
+      setSnapshot(INITIAL_SNAPSHOT);
+      setManualMode(false);
+      setCrunchCount(0);
+    },
     markStart: () => {
       if (startedRef.current) return false;
       startedRef.current = true;

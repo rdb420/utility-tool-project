@@ -146,6 +146,37 @@ describe("AbcCalculator", () => {
     expect(screen.getByRole("table")).toBeTruthy();
   });
 
+  it("clear inputs empties the rows and restores the default thresholds", () => {
+    fillCorpusExample();
+    setField("A cutoff", "70");
+    setField("B cutoff", "90");
+    expect(screen.getByRole("table")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+
+    const nameInputs = screen.getAllByLabelText(/name$/) as HTMLInputElement[];
+    expect(nameInputs).toHaveLength(5);
+    for (const input of nameInputs) expect(input.value).toBe("");
+    const valueInputs = screen.getAllByLabelText(
+      /annual usage value/i,
+    ) as HTMLInputElement[];
+    expect(valueInputs).toHaveLength(5);
+    for (const input of valueInputs) expect(input.value).toBe("");
+    expect(
+      (screen.getByLabelText(/A cutoff/, { exact: false }) as HTMLInputElement)
+        .value,
+    ).toBe("80");
+    expect(
+      (screen.getByLabelText(/B cutoff/, { exact: false }) as HTMLInputElement)
+        .value,
+    ).toBe("95");
+    // Back to the quiet middot state — no table, no error.
+    expect(screen.queryByRole("table")).toBeNull();
+    expect(screen.getByTestId("result-A-count").textContent).toBe(
+      "·A-class SKUs",
+    );
+  });
+
   it("keeps copy disabled while invalid", () => {
     const copyButton = screen.getByRole("button", {
       name: "Copy result",

@@ -15,8 +15,8 @@
     {
       "label": "Cost and inventory",
       "inputs": [
-        { "symbol": "COGS", "label": "Cost of goods sold", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Cost of goods sold over the period (usually a year)." },
-        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Average inventory at cost, e.g. average of opening and closing." }
+        { "symbol": "COGS", "label": "Cost of goods sold", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 150000000, "help": "Cost of goods sold over the period (usually a year)." },
+        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 30000000, "help": "Average inventory at cost, e.g. average of opening and closing." }
       ]
     }
   ],

@@ -21,6 +21,7 @@ import type {
 } from "@/lib/records/types.gen";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 import styles from "./CalculatorTool.module.css";
+import ClearButton from "./ClearButton";
 import CopyRow from "./CopyRow";
 import CrunchButton from "./CrunchButton";
 import DerivedRow, { DerivedRows } from "./DerivedRow";
@@ -227,6 +228,19 @@ export default function CalculatorTool({
     });
   }
 
+  /**
+   * Reset the island to its initial state: defaults back in the fields, no
+   * errors, empty readout. Leaves startedRef alone (the session already
+   * started) and deliberately emits no analytics event.
+   */
+  function clearInputs() {
+    setValues(initialValues(allInputs));
+    setErrors({});
+    setFormError(null);
+    setLastRun(null);
+    setCrunchCount(0);
+  }
+
   function copyText(variant: "result" | "full") {
     if (!lastRun) return;
     track({
@@ -286,6 +300,7 @@ export default function CalculatorTool({
               </div>
             ))}
             <CrunchButton />
+            <ClearButton onClear={clearInputs} />
             {formError ? (
               <p className={styles.formError} role="alert">
                 {formError}

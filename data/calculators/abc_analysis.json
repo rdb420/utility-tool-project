@@ -15,8 +15,8 @@
     {
       "label": "Usage value",
       "inputs": [
-        { "symbol": "V_i", "label": "Item annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Annual usage or sales value of the item: annual units x unit value." },
-        { "symbol": "V_total", "label": "Total annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Sum of annual usage value across all items you are classifying. Must be greater than 0." }
+        { "symbol": "V_i", "label": "Item annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 54000, "help": "Annual usage or sales value of the item: annual units x unit value." },
+        { "symbol": "V_total", "label": "Total annual usage value", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 100000, "help": "Sum of annual usage value across all items you are classifying. Must be greater than 0." }
       ]
     }
   ],

@@ -22,6 +22,7 @@ import { useEffect, useRef, type FormEvent } from "react";
 import { track } from "@/lib/analytics";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 import type { CalculatorToolProps } from "../tool/CalculatorTool";
+import ClearButton from "../tool/ClearButton";
 import CopyRow from "../tool/CopyRow";
 import CrunchButton from "../tool/CrunchButton";
 import DerivedRow, { DerivedRows } from "../tool/DerivedRow";
@@ -33,7 +34,12 @@ import UnitToggle from "../tool/UnitToggle";
 import { useClipboard } from "../tool/useClipboard";
 import styles from "./FreightClassCalculator.module.css";
 import { EFFECTIVE_DATE, NMFC_CLASSES, type NmfcClassRow } from "./nmfcClasses";
-import { useFreightClass, type InputMode } from "./useFreightClass";
+import {
+  INITIAL_SNAPSHOT,
+  computeFreightClass,
+  useFreightClass,
+  type InputMode,
+} from "./useFreightClass";
 
 const MIDDOT = "·";
 
@@ -103,6 +109,19 @@ export default function FreightClassCalculator({
   function crunch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     fc.crunch();
+  }
+
+  /**
+   * Clear inputs: back to the defaults, with NO analytics. Pre-arm the
+   * calculator_result throttle: resetting snaps computed.cls back to the
+   * default-state class, which the class-change effect above would otherwise
+   * read as a fresh result and emit a spurious calculator_result. Seeding
+   * lastTrackedClassRef with the default class keeps the clear silent.
+   */
+  function clearInputs() {
+    fc.reset();
+    lastTrackedClassRef.current =
+      computeFreightClass(INITIAL_SNAPSHOT)?.cls ?? null;
   }
 
   const classText = computed ? `Class ${computed.cls}` : null;
@@ -217,6 +236,7 @@ export default function FreightClassCalculator({
               />
             )}
             <CrunchButton />
+            <ClearButton onClear={clearInputs} />
           </>
         }
         readout={

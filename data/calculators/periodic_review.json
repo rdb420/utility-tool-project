@@ -15,16 +15,16 @@
     {
       "label": "Demand and timing",
       "inputs": [
-        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
-        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Days from placing a replenishment order to receiving it." },
-        { "symbol": "T", "label": "Review period", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Fixed interval between inventory reviews, e.g. 7 for a weekly review." }
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 20, "help": "Average units sold or consumed per day." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "default": 5, "help": "Days from placing a replenishment order to receiving it." },
+        { "symbol": "T", "label": "Review period", "unit": "days", "type": "number", "min": 0, "required": true, "default": 10, "help": "Fixed interval between inventory reviews, e.g. 7 for a weekly review." }
       ]
     },
     {
       "label": "Service level and variability",
       "inputs": [
-        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
-        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand." }
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "default": 1.64, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 4, "help": "Variability of daily demand." }
       ]
     }
   ],

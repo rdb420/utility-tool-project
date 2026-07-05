@@ -1,0 +1,31 @@
+/*
+ * The quiet button — ghost counterpart of .crunch (CrunchButton.module.css):
+ * same geometry, transparent fill, so the crunch stays the one loud action.
+ */
+.clear {
+  margin-top: 10px;
+  width: 100%;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--slate);
+  background: transparent;
+  border: 1.5px solid var(--line-2);
+  border-radius: 10px;
+  padding: 11px 0;
+  cursor: pointer;
+}
+
+.clear:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.clear:active {
+  transform: translateY(1px);
+}
+
+.clear:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}

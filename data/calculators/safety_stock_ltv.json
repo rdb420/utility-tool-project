@@ -15,16 +15,16 @@
     {
       "label": "Service level and demand",
       "inputs": [
-        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level from the z-factor table, e.g. 1.65 for 95% or 2.33 for 99%." },
-        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." },
-        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand." }
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "default": 1.65, "help": "Safety factor for your target service level from the z-factor table, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 250, "help": "Average units sold or consumed per day." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 85, "help": "Variability of daily demand." }
       ]
     },
     {
       "label": "Lead time and its variability",
       "inputs": [
-        { "symbol": "LT", "label": "Average lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Average days from placing a replenishment order to receiving it." },
-        { "symbol": "sigma_LT", "label": "Std deviation of lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Variability of the lead time in days. Set 0 for a perfectly reliable supplier." }
+        { "symbol": "LT", "label": "Average lead time", "unit": "days", "type": "number", "min": 0, "required": true, "default": 9, "help": "Average days from placing a replenishment order to receiving it." },
+        { "symbol": "sigma_LT", "label": "Std deviation of lead time", "unit": "days", "type": "number", "min": 0, "required": true, "default": 5, "help": "Variability of the lead time in days. Set 0 for a perfectly reliable supplier." }
       ]
     }
   ],

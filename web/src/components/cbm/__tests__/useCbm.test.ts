@@ -8,7 +8,12 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { computeCbm, useCbm, type CbmSnapshot } from "../useCbm";
+import {
+  INITIAL_SNAPSHOT,
+  computeCbm,
+  useCbm,
+  type CbmSnapshot,
+} from "../useCbm";
 
 /** Default snapshot (matches the hook's initial state) with overrides. */
 function snapshot(overrides: Partial<CbmSnapshot> = {}): CbmSnapshot {
@@ -192,5 +197,27 @@ describe("useCbm coupling", () => {
     const { result } = renderHook(() => useCbm());
     expect(result.current.markStart()).toBe(true);
     expect(result.current.markStart()).toBe(false);
+  });
+
+  it("reset() restores INITIAL_SNAPSHOT and re-arms the coupling flags", () => {
+    const { result } = renderHook(() => useCbm());
+    act(() => {
+      result.current.setDim("length", "60");
+      result.current.setMode("express"); // sets the manual-mode flag
+      result.current.setDivisorText("4500");
+      result.current.setWeightUnit("lb"); // sets manualWeightUnit
+      result.current.crunch();
+    });
+    expect(result.current.crunchCount).toBe(1);
+
+    act(() => result.current.reset());
+    expect(result.current.snapshot).toEqual(INITIAL_SNAPSHOT);
+    expect(result.current.crunchCount).toBe(0);
+
+    // Manual-mode flag cleared: unit coupling behaves like a fresh hook.
+    act(() => result.current.setUnit("in"));
+    expect(result.current.snapshot.mode).toBe("usparcel");
+    expect(result.current.snapshot.divisorText).toBe("139");
+    expect(result.current.snapshot.weightUnit).toBe("lb");
   });
 });

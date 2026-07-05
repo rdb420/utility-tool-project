@@ -207,6 +207,32 @@ describe("useAbc", () => {
     expect(result.current.rows[0].id).toBe(secondId);
   });
 
+  it("reset() restores initial rows, cutoffs, and crunch count", () => {
+    const { result } = renderHook(() => useAbc());
+    act(() => {
+      result.current.setRowName(0, "alpha");
+      result.current.setRowValue(0, "54000");
+      result.current.setRowValue(1, "41000");
+      result.current.addRow();
+      result.current.setACutoffText("70");
+      result.current.setBCutoffText("90");
+      result.current.crunch();
+    });
+    expect(result.current.computed.valid).toBe(true);
+    expect(result.current.rows).toHaveLength(6);
+
+    act(() => result.current.reset());
+    expect(result.current.rows).toHaveLength(5);
+    expect(
+      result.current.rows.every((r) => r.name === "" && r.value === ""),
+    ).toBe(true);
+    expect(result.current.aCutoffText).toBe("80");
+    expect(result.current.bCutoffText).toBe("95");
+    expect(result.current.crunchCount).toBe(0);
+    // Back to the empty-form state: invalid for lack of rows again.
+    expect(result.current.computed).toEqual({ valid: false, reason: "rows" });
+  });
+
   it("markStart is true exactly once", () => {
     const { result } = renderHook(() => useAbc());
     let first = false;

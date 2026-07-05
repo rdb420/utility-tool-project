@@ -19,6 +19,7 @@ import { track } from "@/lib/analytics";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 import AdvancedPanel from "../tool/AdvancedPanel";
 import type { CalculatorToolProps } from "../tool/CalculatorTool";
+import ClearButton from "../tool/ClearButton";
 import CopyRow from "../tool/CopyRow";
 import CrunchButton from "../tool/CrunchButton";
 import DerivedRow, { DerivedRows } from "../tool/DerivedRow";
@@ -139,6 +140,15 @@ export default function DimWeightCalculator({
     }
   }
 
+  /**
+   * Clear inputs: back to the record defaults, with the result throttle
+   * cleared so a later crunch reports fresh. Fires no analytics.
+   */
+  function clearInputs() {
+    dim.reset();
+    lastResultRef.current = null;
+  }
+
   function copyText(variant: "result" | "full") {
     if (!computed.valid || !computed.volumetric) return;
     track({
@@ -220,6 +230,7 @@ export default function DimWeightCalculator({
               />
             </div>
             <CrunchButton />
+            <ClearButton onClear={clearInputs} />
             <AdvancedPanel>
               <span className={styles.groupLbl}>Carrier &amp; mode</span>
               <div className={styles.field}>

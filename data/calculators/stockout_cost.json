@@ -15,9 +15,9 @@
     {
       "label": "Shortage, margin, and penalties",
       "inputs": [
-        { "symbol": "units_short", "label": "Units short", "unit": "units", "type": "number", "min": 0, "required": true, "help": "Demand you could not fill from stock during the stockout." },
-        { "symbol": "GM_unit", "label": "Lost gross margin per unit", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "help": "Gross margin you would have earned on each unfilled unit." },
-        { "symbol": "penalty", "label": "Penalty costs", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 0, "help": "Direct extra costs the shortage triggered: expediting fees, SLA fines, substitution costs. Leave 0 if none." }
+        { "symbol": "units_short", "label": "Units short", "unit": "units", "type": "number", "min": 0, "required": true, "default": 120, "help": "Demand you could not fill from stock during the stockout." },
+        { "symbol": "GM_unit", "label": "Lost gross margin per unit", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 18, "help": "Gross margin you would have earned on each unfilled unit." },
+        { "symbol": "penalty", "label": "Penalty costs", "unit": "currency", "type": "number", "min": 0, "required": false, "default": 500, "help": "Direct extra costs the shortage triggered: expediting fees, SLA fines, substitution costs. Leave 0 if none." }
       ]
     }
   ],

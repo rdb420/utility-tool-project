@@ -10,6 +10,7 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import {
+  INITIAL_SNAPSHOT,
   computeFreightClass,
   useFreightClass,
   type FreightClassSnapshot,
@@ -143,5 +144,22 @@ describe("useFreightClass", () => {
     const { result } = renderHook(() => useFreightClass());
     expect(result.current.markStart()).toBe(true);
     expect(result.current.markStart()).toBe(false);
+  });
+
+  it("reset() restores INITIAL_SNAPSHOT and the crunch counter", () => {
+    const { result } = renderHook(() => useFreightClass());
+    act(() => {
+      result.current.setField("actualWeight", "1000");
+      result.current.setMode("pcf");
+      result.current.setField("directPcf", "25");
+      result.current.crunch();
+    });
+    expect(result.current.crunchCount).toBe(1);
+
+    act(() => result.current.reset());
+    expect(result.current.snapshot).toEqual(INITIAL_SNAPSHOT);
+    expect(result.current.crunchCount).toBe(0);
+    // Back to the record example's default class.
+    expect(result.current.computed!.cls).toBe(100);
   });
 });

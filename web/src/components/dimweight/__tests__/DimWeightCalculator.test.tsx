@@ -152,6 +152,22 @@ describe.each(CASES)("DimWeightCalculator ($id)", (c) => {
     expect(screen.queryByTestId("result-billed-on")).toBeNull();
   });
 
+  it("clear inputs restores the record-default field values and headline", () => {
+    renderIsland(c.id);
+    const defaultLength = c.id.endsWith("dimensional_weight") ? "30" : "120";
+    fireEvent.change(screen.getByLabelText(/length/i), {
+      target: { value: "5" },
+    });
+    expect(screen.getByTestId(c.resultTestId).textContent).not.toBe(c.headline);
+
+    fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+    expect(
+      (screen.getByLabelText(/length/i) as HTMLInputElement).value,
+    ).toBe(defaultLength);
+    expect(screen.getByTestId(c.resultTestId).textContent).toBe(c.headline);
+    expect(screen.getByTestId("result-divisor").textContent).toBe(c.divisorRow);
+  });
+
   it("copy result + copy full write the clipboard and show the toast", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(window.navigator, "clipboard", {

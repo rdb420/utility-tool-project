@@ -89,6 +89,17 @@ export function computeFreightClass(
   return { v, pcf, cls: band.class, band };
 }
 
+/** Initial hook state — also the target of reset() (the Clear-inputs action). */
+export const INITIAL_SNAPSHOT: FreightClassSnapshot = {
+  mode: "dims",
+  length: "48",
+  width: "40",
+  height: "48",
+  qty: "1",
+  actualWeight: "500",
+  directPcf: "",
+};
+
 export interface UseFreightClass {
   snapshot: FreightClassSnapshot;
   /** null = invalid/empty inputs -> middot placeholders. */
@@ -98,20 +109,19 @@ export interface UseFreightClass {
   setMode(mode: InputMode): void;
   setField(field: DimsField | "directPcf", value: string): void;
   crunch(): void;
+  /**
+   * Clear-inputs action: back to INITIAL_SNAPSHOT. Deliberately does NOT
+   * touch startedRef and fires no analytics.
+   */
+  reset(): void;
   /** True the first time any control changes (drives calculator_start). */
   markStart(): boolean;
 }
 
 export function useFreightClass(): UseFreightClass {
-  const [snapshot, setSnapshot] = useState<FreightClassSnapshot>({
-    mode: "dims",
-    length: "48",
-    width: "40",
-    height: "48",
-    qty: "1",
-    actualWeight: "500",
-    directPcf: "",
-  });
+  const [snapshot, setSnapshot] = useState<FreightClassSnapshot>(
+    INITIAL_SNAPSHOT,
+  );
   const [crunchCount, setCrunchCount] = useState(0);
   const startedRef = useRef(false);
 
@@ -125,6 +135,10 @@ export function useFreightClass(): UseFreightClass {
     setField: (field, value) =>
       setSnapshot((current) => ({ ...current, [field]: value })),
     crunch: () => setCrunchCount((count) => count + 1),
+    reset: () => {
+      setSnapshot(INITIAL_SNAPSHOT);
+      setCrunchCount(0);
+    },
     markStart: () => {
       if (startedRef.current) return false;
       startedRef.current = true;

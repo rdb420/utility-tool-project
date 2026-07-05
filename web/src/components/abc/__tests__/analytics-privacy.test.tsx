@@ -86,6 +86,12 @@ describe("ABC analytics privacy", () => {
     fireEvent.click(screen.getByRole("button", { name: "Copy full" }));
     await screen.findAllByText(/Copied|Copy failed/);
 
+    // Clearing inputs is analytics-silent (privacy contract): no track()
+    // call of any kind, no result event from the state snapping back.
+    const before = vi.mocked(track).mock.calls.length;
+    fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+    expect(vi.mocked(track).mock.calls.length).toBe(before);
+
     const calls = vi.mocked(track).mock.calls.map(([event]) => event);
     expect(calls.length).toBeGreaterThan(0);
 

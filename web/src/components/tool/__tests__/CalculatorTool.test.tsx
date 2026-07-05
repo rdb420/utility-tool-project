@@ -123,6 +123,65 @@ for (const calculator of GENERIC_CALCULATORS) {
       }
     });
 
+    const allDefaulted = flatInputs(calculator).every(
+      (input) => input.default !== undefined,
+    );
+    it.runIf(allDefaulted)(
+      "crunches the worked example from record defaults alone",
+      () => {
+        renderTool(calculator);
+        crunch(); // nothing filled: every field falls back to its default
+
+        expect(screen.queryByRole("alert")).toBeNull();
+
+        const defaults: Record<string, number> = {};
+        for (const input of flatInputs(calculator)) {
+          defaults[input.symbol] = input.default!;
+        }
+        const outputs = computeOutputs(calculator, defaults);
+        const primary =
+          calculator.result_cards.find((card) => card.primary) ??
+          calculator.result_cards[0];
+        for (const card of calculator.result_cards) {
+          const element = screen.getByTestId(`result-${card.symbol}`);
+          const expectedText =
+            card === primary
+              ? `${formatResult(outputs[card.symbol])}${card.unit}`
+              : formatResult(outputs[card.symbol], card.unit);
+          expect(element.textContent).toBe(expectedText);
+        }
+      },
+    );
+
+    it("clear inputs restores defaults and empties the readout", () => {
+      const inputs = exampleValues(calculator);
+      renderTool(calculator);
+      fillInputs(calculator, inputs);
+      crunch();
+
+      const primary =
+        calculator.result_cards.find((card) => card.primary) ??
+        calculator.result_cards[0];
+      expect(
+        screen.getByTestId(`result-${primary.symbol}`).textContent,
+      ).not.toContain("·");
+
+      fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+
+      for (const input of flatInputs(calculator)) {
+        const field = screen.getByLabelText(input.label, {
+          exact: false,
+        }) as HTMLInputElement;
+        expect(field.value).toBe(
+          input.default !== undefined ? String(input.default) : "",
+        );
+      }
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(
+        screen.getByTestId(`result-${primary.symbol}`).textContent,
+      ).toContain("·");
+    });
+
     it("rejects a negative value in a min:0 field and clears the result", () => {
       const inputs = exampleValues(calculator);
       const positives = positiveSymbols(calculator);

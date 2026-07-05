@@ -19,6 +19,7 @@ import { useEffect, useRef, type FormEvent } from "react";
 import { track } from "@/lib/analytics";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 import type { CalculatorToolProps } from "../tool/CalculatorTool";
+import ClearButton from "../tool/ClearButton";
 import CopyRow from "../tool/CopyRow";
 import CrunchButton from "../tool/CrunchButton";
 import DerivedRow, { DerivedRows } from "../tool/DerivedRow";
@@ -125,6 +126,17 @@ export default function AbcCalculator({ calculator }: CalculatorToolProps) {
         field: computed.reason,
       });
     }
+  }
+
+  /**
+   * Clear inputs: back to empty rows + default cut-offs, with the partition
+   * throttle cleared so a later identical partition reports fresh. Fires no
+   * analytics (the cleared state is invalid, so the result effect stays
+   * silent).
+   */
+  function clearInputs() {
+    abc.reset();
+    lastPartitionRef.current = null;
   }
 
   function copyText(variant: "result" | "full") {
@@ -273,6 +285,7 @@ export default function AbcCalculator({ calculator }: CalculatorToolProps) {
               {THRESHOLD_HELP}
             </p>
             <CrunchButton />
+            <ClearButton onClear={clearInputs} />
           </>
         }
         readout={

@@ -144,6 +144,34 @@ describe("FreightClassCalculator", () => {
     expect(text).toContain("/freight-class-calculator/");
   });
 
+  it("clear inputs restores the defaults without a spurious calculator_result", () => {
+    renderIsland();
+    // 18.75 PCF -> Class 70: exactly one calculator_result.
+    setField("Actual weight", "1000");
+    expect(screen.getByTestId("result-class").textContent).toContain("Class 70");
+    const before = events.filter(
+      (event) => event.name === "calculator_result",
+    ).length;
+    expect(before).toBe(1);
+
+    fireEvent.click(screen.getByRole("button", { name: /clear inputs/i }));
+
+    // Fields and result back to the record defaults...
+    expect(
+      (screen.getByLabelText(/actual weight/i) as HTMLInputElement).value,
+    ).toBe("500");
+    expect(
+      (screen.getByLabelText(/length/i) as HTMLInputElement).value,
+    ).toBe("48");
+    expect(screen.getByTestId("result-class").textContent).toContain(
+      "Class 100",
+    );
+    // ...and the class snapping back to the default emits NO new result.
+    expect(
+      events.filter((event) => event.name === "calculator_result"),
+    ).toHaveLength(before);
+  });
+
   it("emits calculator_start once and throttles calculator_result to class changes", () => {
     renderIsland();
     // 18.75 PCF -> Class 70: start + one result.

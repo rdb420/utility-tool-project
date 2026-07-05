@@ -15,9 +15,9 @@
     {
       "label": "Service level and demand variability",
       "inputs": [
-        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
-        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Variability of daily demand. Higher variability needs more buffer." },
-        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "help": "Replenishment lead time in days." }
+        { "symbol": "z", "label": "Service-level factor (z)", "unit": "sigma", "type": "number", "min": 0, "required": true, "default": 1.64, "help": "Safety factor for your target service level, e.g. 1.65 for 95% or 2.33 for 99%." },
+        { "symbol": "sigma_d", "label": "Std deviation of daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 3, "help": "Variability of daily demand. Higher variability needs more buffer." },
+        { "symbol": "LT", "label": "Lead time", "unit": "days", "type": "number", "min": 0, "required": true, "default": 15, "help": "Replenishment lead time in days." }
       ]
     }
   ],

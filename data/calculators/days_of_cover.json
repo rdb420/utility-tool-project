@@ -15,8 +15,8 @@
     {
       "label": "Stock and demand",
       "inputs": [
-        { "symbol": "stock", "label": "Available stock", "unit": "units", "type": "number", "min": 0, "required": true, "help": "Current on-hand quantity (or value, if demand is in the same unit)." },
-        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "help": "Average units sold or consumed per day." }
+        { "symbol": "stock", "label": "Available stock", "unit": "units", "type": "number", "min": 0, "required": true, "default": 600, "help": "Current on-hand quantity (or value, if demand is in the same unit)." },
+        { "symbol": "D", "label": "Average daily demand", "unit": "units/day", "type": "number", "min": 0, "required": true, "default": 100, "help": "Average units sold or consumed per day." }
       ]
     }
   ],

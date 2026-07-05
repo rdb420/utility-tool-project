@@ -15,10 +15,10 @@
     {
       "label": "Demand and costs",
       "inputs": [
-        { "symbol": "D", "label": "Annual demand", "unit": "units/year", "type": "number", "min": 0, "required": true, "help": "Total units expected over the year." },
-        { "symbol": "OC", "label": "Ordering cost", "unit": "currency/order", "type": "number", "min": 0, "required": true, "help": "Fixed cost to raise and receive one order." },
-        { "symbol": "k", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "help": "Annual holding cost as a fraction of unit cost, e.g. 0.21 for 21%." },
-        { "symbol": "UC", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "help": "Purchase or production cost per unit." }
+        { "symbol": "D", "label": "Annual demand", "unit": "units/year", "type": "number", "min": 0, "required": true, "default": 20000, "help": "Total units expected over the year." },
+        { "symbol": "OC", "label": "Ordering cost", "unit": "currency/order", "type": "number", "min": 0, "required": true, "default": 125, "help": "Fixed cost to raise and receive one order." },
+        { "symbol": "k", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "default": 0.21, "help": "Annual holding cost as a fraction of unit cost, e.g. 0.21 for 21%." },
+        { "symbol": "UC", "label": "Unit cost", "unit": "currency/unit", "type": "number", "min": 0, "required": true, "default": 34, "help": "Purchase or production cost per unit." }
       ]
     }
   ],

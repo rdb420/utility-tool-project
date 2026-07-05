@@ -280,6 +280,12 @@ export interface UseDimWeight {
   setCarrierRounding(on: boolean): void;
   setWeightUnit(unit: WeightUnit): void;
   crunch(): void;
+  /**
+   * Clear-inputs action: back to the record-derived initial state with the
+   * coupling flags re-armed. Deliberately does NOT touch startedRef and
+   * fires no analytics.
+   */
+  reset(): void;
   /** True the first time any control changes (drives calculator_start). */
   markStart(): boolean;
 }
@@ -359,6 +365,11 @@ export function useDimWeight(calculator: CalculatorRecord): UseDimWeight {
     setCarrierRounding: (on) => patch({ carrierRounding: on }),
     setWeightUnit: (unit) => patch({ weightUnit: unit, manualWeightUnit: true }),
     crunch: () => setCrunchCount((count) => count + 1),
+    reset: () => {
+      setSnapshot(initialStateForRecord(calculator));
+      setManualMode(false);
+      setCrunchCount(0);
+    },
     markStart: () => {
       if (startedRef.current) return false;
       startedRef.current = true;

@@ -225,4 +225,26 @@ describe("useDimWeight coupling", () => {
     expect(result.current.markStart()).toBe(true);
     expect(result.current.markStart()).toBe(false);
   });
+
+  it("reset() returns to initialStateForRecord for BOTH records", () => {
+    for (const record of [dimensional, volumetric]) {
+      const { result } = renderHook(() => useDimWeight(record));
+      act(() => {
+        result.current.setDim("length", "5");
+        result.current.setMode("express"); // sets the manual-mode flag
+        result.current.setWeightUnit("kg"); // sets manualWeightUnit
+        result.current.crunch();
+      });
+      expect(result.current.crunchCount).toBe(1);
+
+      act(() => result.current.reset());
+      expect(result.current.snapshot).toEqual(initialStateForRecord(record));
+      expect(result.current.crunchCount).toBe(0);
+
+      // Manual-mode flag cleared: unit coupling is live again.
+      act(() => result.current.setUnit("in"));
+      expect(result.current.snapshot.mode).toBe("usparcel");
+      expect(result.current.snapshot.divisorText).toBe("139");
+    }
+  });
 });

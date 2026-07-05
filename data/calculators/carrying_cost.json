@@ -15,8 +15,8 @@
     {
       "label": "Rate and inventory value",
       "inputs": [
-        { "symbol": "rate", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "help": "Annual carrying cost as a fraction of value, e.g. 0.25 for 25%. Typical range 15-30%." },
-        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "help": "Average value of inventory held during the year, at cost." }
+        { "symbol": "rate", "label": "Carrying cost rate", "unit": "ratio", "type": "number", "min": 0, "required": true, "default": 0.26, "help": "Annual carrying cost as a fraction of value, e.g. 0.25 for 25%. Typical range 15-30%." },
+        { "symbol": "avg_inv", "label": "Average inventory value", "unit": "currency", "type": "number", "min": 0, "required": true, "default": 2000000, "help": "Average value of inventory held during the year, at cost." }
       ]
     }
   ],
